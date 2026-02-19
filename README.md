@@ -116,7 +116,7 @@ This playbook has three layers:
 
 ---
 
-## 4. Six AI Paths on OD@A — Overview
+## 4. Multiple AI Paths on OD@A — Overview
 
 ### No Data Movement
 
