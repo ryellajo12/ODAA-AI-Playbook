@@ -1,7 +1,9 @@
 # Oracle Database@Azure (OD@A) — Agentic AI & RAG Adoption Playbook
 
 **Version:** 1.0 · **Date:** February 2026
+
 **Audience:** Customers, Partners, Field sellers, CSA/SSP, Solution architects
+
 **Purpose:** A concrete, end-to-end guide to building AI agents and RAG solutions on Oracle Database@Azure using every available integration path in the Microsoft AI ecosystem.
 
 ---
@@ -49,6 +51,7 @@ This playbook has three layers:
 | **Architecture** | 8 – 16 | Solution architects are in the room; designing credible solutions |
 | **Implementation** | 17 – 20 | Hands-on build phase; developer and partner workshops |
 
+
 **Quick-start for common scenarios:**
 
 | You need to… | Go to… |
@@ -71,9 +74,9 @@ This playbook has three layers:
 | # | Question | Why It Matters |
 |---|----------|----------------|
 | 1 | What problem are you solving with AI? (Q&A, automation, insights, apps) | Maps to the right path |
-| 2 | Who is the primary user? (business, ops, developers, DBAs) | Determines toolchain |
-| 3 | Do you require live Oracle data or can you work with analytical copies? | Governs data movement |
-| 4 | What Oracle database version and edition are you running on OD@A? | Oracle 23ai enables native vector search |
+| 2 | Who is the primary user? (business, ops, developers, DBAs) | Determines Persona and toolchain |
+| 3 | Do you require live Oracle data or can you work with analytical copies? | Governs data movement and Fabric scope |
+| 4 | What Oracle database version and edition are you running on OD@A? | Oracle 23ai enables native vector search and the common guidance is to use this version for AI capabilities |
 | 5 | Is there an existing Microsoft 365 / Power Platform footprint? | Opens Copilot Studio and Power Apps paths |
 | 6 | Do you have Microsoft Foundry or Azure OpenAI provisioned? | Qualification for Microsoft Foundry agent path |
 | 7 | Are you building for a single use case or a platform play? | Pilot vs platform architecture |
@@ -83,13 +86,13 @@ This playbook has three layers:
 
 | Signal | What It Tells You | Lead With |
 |--------|-------------------|-----------|
-| "No data movement allowed" | Trust, governance, speed are critical | Copilot Studio gateway / MCP / ORDS |
+| "No data movement allowed" | Trust, governance, speed are critical | Copilot Studio gateway / MCP / ORDS with Microsoft Foundry|
 | "Business users need answers" | Low-code copilots | Copilot Studio |
 | "We want insights and trends" | Analytics + AI | Microsoft Fabric |
 | "We're building an app / product" | Pro-dev, APIs, orchestration | Microsoft Foundry |
 | "DBAs need automation" | Schema exploration, SQL generation | Oracle MCP Server |
 | "We have Oracle 23ai" | Native vector search | Oracle 23ai + Azure OpenAI RAG |
-| "We want semantic search" | RAG / vector similarity | Path 6 (Vector Search) |
+| "We want semantic search" | RAG / vector similarity | Oracle 23ai + Azure OpenAI RAG for vector search |
 | "We need multi-step workflows" | Agentic AI with tool orchestration | Microsoft Foundry + MCP |
 
 ---
@@ -109,22 +112,77 @@ This playbook has three layers:
 
 ### Elevator Pitch (30 seconds)
 
-*"OD@A gives your Oracle data a direct line into Microsoft's AI ecosystem. Customers can build copilots, agents, and RAG applications on live Oracle data using Copilot Studio, Microsoft Foundry, Oracle MCP tools, Microsoft Fabric, Power Platform, or Oracle 23ai vector search — all without compromising security or forcing data migration. We've seen teams go from Oracle data to a working AI agent in under a day."*
+*"OD@A gives your Oracle data a direct line into Microsoft's AI ecosystem. Customers can build copilots, agents, and RAG applications on live/unified Oracle data directly using Copilot Studio, Microsoft Foundry, Oracle MCP tools, Microsoft Fabric, Power Platform, or Oracle 23ai vector search — all without compromising security"*
 
 ---
 
 ## 4. Six AI Paths on OD@A — Overview
 
-### Path 1: Copilot Studio — Fastest Path to Value
+### No Data Movement
 
+### Path 1: Copilot Studio — Fastest Path to Value 
+Live Oracle Data → Conversational AI (No Data Movement)
+
+**Use when:** Real-time answers required 
+            · No data replication allowed 
+            · Business user audience
+        
+**Integration modes:** Connector (direct table access) 
+                       · Knowledge (ground copilot on Oracle data) 
+                       · Tool (call Oracle actions)
+
+
+```mermaid
+graph TB
+    subgraph Users["&nbsp;&nbsp;End Users"]
+        BU["Business Users<br/>Teams / Web / M365"]
+    end
+
+    subgraph CS["&nbsp;&nbsp;Microsoft Copilot Studio"]
+        COP["Custom Copilot<br/>Natural Language Q&A"]
+        C["Oracle Connector"]
+        K["**Oracle as Knowledge**<br/>Grounds on specific<br/>tables, views, data"]
+        T["**Oracle as Tool**<br/>Runs the tool call for the selected query on the fly<br/>during conversations"]
+    end
+
+    subgraph Integration["&nbsp;&nbsp;Integration Layer"]
+        GATEWAY["On-Premises<br/>Data Gateway"]
+    end
+
+    subgraph ODA["&nbsp;&nbsp;Oracle Database@Azure"]
+        TABLES["Tables & Data<br/>Live Oracle Data"]
+        VIEWS["Curated Views<br/>for AI Grounding"]
+        DB[("Oracle ADBS /<br/>Exadata etc")]
+    end
+
+    BU --> COP
+    COP --> C
+    C --> K
+    C --> T
+
+    K --> GATEWAY
+    T --> GATEWAY
+
+    GATEWAY --> TABLES
+    GATEWAY --> VIEWS
+
+    VIEWS --> DB
+    TABLES --> DB
+```
 | | |
 |--|--|
 | **Best for** | Business teams, operational Q&A, first-line support |
 | **Persona** | Business analyst, ops manager, citizen developer |
 | **Time to value** | Hours to days |
-| **Data movement** | None — direct Oracle connectivity via On-Premises Data Gateway or Copilot Connector |
+| **Data movement** | None — direct Oracle connectivity via On-Premises Data Gateway using Copilot Connector | 
 | **Key capabilities** | Natural language Q&A over Oracle data; **Oracle as Knowledge source** (ground copilots on specific tables/data); **Oracle as a Tool** (call Oracle actions in copilot topics); no-code copilot builder; Microsoft 365 integration; Teams / web / mobile deployment |
 | **Limitations** | Not suited for heavy analytics or complex multi-step orchestration |
+| **Documentation** | [Add Oracle as a knowledge source in Copilot Studio](https://learn.microsoft.com/en-us/power-platform/release-plan/2025wave1/microsoft-copilot-studio/add-oracle-as-knowledge-source), [Install On-Prem Data Gateway](https://learn.microsoft.com/en-us/data-integration/gateway/service-gateway-install) | 
+
+*In this option, Customers can either add Oracle as a Knowledge source directly to choose the tables of their choice or use one of the readily available tools currently supported by Copilot Studio for simpler use cases.Either way, the on-prem data gateway is to be set up and configured.
+Tools currently supported listed below:
+<img width="1270" height="381" alt="image" src="https://github.com/user-attachments/assets/06abe24b-dc24-49f7-b39b-76152d8f1c99" />*
+
 
 ### Path 2: Microsoft Foundry — Pro-Dev AI & Agents
 
@@ -270,52 +328,7 @@ This playbook has three layers:
 
 ## 8. Reference Architecture Patterns
 
-### Pattern A: Live Oracle Data → Conversational AI (No Data Movement)
-
-```mermaid
-graph TB
-    subgraph Users["End Users"]
-        BU["Business Users<br/>Teams / Web / Mobile"]
-    end
-
-    subgraph CS["Microsoft Copilot Studio"]
-        COP["Custom Copilot<br/>Natural Language Q&A"]
-        K["Oracle as Knowledge<br/>Ground on specific<br/>tables, views, data"]
-        T["Oracle as Tool<br/>Call ORDS actions<br/>during conversations"]
-        C["Oracle Connector<br/>Gateway direct<br/>table access"]
-    end
-
-    subgraph Integration["Integration Layer"]
-        GATEWAY["On-Premises<br/>Data Gateway"]
-        ORDS["ORDS REST<br/>Endpoints"]
-    end
-
-    subgraph ODA["Oracle Database@Azure"]
-        DB[("Oracle ADBS /<br/>Exadata")]
-        VIEWS["Curated Views<br/>for AI Grounding"]
-        TABLES["Tables & Data<br/>Live Oracle Data"]
-        REST["ORDS Modules<br/>promo_summary<br/>customer_lookup<br/>search_adverse_event"]
-    end
-
-    BU --> COP
-    COP --> K
-    COP --> T
-    COP --> C
-    K --> ORDS
-    T --> ORDS
-    C --> GATEWAY
-    GATEWAY --> DB
-    ORDS --> REST
-    REST --> VIEWS
-    REST --> TABLES
-    DB --- VIEWS
-    DB --- TABLES
-```
-
-**Use when:** Real-time answers required · No data replication allowed · Business user audience
-**Integration modes:** Connector (direct table access) · Knowledge (ground copilot on Oracle data) · Tool (call Oracle actions)
-
----
+### Pattern A: 
 
 ### Pattern B: Microsoft Foundry Agent + MCP + ORDS Tools (Pro-Dev Agentic AI)
 
