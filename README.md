@@ -73,8 +73,8 @@ This playbook is organized into modular documents under the [`docs/`](docs/) fol
 
 | Pattern | AI Platform | Surfaces | Value Proposition |
 |---------|------------|----------|-------------------|
-| **2A** | [Mirrored Database + Data Agents](docs/06-path4-fabric-data-agents.md) | Fabric, Foundry | • Natural language analytics<br/>• Cross-source joins<br/>• Managed mirroring, no ETL<br/>• Governed semantic models |
-| **2B** | Fabric Mirroring + Foundry | API, M365 Copilot | • AI agents grounded in curated analytics<br/>• Best of Fabric + Foundry<br/>• Governed data layer<br/>• Publish insights to M365 Copilot |
+| **2A** | [Mirrored Database + Data Agents](docs/06-path4-fabric-data-agents.md) | Teams, Copilot Studio, Foundry, MCP clients | • NL analytics on mirrored Oracle data<br/>• Data Agent as MCP server<br/>• Publish to Teams / Copilot Studio / Foundry<br/>• Entra ID + private networking |
+| **2B** | [Fabric + Data Agents + Foundry](docs/06-path4-fabric-data-agents.md) | API, M365 Copilot, Agent Store | • Data Agent as Foundry tool<br/>• Combine mirrored + live Oracle<br/>• Entra ID RBAC at every layer |
 
 ### Category 3: IQ — Intelligent Data Processing
 

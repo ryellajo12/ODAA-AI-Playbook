@@ -338,73 +338,181 @@ graph LR
 
 ## Category 2: Mirrored / Analytics Data
 
-Oracle data is replicated into Microsoft Fabric for analytics, cross-source joins, and AI grounding.
+Oracle data is replicated into Microsoft Fabric via Mirrored Database for analytics, cross-source joins, and AI grounding. Data Agents built on Mirrored Database can be published as MCP servers, deployed to Teams, or connected to Copilot Studio and MS Foundry via native connectors.
 
 | Pattern | AI Platform | How It Connects | Surfaces | Value Proposition |
 |---------|------------|-----------------|----------|-------------------|
-| **2A** | **Mirrored Database + Fabric Data Agents** | Oracle → Fabric Mirroring → Mirrored Database → Data Agents | Fabric, Foundry | • Natural language analytics<br/>• Cross-source joins (SQL Server, Dataverse, etc.)<br/>• Managed mirroring, no ETL pipelines<br/>• Governed semantic models |
-| **2B** | **Fabric Mirroring + Fabric Data agents + MS Foundry** | Mirrored Database → Semantic Model → grounds Foundry agents | API, M365 Copilot | • AI agents grounded in curated analytics<br/>• Best of Fabric + Foundry<br/>• Governed data layer<br/>• Publish insights to M365 Copilot |
+| **2A** | **Mirrored Database + Data Agents** | Oracle → Fabric Mirroring → Mirrored Database → Data Agents → Published as MCP Server / Teams / Copilot Studio / Foundry | Teams, Copilot Studio, Foundry, MCP clients | • Natural language analytics on mirrored Oracle data<br/>• Data Agent as MCP server for any MCP client<br/>• Publish directly to Teams<br/>• Connect to Copilot Studio or Foundry via native connectors<br/>• Cross-source joins<br/>• Entra ID + private networking |
+| **2B** | **Fabric Mirroring + Foundry** | Mirrored Database → Data Agents → Foundry agents (via native connector) | API, M365 Copilot, Agent Store | • AI agents grounded in curated analytics<br/>• Data Agent feeds Foundry as a tool<br/>• Best of Fabric + Foundry<br/>• Governed data layer<br/>• Publish insights to M365 Copilot |
 
 ---
 
 ### Pattern 2A: Mirrored Database + Data Agents
 
 ```mermaid
-graph LR
-    subgraph ODA["Oracle DB@Azure"]
-        DB[("Oracle ADBS<br/>Source Tables")]
+graph TB
+    subgraph EntraID["Microsoft Entra ID"]
+        AUTH["SSO / MFA<br/>Conditional Access"]
+        RBAC_E["RBAC:<br/>Fabric Viewer/Contributor<br/>Workspace roles"]
+    end
+
+    subgraph VNET["Azure VNET"]
+        subgraph PESub["Private Endpoint Subnet"]
+            PE_ORA["Oracle<br/>Private Endpoint"]
+        end
+        subgraph FabricSub["Fabric Managed VNET"]
+            FGWY["Fabric Managed<br/>Private Endpoint<br/>to Oracle"]
+        end
+    end
+
+    subgraph ODA["Oracle Database@Azure"]
+        DB[("ADBS / Exadata<br/>No Public IP")]
     end
 
     subgraph Fabric["Microsoft Fabric"]
         MIRROR["Fabric<br/>Mirroring"]
         MDB["Mirrored<br/>Database"]
-        DA["Data<br/>Agents"]
+        DA["Data Agent<br/>(on Mirrored DB)"]
     end
 
-    subgraph Out["End Users"]
+    subgraph Publish["Data Agent Published As"]
+        MCP_PUB["MCP Server<br/>(any MCP client)"]
+        TEAMS["Teams<br/>(direct publish)"]
+        CS_CONN["Copilot Studio<br/>(native connector)"]
+        FOUNDRY_CONN["MS Foundry<br/>(native connector)"]
+    end
+
+    subgraph Users["End Users"]
         BA["Business Analyst"]
-        DS["Data Scientist"]
+        DEV["Developer<br/>(VS Code / MCP)"]
+        BU["Business User<br/>(Teams)"]
     end
 
-    DB --> MIRROR
+    AUTH --> DA
+    RBAC_E --> DA
+    DB -->|Private Endpoint| FGWY
+    FGWY --> MIRROR
     MIRROR --> MDB
     MDB --> DA
-    DA --> BA
-    DA --> DS
+    DA --> MCP_PUB
+    DA --> TEAMS
+    DA --> CS_CONN
+    DA --> FOUNDRY_CONN
+    MCP_PUB --> DEV
+    TEAMS --> BU
+    CS_CONN --> BU
+    FOUNDRY_CONN --> BA
 ```
+
+#### RBAC Model
+
+| Layer | Role | Who Gets It | What It Controls |
+|-------|------|-------------|------------------|
+| **Entra ID** | Security Group: `Fabric-DataAgent-Users` | Analysts, business users | Who can query the Data Agent |
+| **Entra ID** | Conditional Access | All users | MFA, device compliance |
+| **Fabric Workspace** | Viewer | End users | Read-only access to mirrored data + Data Agent |
+| **Fabric Workspace** | Contributor | Data engineers | Create/modify mirroring, Data Agents, semantic models |
+| **Fabric Workspace** | Admin | Platform admin | Manage workspace security, capacity, private endpoints |
+| **Copilot Studio** | Maker / User | Citizen devs / End users | Build copilots using Data Agent connector vs use them |
+| **MS Foundry** | Foundry User / Contributor | End users / Developers | Use vs create agents connected to Data Agent |
+| **Oracle DB** | Dedicated mirroring user | Fabric mirroring connection | `SELECT` on mirrored schemas only; read-only, no DDL/DML |
+
+#### Private Networking
+
+| # | Control | Details |
+|---|---------|---------|
+| 1 | Oracle Private Endpoint | No public IP on Oracle; Fabric connects via managed private endpoint |
+| 2 | Fabric Managed VNET | Fabric workspace uses managed private endpoints for outbound connections to Oracle |
+| 3 | Mirroring over private path | All data replication flows through private networking — no public internet |
+| 4 | Entra ID auth for Fabric | All Fabric access authenticated via Entra ID SSO/MFA |
+| 5 | Workspace-level security | Data Agent inherits Fabric workspace RBAC — controls who can query |
+| 6 | Data Agent publishing security | MCP server / Teams / Copilot Studio access controlled by Entra ID groups |
+| 7 | No Oracle credentials in agent | Mirrored Database is the source — Data Agent never connects to Oracle directly |
+
+#### Data Agent Publishing Options
+
+| Publish As | How | Use Case |
+|-----------|-----|----------|
+| **MCP Server** | Data Agent published as MCP endpoint — any MCP-compatible client can connect | Developers in VS Code, custom agents, multi-agent workflows |
+| **Teams App** | Data Agent published directly into Teams | Business users ask questions in natural language in Teams chat |
+| **Copilot Studio Connector** | Native connector in Copilot Studio connects to the Data Agent | Build no-code copilots grounded on mirrored Oracle analytics |
+| **MS Foundry Tool** | Native connector in Foundry registers Data Agent as a tool | Foundry agents call Data Agent for analytics alongside other tools |
 
 ---
 
-### Pattern 2B: Fabric Mirroring + Foundry Agents
+### Pattern 2B: Fabric Mirroring + Data Agents + Foundry
 
 ```mermaid
-graph LR
-    subgraph ODA["Oracle DB@Azure"]
-        DB[("Oracle ADBS")]
+graph TB
+    subgraph EntraID["Microsoft Entra ID"]
+        AUTH["SSO / MFA<br/>Conditional Access"]
+        RBAC_E["RBAC:<br/>Fabric roles +<br/>Foundry roles"]
+    end
+
+    subgraph VNET["Azure VNET"]
+        subgraph PESub["Private Endpoint Subnet"]
+            PE_ORA["Oracle<br/>Private Endpoint"]
+        end
+    end
+
+    subgraph ODA["Oracle Database@Azure"]
+        DB[("ADBS / Exadata<br/>No Public IP")]
     end
 
     subgraph Fabric["Microsoft Fabric"]
         MIRROR["Fabric<br/>Mirroring"]
         MDB["Mirrored<br/>Database"]
-        SEM["Semantic<br/>Model"]
+        DA["Data Agent<br/>(on Mirrored DB)"]
     end
 
-    subgraph AI["Microsoft Foundry"]
-        FAGENT["Foundry Agent<br/>Analytics Grounding"]
+    subgraph Foundry["Microsoft Foundry"]
+        FAGENT["Foundry Agent"]
+        LLM["LLM<br/>GPT-4.1 / o3"]
+        DA_TOOL["Data Agent<br/>(native connector<br/>as Foundry tool)"]
+        OTHER["Other Tools<br/>(MCP / ORDS / Functions)"]
     end
 
     subgraph Publish["Published To"]
-        M365["M365 Copilot"]
+        M365["M365 Copilot / Teams"]
+        STORE["Agent Store"]
         API["API Endpoint"]
     end
 
-    DB --> MIRROR
+    EU["End Users"] -->|SSO| AUTH
+    AUTH --> FAGENT
+    RBAC_E --> FAGENT
+    DB -->|Private Endpoint| PE_ORA
+    PE_ORA --> MIRROR
     MIRROR --> MDB
-    MDB --> SEM
-    SEM --> FAGENT
+    MDB --> DA
+    DA --> DA_TOOL
+    FAGENT <--> LLM
+    FAGENT --> DA_TOOL
+    FAGENT --> OTHER
     FAGENT --> M365
+    FAGENT --> STORE
     FAGENT --> API
 ```
+
+#### RBAC Model
+
+| Layer | Role | Who Gets It | What It Controls |
+|-------|------|-------------|------------------|
+| **Entra ID** | Security Group: `Foundry-Analytics-Users` | All agent users | Who can use the Foundry agent |
+| **Fabric Workspace** | Viewer / Contributor | Data team | Access to mirrored data and Data Agent |
+| **MS Foundry** | Foundry User / Contributor | End users / Developers | Use vs create agents |
+| **Azure RBAC** | Key Vault Secrets User (if other tools used) | Managed Identity | Read credentials for MCP/ORDS |
+| **Oracle DB** | Dedicated mirroring user | Fabric mirroring | `SELECT` on mirrored schemas only |
+
+#### Private Networking
+
+| # | Control | Details |
+|---|---------|---------|
+| 1 | Oracle Private Endpoint | No public IP; Fabric mirroring via managed PE |
+| 2 | Fabric Managed VNET | Mirroring over private path |
+| 3 | Data Agent → Foundry (native connector) | Internal Azure service-to-service connection — no public exposure |
+| 4 | Other Foundry tools (MCP/ORDS) | VNET-integrated as per Category 1 patterns |
+| 5 | Entra ID everywhere | SSO/MFA for Fabric, Foundry, and published surfaces |
 
 ---
 

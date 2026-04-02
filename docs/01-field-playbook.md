@@ -97,12 +97,12 @@ Agents query Oracle Database@Azure directly at runtime. No data leaves Oracle.
 
 ### Category 2: Mirrored / Analytics Data
 
-Oracle data is replicated into Microsoft Fabric for analytics, cross-source joins, and AI grounding.
+Oracle data is replicated into Fabric Mirrored Database via managed private endpoints. Data Agents on Mirrored Database can be published as MCP servers, to Teams, or connected to Copilot Studio and MS Foundry via native connectors.
 
 | Pattern | AI Platform | How It Connects | Surfaces | Value Proposition |
 |---------|------------|-----------------|----------|-------------------|
-| **2A** | **Mirrored Database + Data Agents** | Oracle → Fabric Mirroring → Mirrored Database → Data Agents | Fabric, Foundry | • Natural language analytics<br/>• Cross-source joins (SQL Server, Dataverse, etc.)<br/>• Managed mirroring, no ETL pipelines<br/>• Governed semantic models |
-| **2B** | **Fabric Mirroring + Foundry** | Mirrored Database → Semantic Model → grounds Foundry agents | API, M365 Copilot | • AI agents grounded in curated analytics<br/>• Best of Fabric + Foundry<br/>• Governed data layer<br/>• Publish insights to M365 Copilot |
+| **2A** | **Mirrored Database + Data Agents** | Oracle → Fabric Mirroring (private PE) → Mirrored Database → Data Agents → Published as MCP Server / Teams / Copilot Studio / Foundry | Teams, Copilot Studio, Foundry, MCP clients | • NL analytics on mirrored Oracle data<br/>• Data Agent as MCP server for any client<br/>• Publish direct to Teams<br/>• Native connectors to Copilot Studio + Foundry<br/>• Entra ID + private networking end-to-end |
+| **2B** | **Fabric Mirroring + Data Agents + Foundry** | Mirrored Database → Data Agent → Foundry agent (native connector as tool) | API, M365 Copilot, Agent Store | • Foundry agent uses Data Agent as a tool<br/>• Combine mirrored analytics with live MCP/ORDS<br/>• Best of Fabric + Foundry<br/>• Entra ID RBAC at every layer |
 
 ### Category 3: IQ — Intelligent Data Processing
 
@@ -132,8 +132,8 @@ AI-powered intelligence layers that process, enrich, and surface insights from s
 | DBA / developer automation | **1C:** Oracle MCP | SQL generation, schema exploration |
 | Business workflow modernization | **1D:** Power Apps | Low-code, incremental AI |
 | Enterprise integration / event-driven | **1E:** Logic Apps | 400+ connectors, no custom code |
-| Cross-source analytics | **2A:** Mirrored DB + Data Agents | Managed mirroring, natural language queries |
-| AI agents on analytics data | **2B:** Fabric + Foundry | Curated data grounding Foundry agents |
+| Cross-source analytics | **2A:** Mirrored DB + Data Agents | Managed mirroring, NL queries, publish as MCP/Teams/Copilot Studio/Foundry |
+| AI agents on analytics data | **2B:** Fabric + Data Agents + Foundry | Data Agent as Foundry tool + live Oracle tools |
 | Automated data insights | **3A:** Fabric IQ | AI-powered pattern discovery |
 | Unstructured + structured grounding | **3B:** Foundry IQ | PDFs, docs, emails + Oracle data |
 | Productivity + business data | **3C:** Work IQ | M365 signals + Oracle context |
