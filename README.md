@@ -55,14 +55,16 @@ This playbook is organized into modular documents under the [`docs/`](docs/) fol
 
 ---
 
-## 11 Patterns across 3 Categories
+## 13 Patterns across 3 Categories
 
 ### Category 1: Live Oracle Data (No Migration)
 
 | Pattern | AI Platform | Surfaces | Value Proposition |
 |---------|------------|----------|-------------------|
 | **1A** | [Copilot Studio](docs/03-path1-copilot-studio.md) | Teams, Web, M365 | • Fastest time-to-value (hours)<br/>• No-code builder<br/>• Business users self-serve answers<br/>• Zero data movement |
-| **1B** | [MS Foundry](docs/04-path2-foundry-agents.md) | API, M365 Copilot, Agent Store | • Full model & tool control<br/>• Multi-agent orchestration<br/>• Production-grade custom AI apps<br/>• Live Oracle data, no migration<br/>• Publish to M365 + Agent Store |
+| **1B** | [MS Foundry + MCP](docs/04-path2-foundry-agents.md) | API, M365 Copilot, Agent Store | • NL → SQL via MCP<br/>• Entra ID SSO/MFA + RBAC<br/>• Private Endpoints end-to-end<br/>• Simplest Foundry pattern |
+| **1B-2** | [MS Foundry + ORDS](docs/04-path2-foundry-agents.md) | API, M365 Copilot, Agent Store | • Governed REST APIs, no raw SQL<br/>• Oracle 23ai RAG / vector search<br/>• APIM enforces Entra ID OAuth2<br/>• All traffic private |
+| **1B-3** | [MS Foundry + MCP + ORDS + Foundry IQ](docs/04-path2-foundry-agents.md) | API, M365 Copilot, Agent Store | • Complete: structured + unstructured + RAG<br/>• RBAC at every layer<br/>• Separate DB users per tool<br/>• Maximum AI value |
 | **1C** | [Oracle MCP](docs/05-path3-oracle-mcp.md) | VS Code, Foundry, Copilot Studio | • Natural language → SQL in minutes<br/>• Zero infrastructure to start<br/>• Schema discovery on demand<br/>• DBA task automation |
 | **1D** | [Power Apps](docs/07-path5-power-apps.md) | Power Platform | • Modernize workflows without rebuilding<br/>• AI Builder for forms & predictions<br/>• Citizen developer friendly<br/>• Incremental AI adoption |
 | **1E** | Logic Apps | Workflow orchestration | • Event-driven automation<br/>• 400+ enterprise connectors<br/>• No custom code needed<br/>• Orchestrate Oracle + SaaS + Azure |

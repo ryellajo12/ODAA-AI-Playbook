@@ -64,34 +64,38 @@ graph TB
 
 ---
 
-### Pattern 1B: MS Foundry Agent + MCP + ORDS + Knowledge Base
+### Pattern 1B: MS Foundry + Oracle MCP Server
 
 ```mermaid
 graph TB
-    subgraph Foundry["Microsoft Foundry"]
-        AGENT["AI Agent<br/>Orchestrator"]
-        LLM["LLM Model<br/>GPT-4.1 / o3 / o4-mini"]
-
-        subgraph Tools["Agent Tools"]
-            MCP["Oracle MCP<br/>SQLcl Server<br/>(Functions / Container Apps)"]
-            OPENAPI["ORDS OpenAPI<br/>REST Tools"]
-            FUNC["Azure Functions<br/>Custom Logic"]
-            VSEARCH["Vector Search<br/>ORDS Endpoint<br/>Oracle 23ai"]
-        end
-
-        subgraph KB["Knowledge Base"]
-            BLOB["Azure Blob"]
-            SP["SharePoint"]
-            FF["Fabric Files"]
-            FIQ["Foundry IQ<br/>(Unstructured)"]
-        end
+    subgraph Users["End Users"]
+        EU["Developers / Business Users"]
     end
 
-    subgraph ODA["Oracle Database@Azure · ADBS"]
+    subgraph EntraID["Microsoft Entra ID"]
+        AUTH["SSO / MFA<br/>Conditional Access"]
+        RBAC_E["RBAC:<br/>Foundry User /<br/>Foundry Contributor"]
+    end
+
+    subgraph Foundry["Microsoft Foundry"]
+        AGENT["AI Agent"]
+        LLM["LLM<br/>GPT-4.1 / o3 / o4-mini"]
+        MCP["Oracle MCP Tool"]
+    end
+
+    subgraph VNET["Azure VNET"]
+        subgraph FuncSub["Functions / Container Apps Subnet"]
+            MCPHOST["Hosted MCP Server<br/>VNET-integrated"]
+        end
+        subgraph PESub["Private Endpoint Subnet"]
+            PE["Private Endpoint"]
+        end
+        KV["Azure Key Vault<br/>Oracle credentials"]
+    end
+
+    subgraph ODA["Oracle Database@Azure"]
         SQL["SQL / PL-SQL Engine"]
-        ORDS_EP["ORDS REST Endpoints"]
-        VEC["23ai Vector Engine"]
-        DATA[("Oracle Data")]
+        DATA[("Oracle Data<br/>No Public IP")]
     end
 
     subgraph Publish["Published To"]
@@ -100,15 +104,178 @@ graph TB
         API["API Endpoint"]
     end
 
+    EU -->|SSO| AUTH
+    AUTH --> AGENT
+    RBAC_E --> AGENT
+    AGENT <--> LLM
+    AGENT --> MCP
+    MCP --> MCPHOST
+    MCPHOST -->|Managed Identity| KV
+    MCPHOST -->|Port 1521<br/>Private Endpoint| PE
+    PE --> SQL
+    SQL --> DATA
+    AGENT --> M365
+    AGENT --> STORE
+    AGENT --> API
+```
+
+---
+
+### Pattern 1B-2: MS Foundry + ORDS Endpoints (RAG / Vector Search)
+
+```mermaid
+graph TB
+    subgraph Users["End Users"]
+        EU["Analysts / App Users"]
+    end
+
+    subgraph EntraID["Microsoft Entra ID"]
+        AUTH["SSO / MFA<br/>Conditional Access"]
+        RBAC_E["RBAC:<br/>Foundry User /<br/>ORDS OAuth2 scope"]
+    end
+
+    subgraph Foundry["Microsoft Foundry"]
+        AGENT["AI Agent"]
+        LLM["LLM<br/>GPT-4.1 / o3 / o4-mini"]
+
+        subgraph Tools["Agent Tools (OpenAPI)"]
+            OPENAPI["ORDS REST APIs<br/>Pre-built Analytics"]
+            VSEARCH["ORDS Vector Search<br/>Oracle 23ai RAG"]
+        end
+    end
+
+    subgraph AOAI["Azure OpenAI"]
+        EMB["Embedding API<br/>text-embedding-3-small"]
+    end
+
+    subgraph VNET["Azure VNET"]
+        subgraph ORDSSub["ORDS Subnet"]
+            ORDS["ORDS<br/>VNET-integrated<br/>App Service / Container Apps"]
+        end
+        subgraph PESub["Private Endpoint Subnet"]
+            PE["Private Endpoint"]
+        end
+        KV["Azure Key Vault"]
+        APIM["API Management<br/>OAuth2 validation<br/>Rate limiting"]
+    end
+
+    subgraph ODA["Oracle Database@Azure"]
+        ORDS_EP["ORDS REST Endpoints"]
+        VEC["23ai Vector Engine<br/>VECTOR_DISTANCE"]
+        DATA[("Oracle Data<br/>No Public IP")]
+    end
+
+    subgraph Publish["Published To"]
+        M365["M365 Copilot / Teams"]
+        STORE["Agent Store"]
+        API["API Endpoint"]
+    end
+
+    EU -->|SSO| AUTH
+    AUTH --> AGENT
+    RBAC_E --> AGENT
+    AGENT <--> LLM
+    AGENT --> OPENAPI
+    AGENT --> VSEARCH
+    OPENAPI --> APIM
+    VSEARCH --> APIM
+    APIM -->|OAuth2 token<br/>validation| ORDS
+    ORDS -->|Private Endpoint<br/>Port 1521| PE
+    PE --> ORDS_EP
+    PE --> VEC
+    VEC <-.->|Embeddings| EMB
+    ORDS_EP --> DATA
+    VEC --> DATA
+    AGENT --> M365
+    AGENT --> STORE
+    AGENT --> API
+```
+
+---
+
+### Pattern 1B-3: MS Foundry + MCP + ORDS + Foundry IQ (Full Stack)
+
+```mermaid
+graph TB
+    subgraph Users["End Users"]
+        EU["All Personas"]
+    end
+
+    subgraph EntraID["Microsoft Entra ID"]
+        AUTH["SSO / MFA<br/>Conditional Access"]
+        RBAC_E["RBAC:<br/>Foundry User/Contributor<br/>ORDS OAuth2 scopes<br/>KB Reader"]
+    end
+
+    subgraph Foundry["Microsoft Foundry"]
+        AGENT["AI Agent<br/>Orchestrator"]
+        LLM["LLM<br/>GPT-4.1 / o3 / o4-mini"]
+
+        subgraph Tools["Agent Tools"]
+            MCP["Oracle MCP<br/>(Functions /<br/>Container Apps)"]
+            OPENAPI["ORDS REST APIs"]
+            VSEARCH["ORDS Vector Search<br/>Oracle 23ai RAG"]
+        end
+
+        subgraph KB["Foundry IQ + Knowledge"]
+            FIQ["Foundry IQ<br/>Unstructured Processing"]
+            BLOB["Azure Blob"]
+            SP["SharePoint"]
+            FF["Fabric Files"]
+        end
+    end
+
+    subgraph AOAI["Azure OpenAI"]
+        EMB["Embedding API"]
+    end
+
+    subgraph VNET["Azure VNET"]
+        subgraph FuncSub["MCP Subnet"]
+            MCPHOST["Hosted MCP<br/>VNET-integrated"]
+        end
+        subgraph ORDSSub["ORDS Subnet"]
+            ORDS["ORDS<br/>VNET-integrated"]
+        end
+        subgraph PESub["Private Endpoint Subnet"]
+            PE["Private Endpoint"]
+        end
+        KV["Key Vault"]
+        APIM["API Management<br/>OAuth2 + Rate Limiting"]
+    end
+
+    subgraph ODA["Oracle Database@Azure"]
+        SQL["SQL / PL-SQL"]
+        ORDS_EP["ORDS Endpoints"]
+        VEC["23ai Vector Engine"]
+        DATA[("Oracle Data<br/>No Public IP")]
+    end
+
+    subgraph Publish["Published To"]
+        M365["M365 Copilot / Teams"]
+        STORE["Agent Store"]
+        API["API Endpoint"]
+    end
+
+    EU -->|SSO| AUTH
+    AUTH --> AGENT
+    RBAC_E --> AGENT
     AGENT <--> LLM
     AGENT --> MCP
     AGENT --> OPENAPI
-    AGENT --> FUNC
     AGENT --> VSEARCH
     AGENT --> FIQ
-    MCP --> SQL
-    OPENAPI --> ORDS_EP
-    VSEARCH --> VEC
+    FIQ --> BLOB
+    FIQ --> SP
+    FIQ --> FF
+    MCP --> MCPHOST
+    OPENAPI --> APIM
+    VSEARCH --> APIM
+    APIM --> ORDS
+    MCPHOST -->|Private Endpoint| PE
+    ORDS -->|Private Endpoint| PE
+    PE --> SQL
+    PE --> ORDS_EP
+    PE --> VEC
+    VEC <-.-> EMB
     SQL --> DATA
     ORDS_EP --> DATA
     VEC --> DATA
