@@ -1,4 +1,4 @@
-# Oracle Database@Azure (OD@A) — Agentic AI & RAG Adoption Playbook
+# Oracle Database@Azure — AI Adoption Playbook
 
 **Version:** 2.1 · **Date:** April 2026
 
