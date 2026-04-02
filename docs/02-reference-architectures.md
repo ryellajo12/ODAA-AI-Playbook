@@ -48,7 +48,7 @@ graph TB
     end
 
     subgraph ODA["Oracle Database@Azure"]
-        DB[("ADBS / Exadata<br/>No Public IP")]
+        DB[("ADBS / Exadata etc<br/>No Public IP")]
     end
 
     BU -->|SSO| AUTH
