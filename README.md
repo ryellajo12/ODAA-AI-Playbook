@@ -20,7 +20,7 @@ This playbook is organized into modular documents under the [`docs/`](docs/) fol
 | 1 | How to Use This Playbook | [docs/01-field-playbook.md](docs/01-field-playbook.md) | All |
 | 2 | Customer Discovery Framework | [docs/01-field-playbook.md](docs/01-field-playbook.md) | Field / Sales |
 | 3 | Core Positioning Message | [docs/01-field-playbook.md](docs/01-field-playbook.md) | Field / Sales |
-| 4 | AI Patterns on OD@A — Overview | [docs/01-field-playbook.md](docs/01-field-playbook.md) | Field / Sales |
+| 4 | AI Patterns on Oracle Database@Azure — Overview | [docs/01-field-playbook.md](docs/01-field-playbook.md) | Field / Sales |
 | 5 | Decision Matrix | [docs/01-field-playbook.md](docs/01-field-playbook.md) | All |
 | 6 | Objection Handling | [docs/01-field-playbook.md](docs/01-field-playbook.md) | Field / Sales |
 | 7 | Field Motion & Engagement Model | [docs/01-field-playbook.md](docs/01-field-playbook.md) | Field / Sales |
