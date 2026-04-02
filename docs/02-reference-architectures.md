@@ -19,7 +19,7 @@ Agents query Oracle data directly running on Oracle Database@Azure at runtime. N
 
 ---
 
-### Pattern 1A: Copilot Studio + Oracle (Gateway, Knowledge, Tool)
+### Pattern 1A: Copilot Studio + Oracle connectors( On Prem Data-Gateway, Oracle data as Knowledge, Oracle data as Tools)
 
 ```mermaid
 graph TB
