@@ -129,7 +129,7 @@ graph TB
 
 ---
 
-### Pattern 1B-2: MS Foundry + ORDS Endpoints (RAG / Vector Search)
+### Pattern 1B-2: MS Foundry + Oracle ORDS API Endpoints (RAG / Vector Search)
 
 ```mermaid
 graph TB
@@ -201,7 +201,7 @@ graph TB
 
 ---
 
-### Pattern 1B-3: MS Foundry + MCP + ORDS + Foundry IQ (Full Stack)
+### Pattern 1B-3: MS Foundry + Oracle MCP + Oracle ORDS APIs + Foundry IQ (Full Stack)
 
 ```mermaid
 graph TB
@@ -294,42 +294,9 @@ graph TB
 
 ---
 
-### Pattern 1C: Oracle MCP → Multi-Client Agent Access
-
-```mermaid
-graph TB
-    subgraph Clients["AI Agent Clients"]
-        VSC["VS Code +<br/>GitHub Copilot"]
-        FAG["Microsoft Foundry<br/>Agent"]
-        CSA["Copilot Studio<br/>Agent"]
-        CUSTOM["Custom App<br/>via HTTP"]
-    end
-
-    subgraph Hosting["Deployment Options"]
-        LOCAL["Local MCP<br/>VS Code Extension<br/>Free · Instant"]
-        HOSTED["Hosted MCP<br/>Azure Functions /<br/>Container Apps<br/>+ APIM + Entra ID"]
-    end
-
-    subgraph MCP_Server["Oracle MCP Server - SQLcl"]
-        MCPS["MCP Protocol Layer<br/>Schema Discovery<br/>SQL Generation<br/>Query Execution"]
-    end
-
-    subgraph ODA["Oracle DB@Azure"]
-        DB[("ADBS / Exadata<br/>Private Endpoint")]
-    end
-
-    VSC --> LOCAL
-    FAG --> HOSTED
-    CSA --> HOSTED
-    CUSTOM --> HOSTED
-    LOCAL --> MCPS
-    HOSTED --> MCPS
-    MCPS --> DB
-```
-
 ---
 
-### Pattern 1E: Logic Apps + Oracle
+### Pattern 1D: Logic Apps + Oracle connector
 
 ```mermaid
 graph LR
@@ -375,8 +342,8 @@ Oracle data is replicated into Microsoft Fabric for analytics, cross-source join
 
 | Pattern | AI Platform | How It Connects | Surfaces | Value Proposition |
 |---------|------------|-----------------|----------|-------------------|
-| **2A** | **Mirrored Database + Data Agents** | Oracle → Fabric Mirroring → Mirrored Database → Data Agents | Fabric, Foundry | • Natural language analytics<br/>• Cross-source joins (SQL Server, Dataverse, etc.)<br/>• Managed mirroring, no ETL pipelines<br/>• Governed semantic models |
-| **2B** | **Fabric Mirroring + Foundry** | Mirrored Database → Semantic Model → grounds Foundry agents | API, M365 Copilot | • AI agents grounded in curated analytics<br/>• Best of Fabric + Foundry<br/>• Governed data layer<br/>• Publish insights to M365 Copilot |
+| **2A** | **Mirrored Database + Fabric Data Agents** | Oracle → Fabric Mirroring → Mirrored Database → Data Agents | Fabric, Foundry | • Natural language analytics<br/>• Cross-source joins (SQL Server, Dataverse, etc.)<br/>• Managed mirroring, no ETL pipelines<br/>• Governed semantic models |
+| **2B** | **Fabric Mirroring + Fabric Data agents + MS Foundry** | Mirrored Database → Semantic Model → grounds Foundry agents | API, M365 Copilot | • AI agents grounded in curated analytics<br/>• Best of Fabric + Foundry<br/>• Governed data layer<br/>• Publish insights to M365 Copilot |
 
 ---
 
