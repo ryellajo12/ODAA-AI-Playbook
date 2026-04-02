@@ -65,10 +65,11 @@ Azure Relay is the service that the On-Premises Data Gateway uses to communicate
 
 Here's how it works:
 
-How the Gateway Communicates
+How the Gateway Communicates:
 The gateway VM makes an outbound HTTPS connection (port 443) to Azure Relay when it starts up.
 This creates a persistent, secure tunnel — no inbound ports need to be opened on the gateway VM.
 When Copilot Studio needs Oracle data, the request flows through this tunnel to the gateway, which then queries Oracle over port 1521 via the Private Endpoint.
+
 ---
 
 ### Pattern 1B: MS Foundry Agent + MCP + ORDS + Knowledge Base
