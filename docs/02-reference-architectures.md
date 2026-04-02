@@ -1,12 +1,13 @@
 # 8. Reference Architecture Patterns
 
-Patterns are organized into three categories based on how Oracle data flows into the AI ecosystem.
+Patterns are organized into three categories based on how Oracle data flows into the Microsoft AI ecosystem.
+Platforms used are Microsoft Foundry, Copilot Studio, Power Apps, Logic apps for workflows 
 
 ---
 
 ## Category 1: Live Oracle Data (No Migration)
 
-Agents query Oracle Database@Azure directly at runtime. No data leaves Oracle.
+Agents query Oracle data directly running on Oracle Database@Azure at runtime. No data leaves Oracle.
 
 | Pattern | AI Platform | How It Connects | Surfaces | Value Proposition |
 |---------|------------|-----------------|----------|-------------------|
