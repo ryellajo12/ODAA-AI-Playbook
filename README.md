@@ -2,9 +2,9 @@
 
 **Version:** 2.1 · **Date:** April 2026
 
-**Audience:** Customers, Partners, Field sellers, CSA/SSP, Solution architects
+**Audience:** Field sellers, CSA/SSP, Solution architects
 
-**Purpose:** A concrete, end-to-end guide to building AI agents and RAG solutions on Oracle Database@Azure using every available integration path in the Microsoft AI ecosystem.
+**Purpose:** A concrete, end-to-end guide to building AI agents,RAG solutions and agentic AI solutions on Oracle Database@Azure using every available integration path in the Microsoft AI ecosystem.
 
 ---
 
