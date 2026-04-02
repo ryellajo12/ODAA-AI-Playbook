@@ -19,41 +19,47 @@ Agents query Oracle data directly running on Oracle Database@Azure at runtime. N
 
 ---
 
-### Pattern 1A: Copilot Studio + Oracle connectors( On Prem Data-Gateway, Oracle data as Knowledge, Oracle data as Tools)
+### Pattern 1A: Copilot Studio + Oracle Connector (On-Prem Data Gateway)
 
 ```mermaid
 graph TB
-    subgraph Users["&nbsp;&nbsp;End Users"]
+    subgraph Users["End Users"]
         BU["Business Users<br/>Teams / Web / M365"]
     end
 
-    subgraph CS["&nbsp;&nbsp;Microsoft Copilot Studio"]
-        COP["Custom Copilot<br/>Natural Language Q&A"]
+    subgraph EntraID["Microsoft Entra ID"]
+        AUTH["SSO / MFA<br/>Conditional Access"]
+    end
+
+    subgraph CS["Microsoft Copilot Studio"]
+        COP["Custom Copilot"]
         C["Oracle Connector"]
         K["Oracle as Knowledge<br/>Grounds on tables,<br/>views, data"]
-        T["Oracle as Tool<br/>Runs queries on the fly<br/>during conversations"]
+        T["Oracle as Tool<br/>Connector actions<br/>called during chat"]
     end
 
-    subgraph Integration["&nbsp;&nbsp;Integration Layer"]
-        GATEWAY["On-Premises<br/>Data Gateway"]
+    subgraph VNET["Azure VNET"]
+        subgraph GWSub["Gateway Subnet"]
+            GATEWAY["On-Premises<br/>Data Gateway<br/>(Azure VM)"]
+        end
+        subgraph PESub["Private Endpoint Subnet"]
+            PE["Private Endpoint"]
+        end
     end
 
-    subgraph ODA["&nbsp;&nbsp;Oracle Database@Azure"]
-        TABLES["Tables & Data"]
-        VIEWS["Curated Views"]
-        DB[("Oracle ADBS /<br/>Exadata")]
+    subgraph ODA["Oracle Database@Azure"]
+        DB[("ADBS / Exadata<br/>No Public IP")]
     end
 
-    BU --> COP
+    BU -->|SSO| AUTH
+    AUTH --> COP
     COP --> C
     C --> K
     C --> T
-    K --> GATEWAY
-    T --> GATEWAY
-    GATEWAY --> TABLES
-    GATEWAY --> VIEWS
-    VIEWS --> DB
-    TABLES --> DB
+    K -->|Azure Relay<br/>HTTPS 443| GATEWAY
+    T -->|Azure Relay<br/>HTTPS 443| GATEWAY
+    GATEWAY -->|Port 1521<br/>Private Endpoint| PE
+    PE --> DB
 ```
 
 ---
