@@ -48,7 +48,7 @@ graph TB
     end
 
     subgraph ODA["Oracle Database@Azure"]
-        DB[("ADBS / Exadata<br/>No Public IP")]
+        DB[("ADBS / Exadata etc<br/>No Public IP")]
     end
 
     BU -->|SSO| AUTH
@@ -61,6 +61,14 @@ graph TB
     GATEWAY -->|Port 1521<br/>Private Endpoint| PE
     PE --> DB
 ```
+Azure Relay is the service that the On-Premises Data Gateway uses to communicate with cloud services like Copilot Studio. This is already how the On-Premises Data Gateway works by default — you don't configure Azure Relay separately. It's built into the gateway installer.
+
+Here's how it works:
+
+How the Gateway Communicates:
+The gateway VM makes an outbound HTTPS connection (port 443) to Azure Relay when it starts up.
+This creates a persistent, secure tunnel — no inbound ports need to be opened on the gateway VM.
+When Copilot Studio needs Oracle data, the request flows through this tunnel to the gateway, which then queries Oracle over port 1521 via the Private Endpoint.
 
 ---
 
