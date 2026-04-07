@@ -24,7 +24,7 @@ This playbook is organized into modular documents under the [`docs/`](docs/) fol
 | 5 | Decision Matrix | [docs/01-field-playbook.md](docs/01-field-playbook.md) | All |
 | 6 | Objection Handling | [docs/01-field-playbook.md](docs/01-field-playbook.md) | Field / Sales |
 | 7 | Field Motion & Engagement Model | [docs/01-field-playbook.md](docs/01-field-playbook.md) | Field / Sales |
-|  |  | [] | |
+|  |  |  | |
 | **PART II** | **ARCHITECTURE & IMPLEMENTATION** | | |
 | 8 | Reference Architecture Patterns | [docs/02-reference-architectures.md](docs/02-reference-architectures.md) | Architects |
 | 9 | Path 1 — Copilot Studio + Oracle | [docs/03-path1-copilot-studio.md](docs/03-path1-copilot-studio.md) | Architects / Devs |
