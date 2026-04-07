@@ -37,7 +37,7 @@ This playbook has three layers:
 | 1 | What problem are you solving with AI? (Q&A, automation, insights, apps) | Maps to the right path |
 | 2 | Who is the primary user? (business, ops, developers, DBAs) | Determines Persona and toolchain |
 | 3 | Do you require live Oracle data or can you work with analytical copies? | Governs data movement and Fabric scope |
-| 4 | What Oracle database version and edition are you running on OD@A? | Oracle 23ai enables native vector search and the common guidance is to use this version for AI capabilities |
+| 4 | What Oracle database version and edition are you running on Oracle Database@Azure ? | Oracle 26ai enables native vector search and the common guidance is to use this version for AI capabilities |
 | 5 | Is there an existing Microsoft 365 / Power Platform footprint? | Opens Copilot Studio and Power Apps paths |
 | 6 | Do you have Microsoft Foundry or Azure OpenAI provisioned? | Qualification for Microsoft Foundry agent path |
 | 7 | Are you building for a single use case or a platform play? | Pilot vs platform architecture |
@@ -73,7 +73,7 @@ This playbook has three layers:
 
 ### Elevator Pitch (30 seconds)
 
-*"OD@A gives your Oracle data a direct line into Microsoft's AI ecosystem. Customers can build copilots, agents, and RAG applications on live/unified Oracle data directly using Copilot Studio, Microsoft Foundry, Oracle MCP tools, Microsoft Fabric, Logic Apps, or Oracle 23ai vector search — all without compromising security"*
+*"Oracle Database@Azure gives your Oracle data a direct line into Microsoft's AI ecosystem. Customers can build copilots, agents, and RAG applications on live/unified Oracle data directly using Copilot Studio, Microsoft Foundry, Oracle MCP tools, Microsoft Fabric, Power Apps, and Oracle 26ai vector search — all without compromising security"*
 
 ---
 
