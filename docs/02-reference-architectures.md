@@ -11,11 +11,10 @@ Agents query Oracle data directly running on Oracle Database@Azure at runtime. N
 
 | Pattern | AI Platform | How It Connects | Surfaces | Value Proposition |
 |---------|------------|-----------------|----------|-------------------|
-| **1A** | **Copilot Studio** | Gateway / Oracle as Knowledge / Oracle as Tool | Teams, Web, M365 | • Fastest time-to-value (hours)<br/>• No-code builder<br/>• Business users self-serve answers<br/>• Zero data movement |
-| **1B** | **MS Foundry** | Agent Framework: Oracle MCP server (hosted on Azure Functions / Azure Container Apps) + ORDS APIs; Knowledge Base (Blob, SharePoint, Fabric Files); Oracle 23ai vectors | API, M365 Copilot, Agent Store | • Full model & tool control<br/>• Multi-agent orchestration<br/>• Production-grade custom AI apps<br/>• Live Oracle data, no migration<br/>• Publish to M365 + Agent Store |
-| **1C** | **Oracle MCP** (developer) | SQLcl MCP in VS Code or hosted | VS Code, Foundry, Copilot Studio | • Natural language → SQL in minutes<br/>• Zero infrastructure to start<br/>• Schema discovery on demand<br/>• DBA task automation |
-| **1D** | **Power Apps** | Gateway / Oracle Connector | Power Platform | • Modernize workflows without rebuilding<br/>• AI Builder for forms & predictions<br/>• Citizen developer friendly<br/>• Incremental AI adoption |
-| **1E** | **Logic Apps** | Oracle DB Connector / ORDS REST calls | Workflow orchestration, enterprise integration | • Event-driven automation<br/>• 400+ enterprise connectors<br/>• No custom code needed<br/>• Orchestrate Oracle + SaaS + Azure |
+| **1** | **Copilot Studio** | Gateway / Oracle as Knowledge / Oracle as Tool | Teams, Web, M365 | • Fastest time-to-value (hours)<br/>• No-code builder<br/>• Business users self-serve answers<br/>• Zero data movement |
+| **2** | **MS Foundry** | Agent Framework: Oracle MCP server (hosted on Azure Functions / Azure Container Apps) + ORDS APIs; Knowledge Base (Blob, SharePoint, Fabric Files); Oracle 23ai vectors | API, M365 Copilot, Agent Store | • Full model & tool control<br/>• Multi-agent orchestration<br/>• Production-grade custom AI apps<br/>• Live Oracle data, no migration<br/>• Publish to M365 + Agent Store |
+| **3** | **Oracle MCP** (developer) | SQLcl MCP in VS Code or hosted | VS Code, Foundry, Copilot Studio | • Natural language → SQL in minutes<br/>• Zero infrastructure to start<br/>• Schema discovery on demand<br/>• DBA task automation |
+| **4** | **Power Apps** | Gateway / Oracle Connector | Power Platform | • Modernize workflows without rebuilding<br/>• AI Builder for forms & predictions<br/>• Citizen developer friendly<br/>• Incremental AI adoption |
 
 ---
 
@@ -294,47 +293,6 @@ graph TB
 
 ---
 
----
-
-### Pattern 1D: Logic Apps + Oracle connector
-
-```mermaid
-graph LR
-    subgraph Triggers["Event Triggers"]
-        SCHED["Schedule"]
-        HTTP["HTTP Request"]
-        EVENT["Event Grid"]
-    end
-
-    subgraph LA["Logic Apps"]
-        FLOW["Workflow Engine<br/>400+ Connectors"]
-        ORA_CONN["Oracle DB Connector"]
-        ORDS_CALL["ORDS REST Call"]
-    end
-
-    subgraph ODA["Oracle DB@Azure"]
-        DB[("ADBS / Exadata")]
-    end
-
-    subgraph Downstream["Downstream"]
-        TEAMS["Teams Notification"]
-        EMAIL["Email / Outlook"]
-        SAAS["SaaS Apps"]
-    end
-
-    SCHED --> FLOW
-    HTTP --> FLOW
-    EVENT --> FLOW
-    FLOW --> ORA_CONN
-    FLOW --> ORDS_CALL
-    ORA_CONN --> DB
-    ORDS_CALL --> DB
-    FLOW --> TEAMS
-    FLOW --> EMAIL
-    FLOW --> SAAS
-```
-
----
 
 ## Category 2: Mirrored / Analytics Data
 
