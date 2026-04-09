@@ -4,7 +4,7 @@ Microsoft Foundry provides a full-featured platform for building AI agents on Or
 
 | Sub-Pattern | Tools | Best For |
 |-------------|-------|----------|
-| **1B** | MCP only | SQL-first agents — natural language to SQL |
+| **1B** | Oracle MCP only | SQL-first agents — natural language to SQL |
 | **1B-2** | ORDS + Oracle 23ai Vector Search | REST API-first agents — governed endpoints + RAG |
 | **1B-3** | MCP + ORDS + Foundry IQ | Full stack — structured + unstructured + RAG |
 
