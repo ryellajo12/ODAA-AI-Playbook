@@ -1,20 +1,20 @@
-# 10. Patterns 1B / 1B-2 / 1B-3 — Microsoft Foundry Agents + Oracle
+# Patterns for Microsoft Foundry Agents + Oracle
 
 Microsoft Foundry provides a full-featured platform for building AI agents on Oracle Database@Azure. Three sub-patterns cover different levels of complexity.
 
 | Sub-Pattern | Tools | Best For |
 |-------------|-------|----------|
-| **1B** | Oracle MCP only | SQL-first agents — natural language to SQL |
-| **1B-2** | ORDS + Oracle 23ai Vector Search | REST API-first agents — governed endpoints + RAG |
-| **1B-3** | MCP + ORDS + Foundry IQ | Full stack — structured + unstructured + RAG |
+| **1** | Oracle MCP only | SQL-first agents — natural language to SQL |
+| **2** | ORDS + Oracle 26ai Vector Search | REST API-first agents — governed endpoints + RAG |
+| **3** | Oracle MCP + ORDS + Foundry IQ | Full stack — structured + unstructured + RAG |
 
 ---
 
-## 10.1 Pattern 1B: MS Foundry + Oracle MCP Server
+## Pattern 1: MS Foundry + Oracle DB tools MCP Server
 
 ### Architecture
 
-Agent uses Oracle MCP Server (hosted on Azure Functions or Container Apps) for natural language → SQL, schema discovery, and query execution.
+Agent uses Oracle DB tools MCP Server (hosted either on Azure Functions or Azure Container Apps) for natural language → SQL, schema discovery, and query execution.
 
 ```mermaid
 graph LR
@@ -69,24 +69,24 @@ graph LR
 
 - Azure subscription with Microsoft Foundry access
 - Microsoft Entra ID tenant
-- Azure OpenAI or model deployment (GPT-4.1, o3, o4-mini)
+- Azure OpenAI or other model deployments of your choice (GPT-4.1, o3, o4-mini)
 - Oracle Database@Azure instance with Private Networking enabled
-- Azure Functions or Container Apps for MCP hosting (VNET-integrated)
+- Azure Functions or Azure Container Apps for hosting Oracle MCP server (VNET-integrated)
 - Azure Key Vault for Oracle credentials (rotation policy configured)
-- Azure VNET with subnets for Functions/Container Apps and Oracle Private Endpoints
+- Azure VNET with subnets for Azure Functions/Container Apps and Oracle Private Endpoints
 - Azure Private DNS Zones for Private Endpoint resolution
 - Microsoft Purview account for data governance
 
 ### Setup Steps
 
-1. **Deploy MCP Server** on VNET-integrated Azure Functions or Container Apps
-2. **Configure Oracle connection** — store credentials in Key Vault; MCP host uses Managed Identity to access Key Vault
-3. **Connect MCP to Oracle** via Private Endpoint (port 1521)
+1. **Deploy Oracle DB tools MCP Server** on VNET-integrated Azure Functions or Container Apps
+2. **Configure Oracle connection** — store Oracle database connection credentials in Azure Key Vault; MCP host uses Managed Identity to access Key Vault
+3. **Connect DB tools MCP server to Oracle instance running on Oracle Database@Azure** via Private Endpoint (port 1521)
 4. **Configure Private DNS Zones** — create zones for `privatelink.oraclecloud.com`, `privatelink.vaultcore.azure.net`
 5. **Register Oracle in Purview** — add Oracle Database@Azure as a data source; run classification scan
-6. **Create Foundry Agent** at [ai.azure.com](https://ai.azure.com):
-   - Model: `gpt-4.1` or `o3`
-   - Add MCP as an external tool
+6. **Create a MS Foundry Agent** at [ai.azure.com](https://ai.azure.com):
+   - Model: `gpt-4.1` or `o3` or others of your choice
+   - Add Oracle DB tools MCP  server hosted on Azure Functions or Azure Container apps as an external tool
    - Enable Azure AI Content Safety filters
 7. **Configure Entra ID** — register the agent; assign security group for user access; configure Conditional Access
 9. **Test in Playground** → Deploy to M365 Copilot / Agent Store / API
@@ -125,11 +125,11 @@ graph LR
 
 ---
 
-## 10.2 Pattern 1B-2: MS Foundry + ORDS Endpoints (RAG / Vector Search)
+## 2: MS Foundry + ORDS Endpoints (RAG / Vector Search)
 
 ### Architecture
 
-Agent uses ORDS REST endpoints running on the customer's existing Oracle 26ai instance for governed data access and semantic vector search — secured by Azure APIM with Entra ID OAuth2 and governed by Purview. ORDS is **not** deployed separately on Azure; it runs natively within the Oracle Database@Azure environment alongside the database.
+Agent uses ORDS REST endpoints running on the customer's existing Oracle 26ai instance for governed data access and semantic vector search — secured by Azure APIM with Entra ID OAuth2 and governed by Purview. 
 
 ```mermaid
 graph LR
@@ -184,7 +184,7 @@ graph LR
 - Azure subscription with Microsoft Foundry access
 - Microsoft Entra ID tenant with App Registration for ORDS OAuth2
 - Azure API Management (APIM) with WAF for OAuth2 validation and rate limiting
-- Azure OpenAI with `text-embedding-3-small` deployed (for embedding generation)
+- Azure OpenAI with `text-embedding-3-small` or similar models deployed (for embedding generation)
 - Network connectivity from APIM to ORDS (via VNET Peering or Private Endpoint to the Oracle 26ai instance)
 - Network connectivity from Oracle 26ai to Azure OpenAI (via Private Endpoint for `DBMS_CLOUD` calls)
 - Microsoft Purview for data classification and DLP
@@ -415,7 +415,7 @@ ORDS is already running on your Oracle 26ai instance. You just need to define ne
 13. **Configure networking** — VNET Peering or Private Endpoint from APIM subnet to Oracle 26ai ORDS port (typically 8443); Private Endpoint from Oracle 26ai to Azure OpenAI for embedding calls
 14. **Register in Purview** — scan Oracle schemas (including vector tables and the new `VECTOR` columns) and ORDS endpoints; apply sensitivity labels; configure DLP policies to block PII in search results
 
-#### Step 7 — Create Foundry Agent
+#### Step 7 — Create MS Foundry Agent
 
 15. **Create Foundry Agent** at [ai.azure.com](https://ai.azure.com):
     - Model: `gpt-4.1` or `o3`
@@ -519,11 +519,11 @@ You are an Oracle analytics agent with access to governed REST APIs and semantic
 
 ---
 
-## 10.3 Pattern 1B-3: MS Foundry + MCP + ORDS + Foundry IQ (Full Stack)
+## 3: MS Foundry + Oracle DB tools MCP Server + ORDS + Foundry IQ (Full Stack)
 
 ### Architecture
 
-Complete agent combining structured data (MCP + ORDS), unstructured data (Foundry IQ from Blob, SharePoint, Fabric Files), and semantic RAG (Oracle 23ai vectors) — with end-to-end Purview governance.
+Complete agent combining structured data (Oracle DB tools MCP + ORDS), unstructured data (Foundry IQ from Blob, SharePoint, Fabric Files), and semantic RAG (Oracle 26ai vectors) — with end-to-end Purview governance.
 
 ```mermaid
 graph TB
@@ -643,7 +643,7 @@ graph TB
 
 ### Prerequisites
 
-All prerequisites from 1B and 1B-2, plus:
+All prerequisites from Patterns #1 and #2, plus:
 - Foundry IQ configured in Microsoft Foundry project
 - Azure Blob Storage / SharePoint / Fabric Files with documents for grounding
 - Managed Identity permissions for Foundry IQ to access Blob and SharePoint
@@ -654,9 +654,9 @@ All prerequisites from 1B and 1B-2, plus:
 
 ### Setup Steps
 
-1. **Deploy MCP Server** on VNET-integrated Functions / Container Apps (same as 1B)
-2. **Deploy ORDS** on VNET-integrated App Service / Container Apps (same as 1B-2)
-3. **Configure APIM** with OAuth2 + WAF for ORDS endpoints (same as 1B-2)
+1. **Deploy Oracle DB tools MCP Server** on VNET-integrated Azure Functions / Container Apps (same as Pattern #1)
+2. **Enable ORDS for vector search** (same as Pattern #2)
+3. **Configure APIM** with OAuth2 + WAF for ORDS endpoints
 4. **Configure Foundry IQ**:
    - Connect Azure Blob Storage (documents, PDFs)
    - Connect SharePoint (files, sites)
