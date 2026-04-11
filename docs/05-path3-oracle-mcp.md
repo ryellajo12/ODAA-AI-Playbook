@@ -5,7 +5,7 @@
 The **Model Context Protocol (MCP)** is an open standard that enables AI agents and LLMs to discover and use tools provided by external servers. Oracle provides a number of MCP servers( https://github.com/oracle/mcp/tree/main/src) for various purposes. For customers running **Oracle Database@Azure** and want to build agents that can retrieve data insights, the **DB tools MCP server** is the most relevant one to use.
 Oracle's MCP Server can also be using via **SQLcl VS code extension** that exposes Oracle Database querying capabilities as tools to any MCP-compatible client.
 
-## 11.2 What MCP Enables on OD@A
+## What MCP Enables on Oracle Database@Azure
 
 | Capability | Description |
 |-----------|-------------|
@@ -16,7 +16,7 @@ Oracle's MCP Server can also be using via **SQLcl VS code extension** that expos
 | **Data Validation** | Agent validates data quality, checks constraints |
 | **Code Generation** | Generate PL/SQL procedures from natural language |
 
-## 11.3 Deployment Option 1: Local MCP via VS Code (Developer Productivity)
+## Deployment Option 1: Local MCP via VS Code (Developer Productivity)
 
 **Architecture:**
 ```mermaid
@@ -56,7 +56,7 @@ graph TB
 - Avoid production connections during development
 - MCP activity is logged in `DBTOOLS$MCP_LOG` table
 
-## 11.4 Deployment Option 2: Hosted MCP Server on Azure Functions (Enterprise)
+## Deployment Option 2: Hosted MCP Server on Azure Functions (Enterprise)
 
 **Architecture:**
 ```mermaid
@@ -88,7 +88,7 @@ graph TB
 
 ---
 
-## 11.5 Deployment Option 3: Hosted MCP Server on Azure Container Apps (Production)
+## Deployment Option 3: Hosted MCP Server on Azure Container Apps (Production)
 
 Azure Container Apps provides a container-native hosting option for the Oracle DB tools MCP Server—ideal for production workloads requiring steady-state availability, custom runtime control, and VNET integration with Oracle Database@Azure.
 
@@ -368,7 +368,7 @@ print(f"Agent created: {agent.id}")
 | **Recommended for** | Dev/test, low/bursty traffic | Production, steady traffic |
 | **Setup complexity** | Lower (`host.json` config) | Higher (Dockerfile + ACR + env) |
 
-## 11.6 Available MCP Tools
+## Available MCP Tools
 
 Once registered (locally or hosted), MCP tools can be used by:
 
