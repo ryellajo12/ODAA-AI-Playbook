@@ -80,7 +80,7 @@ graph TB
 
 **Setup Steps:**
 1. Create an Azure Functions App (Python or Node.js runtime)
-2. Deploy SQLcl or a custom MCP server implementation
+2. Deploy DB tools MCP server (steps: https://github.com/oracle/mcp/tree/main/src/dbtools-mcp-server) or a custom MCP server implementation
 3. Configure Oracle connection string (use Azure Key Vault for credentials)
 4. Enable Entra ID authentication on the Function App
 5. (Optional) Front with Azure API Management for rate limiting and logging
