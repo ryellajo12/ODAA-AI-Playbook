@@ -1,6 +1,6 @@
-# 11. Path 3 — Oracle MCP Server (Model Context Protocol)
+# How to use Oracle MCP Server (Model Context Protocol)
 
-## 11.1 What is MCP?
+## What is MCP?
 
 The **Model Context Protocol (MCP)** is an open standard that enables AI agents and LLMs to discover and use tools provided by external servers. Oracle provides a number of MCP servers( https://github.com/oracle/mcp/tree/main/src) for various purposes. For customers running **Oracle Database@Azure** and want to build agents that can retrieve data insights, the **DB tools MCP server** is the most relevant one to use.
 Oracle's MCP Server can also be using via **SQLcl VS code extension** that exposes Oracle Database querying capabilities as tools to any MCP-compatible client.
