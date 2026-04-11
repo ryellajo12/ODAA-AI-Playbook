@@ -2,7 +2,8 @@
 
 ## 11.1 What is MCP?
 
-The **Model Context Protocol (MCP)** is an open standard that enables AI agents and LLMs to discover and use tools provided by external servers. Oracle provides an MCP Server via **SQLcl** that exposes Oracle Database capabilities as tools to any MCP-compatible client.
+The **Model Context Protocol (MCP)** is an open standard that enables AI agents and LLMs to discover and use tools provided by external servers. Oracle provides a number of MCP servers( https://github.com/oracle/mcp/tree/main/src) for various purposes. For customers running **Oracle Database@Azure** and want to build agents that can retrieve data insights, the **DB tools MCP server** is the most relevant one to use.
+Oracle's MCP Server can also be using via **SQLcl VS code extension** that exposes Oracle Database querying capabilities as tools to any MCP-compatible client.
 
 ## 11.2 What MCP Enables on OD@A
 
@@ -29,7 +30,7 @@ graph TB
 
 **Setup Steps:**
 1. Install **SQL Developer Extension for VS Code**
-2. Configure a connection to your OD@A instance
+2. Configure a connection to your Oracle Database@Azure instance
 3. SQLcl MCP Server is **automatically registered** for GitHub Copilot Agent Mode
 4. Open GitHub Copilot → Agent Mode → Use `@oracle` to interact with your database
 
@@ -51,7 +52,7 @@ graph TB
 ```
 
 **Security Notes:**
-- Use least-privilege DB users (never SYS/SYSTEM)
+- Use least-privilege DB users with READ only access (never SYS/SYSTEM)
 - Avoid production connections during development
 - MCP activity is logged in `DBTOOLS$MCP_LOG` table
 
@@ -89,7 +90,7 @@ graph TB
 
 ## 11.5 Deployment Option 3: Hosted MCP Server on Azure Container Apps (Production)
 
-Azure Container Apps provides a container-native hosting option for the Oracle MCP Server—ideal for production workloads requiring steady-state availability, custom runtime control, and VNET integration with Oracle Database@Azure.
+Azure Container Apps provides a container-native hosting option for the Oracle DB tools MCP Server—ideal for production workloads requiring steady-state availability, custom runtime control, and VNET integration with Oracle Database@Azure.
 
 ### Architecture
 
