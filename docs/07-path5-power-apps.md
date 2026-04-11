@@ -20,7 +20,7 @@ Power Apps and Power Automate connect to Oracle Database@Azure via the Oracle Da
    - Use Copilot in Power Automate for natural language flow creation
    - Chain with Azure AI services for enrichment
 
-## 13.3 AI Capabilities in Power Platform
+## AI Capabilities in Power Platform
 
 | Capability | How It Works |
 |-----------|-------------|
