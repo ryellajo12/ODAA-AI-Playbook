@@ -1,13 +1,14 @@
-# 13. Path 5 — Power Apps + Power Automate AI
+# Path 5 — Power Apps + Power Automate AI
 
-## 13.1 Architecture
+## Architecture
 
 Power Apps and Power Automate connect to Oracle Database@Azure via the Oracle Database connector and the On-Premises Data Gateway, enabling business workflows with incremental AI capabilities.
 
-## 13.2 Setup Steps
+## Setup Steps
 
 1. **Set up On-Premises Data Gateway** (same as Path 1 — see [Copilot Studio Prerequisites](03-path1-copilot-studio.md#93-prerequisites))
 2. **Create a Power App:**
+   - Steps: https://learn.microsoft.com/en-us/power-apps/maker/canvas-apps/connections/connection-oracledb
    - Use the Oracle Database connector
    - Build forms, views, and dashboards connected to Oracle tables
 3. **Add AI Builder:**
