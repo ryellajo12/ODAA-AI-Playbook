@@ -1,4 +1,4 @@
-﻿# 20. Appendix â€” Resources & References
+# 20. Appendix â€" Resources & References
 
 ## 20.1 Official Documentation
 
@@ -67,18 +67,18 @@ Rationale: [Why this path fits]
 
 | Term | Definition |
 |------|-----------|
-| **Oracle Database@Azure** | Oracle Database@Azure â€” Oracle databases running natively on Azure infrastructure |
-| **ADBS** | Autonomous Database Serverless â€” Oracle's fully managed database service |
-| **MCP** | Model Context Protocol â€” open standard for AI agent tool integration |
-| **ORDS** | Oracle REST Data Services â€” REST API layer for Oracle Database |
-| **RAG** | Retrieval-Augmented Generation â€” grounding LLM responses with retrieved data |
+| **Oracle Database@Azure** | Oracle Database@Azure â€" Oracle databases running natively on Azure infrastructure |
+| **ADBS** | Autonomous Database Serverless â€" Oracle's fully managed database service |
+| **MCP** | Model Context Protocol â€" open standard for AI agent tool integration |
+| **ORDS** | Oracle REST Data Services â€" REST API layer for Oracle Database |
+| **RAG** | Retrieval-Augmented Generation â€" grounding LLM responses with retrieved data |
 | **Vector Search** | Semantic similarity search using embedding vectors |
-| **Microsoft Foundry** | Microsoft Foundry â€” Microsoft's platform for building AI applications |
+| **Microsoft Foundry** | Microsoft Foundry â€" Microsoft's platform for building AI applications |
 | **Copilot Studio** | Microsoft's low-code platform for building copilots |
-| **Fabric** | Microsoft Fabric â€” unified analytics platform with OneLake |
-| **VPD** | Virtual Private Database â€” Oracle's row-level security feature |
+| **Fabric** | Microsoft Fabric â€" unified analytics platform with OneLake |
+| **VPD** | Virtual Private Database â€" Oracle's row-level security feature |
 | **Entra ID** | Microsoft's identity platform (formerly Azure AD) |
-| **APIM** | Azure API Management â€” API gateway service |
+| **APIM** | Azure API Management â€" API gateway service |
 
 ---
 

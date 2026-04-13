@@ -1,14 +1,14 @@
-﻿# 12. Patterns 8 / 9 â€” Fabric Mirrored Database + Data Agents
+# 12. Patterns 8 / 9 â€" Fabric Mirrored Database + Data Agents
 
 ## 12.1 Architecture
 
-Oracle data is mirrored into a **Fabric Mirrored Database** via managed private endpoints. **Data Agents** are built directly on the Mirrored Database as the source â€” no additional lakehouse or semantic model required for basic scenarios.
+Oracle data is mirrored into a **Fabric Mirrored Database** via managed private endpoints. **Data Agents** are built directly on the Mirrored Database as the source â€" no additional lakehouse or semantic model required for basic scenarios.
 
 Once published, a Data Agent can be consumed as:
-- **MCP Server** â€” any MCP-compatible client can connect (VS Code, custom agents)
-- **Teams App** â€” published directly into Teams for business users
-- **Copilot Studio connector** â€” native connector to build no-code copilots
-- **MS Foundry tool** â€” native connector to use Data Agent as a tool inside Foundry agents
+- **MCP Server** â€" any MCP-compatible client can connect (VS Code, custom agents)
+- **Teams App** â€" published directly into Teams for business users
+- **Copilot Studio connector** â€" native connector to build no-code copilots
+- **MS Foundry tool** â€" native connector to use Data Agent as a tool inside Foundry agents
 
 ## 12.2 Prerequisites
 
@@ -21,12 +21,12 @@ Once published, a Data Agent can be consumed as:
 ## 12.3 Setup Steps
 
 1. **Configure Fabric Managed Private Endpoint** to Oracle DB@Azure:
-   - In Fabric workspace settings â†’ **Managed private endpoints**
+   - In Fabric workspace settings â†' **Managed private endpoints**
    - Create new managed PE pointing to Oracle Private Endpoint
    - Approve the PE connection in Azure
 
 2. **Configure Fabric Mirroring for Oracle:**
-   - In Fabric workspace â†’ **+ New** â†’ **Mirrored Database**
+   - In Fabric workspace â†' **+ New** â†' **Mirrored Database**
    - Select Oracle Database as the source
    - Provide Oracle Database@Azure connection via managed private endpoint
    - Credentials: dedicated read-only Oracle user (stored securely in Fabric)
@@ -34,8 +34,8 @@ Once published, a Data Agent can be consumed as:
    - Configure refresh schedule (near-real-time or scheduled)
 
 3. **Create a Fabric Data Agent on Mirrored Database:**
-   - In Fabric workspace â†’ select your Mirrored Database
-   - **+ New Data Agent** â†’ Data Agent uses Mirrored Database as direct source
+   - In Fabric workspace â†' select your Mirrored Database
+   - **+ New Data Agent** â†' Data Agent uses Mirrored Database as direct source
    - Configure natural language understanding
    - Test with sample queries
 
@@ -46,23 +46,23 @@ Once published, a Data Agent can be consumed as:
 
 5. **Publish the Data Agent:**
 
-   **Option A â€” As MCP Server:**
+   **Option A â€" As MCP Server:**
    - Publish Data Agent as MCP endpoint
    - MCP-compatible clients (VS Code, Foundry agents, custom apps) connect via MCP protocol
    - Access controlled by Entra ID
 
-   **Option B â€” To Teams:**
+   **Option B â€" To Teams:**
    - Publish Data Agent directly to Teams
    - Business users query mirrored Oracle data in natural language via Teams chat
    - Access controlled by Entra ID security groups
 
-   **Option C â€” To Copilot Studio:**
-   - In Copilot Studio â†’ **Tools** â†’ Add **Fabric Data Agent** via native connector
+   **Option C â€" To Copilot Studio:**
+   - In Copilot Studio â†' **Tools** â†' Add **Fabric Data Agent** via native connector
    - Build copilots grounded on mirrored Oracle analytics data
    - Combine with Oracle connector (Pattern 1) for live + mirrored data in one copilot
 
-   **Option D â€” To MS Foundry:**
-   - In Foundry â†’ Agent â†’ **+ Add Tool** â†’ select Fabric Data Agent via native connector
+   **Option D â€" To MS Foundry:**
+   - In Foundry â†' Agent â†' **+ Add Tool** â†' select Fabric Data Agent via native connector
    - Foundry agent uses Data Agent as one of its tools
    - Combine with MCP (Pattern 2) and ORDS (Pattern 3) tools for live + mirrored in one agent
 
@@ -89,7 +89,7 @@ Once published, a Data Agent can be consumed as:
 | **Fabric Workspace** | Admin | Platform admin | Manage workspace security, capacity, private endpoints |
 | **Copilot Studio** | Maker / User | Citizen devs / End users | Build vs use copilots connected to Data Agent |
 | **MS Foundry** | Foundry User / Contributor | End users / Developers | Use vs create Foundry agents with Data Agent tool |
-| **Oracle DB** | Dedicated mirroring user | Fabric mirroring connection | `GRANT SELECT ON SH.* TO fabric_mirror_user` â€” no DDL/DML |
+| **Oracle DB** | Dedicated mirroring user | Fabric mirroring connection | `GRANT SELECT ON SH.* TO fabric_mirror_user` â€" no DDL/DML |
 
 ## 12.6 Private Networking
 
@@ -142,19 +142,19 @@ graph TB
 | 1 | Oracle Private Endpoint | No public IP on Oracle; all access via PE |
 | 2 | Fabric Managed VNET | Fabric uses managed private endpoints for outbound to Oracle |
 | 3 | Mirroring over private path | Data replication never touches public internet |
-| 4 | No Oracle credentials in Data Agent | Mirrored Database is the source â€” Data Agent never connects to Oracle directly |
-| 5 | Entra ID for all published surfaces | MCP, Teams, Copilot Studio, Foundry â€” all require Entra ID auth |
+| 4 | No Oracle credentials in Data Agent | Mirrored Database is the source â€" Data Agent never connects to Oracle directly |
+| 5 | Entra ID for all published surfaces | MCP, Teams, Copilot Studio, Foundry â€" all require Entra ID auth |
 | 6 | Workspace-level security | Fabric workspace RBAC controls who can query Data Agent |
 
 ## 12.7 Design Considerations
 
 | Consideration | Guidance |
 |--------------|----------|
-| **Data source** | Data Agent uses Mirrored Database directly as source â€” no separate lakehouse required |
+| **Data source** | Data Agent uses Mirrored Database directly as source â€" no separate lakehouse required |
 | **Latency** | Mirroring introduces latency (minutes to hours); not for real-time transactional Q&A |
 | **Data scope** | Mirror only the tables/schemas needed; don't mirror entire databases |
 | **Cross-source** | Fabric's strength is joining Oracle data with SQL Server, Azure SQL, Dataverse, etc. |
 | **Publishing** | Choose publish target based on audience: Teams for business users, MCP for developers, Foundry for pro-dev agents |
 | **Combining with live data** | Use Data Agent (mirrored) alongside MCP/ORDS (live Oracle) in Foundry for hybrid scenarios |
 | **Cost** | Fabric CU consumption scales with data volume, mirroring frequency, and query complexity |
-| **Security** | Data inherits Fabric workspace security; does NOT inherit Oracle RLS â€” apply Fabric-level security separately |
+| **Security** | Data inherits Fabric workspace security; does NOT inherit Oracle RLS â€" apply Fabric-level security separately |

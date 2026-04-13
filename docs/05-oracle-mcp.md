@@ -1,4 +1,4 @@
-﻿# How to use Oracle MCP Server (Model Context Protocol)
+# How to use Oracle MCP Server (Model Context Protocol)
 
 ## What is MCP?
 
@@ -9,7 +9,7 @@ Oracle's MCP Server can also be using via **SQLcl VS code extension** that expos
 
 | Capability | Description |
 |-----------|-------------|
-| **Natural Language â†’ SQL** | Agent generates SQL/PL-SQL from user questions |
+| **Natural Language â†' SQL** | Agent generates SQL/PL-SQL from user questions |
 | **Schema Discovery** | Agent explores tables, views, indexes, constraints |
 | **Query Execution** | Agent runs SQL and returns structured results |
 | **DBA Automation** | Automate routine DBA tasks through conversation |
@@ -32,7 +32,7 @@ graph TB
 1. Install **SQL Developer Extension for VS Code**
 2. Configure a connection to your Oracle Database@Azure instance
 3. SQLcl MCP Server is **automatically registered** for GitHub Copilot Agent Mode
-4. Open GitHub Copilot â†’ Agent Mode â†’ Use `@oracle` to interact with your database
+4. Open GitHub Copilot â†' Agent Mode â†' Use `@oracle` to interact with your database
 
 **MCP Configuration (`settings.json`):**
 ```json
@@ -90,7 +90,7 @@ graph TB
 
 ## Deployment Option 3: Hosted MCP Server on Azure Container Apps (Production)
 
-Azure Container Apps provides a container-native hosting option for the Oracle DB tools MCP Serverâ€”ideal for production workloads requiring steady-state availability, custom runtime control, and VNET integration with Oracle Database@Azure.
+Azure Container Apps provides a container-native hosting option for the Oracle DB tools MCP Serverâ€"ideal for production workloads requiring steady-state availability, custom runtime control, and VNET integration with Oracle Database@Azure.
 
 ### Architecture
 
@@ -148,7 +148,7 @@ graph TB
 |---------|--------|
 | **Always-on (no cold start)** | Set `min-replicas=1` to eliminate cold start latency for production agents |
 | **Full container control** | Use the provided `Dockerfile`; add custom dependencies, Oracle Instant Client, or debug tools |
-| **VNET integration** | Container Apps Environment deploys into your VNETâ€”private access to Oracle PE and Key Vault PE |
+| **VNET integration** | Container Apps Environment deploys into your VNETâ€"private access to Oracle PE and Key Vault PE |
 | **Auto-scaling with KEDA** | Scale on HTTP concurrency, queue depth, or custom metrics |
 | **Built-in revision management** | Blue/green deployments, traffic splitting between revisions |
 | **Secrets management** | Native integration with Key Vault for OCI credentials |
@@ -165,7 +165,7 @@ graph TB
 
 ### Setup Steps
 
-#### Step 1 â€” Build the MCP Server Container Image
+#### Step 1 â€" Build the MCP Server Container Image
 
 ```powershell
 cd src\dbtools-mcp-server
@@ -176,7 +176,7 @@ docker build -t dbtools-mcp-server .
 
 The Dockerfile uses `python:3.11-slim`, installs dependencies from `requirements.txt`, and runs `dbtools-mcp-server.py` with `MCP_TRANSPORT=streamable-http` on port 8000. A built-in healthcheck pings `/mcp`.
 
-#### Step 2 â€” Test Locally
+#### Step 2 â€" Test Locally
 
 ```powershell
 # Create a .env file with your OCI credentials (see .env.template)
@@ -186,7 +186,7 @@ docker run -p 8000:8000 --env-file .env dbtools-mcp-server
 curl http://localhost:8000/mcp
 ```
 
-#### Step 3 â€” Push to Azure Container Registry
+#### Step 3 â€" Push to Azure Container Registry
 
 ```powershell
 # Create ACR (one-time, or use an existing one)
@@ -202,7 +202,7 @@ docker push <acr-name>.azurecr.io/dbtools-mcp-server:v1
 
 > **Tip**: Use ACR Standard or Premium SKU for Private Endpoint support in production.
 
-#### Step 4 â€” Create a VNET-Integrated Container Apps Environment
+#### Step 4 â€" Create a VNET-Integrated Container Apps Environment
 
 ```powershell
 # Create a Container Apps Environment inside your VNET
@@ -215,9 +215,9 @@ az containerapp env create \
   --logs-workspace-id <log-analytics-workspace-id>
 ```
 
-Setting `--internal-only true` ensures no public endpointâ€”all traffic goes through APIM or Private Endpoints.
+Setting `--internal-only true` ensures no public endpointâ€"all traffic goes through APIM or Private Endpoints.
 
-#### Step 5 â€” Deploy the Container App with Key Vault Secrets
+#### Step 5 â€" Deploy the Container App with Key Vault Secrets
 
 ```powershell
 # Create the container app
@@ -250,12 +250,12 @@ az containerapp create \
 ```
 
 Key configuration choices:
-- `--ingress internal` â€” no public endpoint; only accessible within the VNET
-- `--min-replicas 1` â€” always-on to avoid cold start
-- `--registry-identity system` â€” uses system-assigned Managed Identity to pull images from ACR (no stored credentials)
+- `--ingress internal` â€" no public endpoint; only accessible within the VNET
+- `--min-replicas 1` â€" always-on to avoid cold start
+- `--registry-identity system` â€" uses system-assigned Managed Identity to pull images from ACR (no stored credentials)
 - Secrets reference Key Vault via Managed Identity (no credentials in environment variables)
 
-#### Step 6 â€” Configure Scaling Rules
+#### Step 6 â€" Configure Scaling Rules
 
 ```powershell
 # Scale based on HTTP concurrency (default KEDA HTTP scaler)
@@ -269,7 +269,7 @@ az containerapp update \
 
 This scales up a new replica for every 10 concurrent MCP requests, up to `max-replicas`.
 
-#### Step 7 â€” Front with Azure API Management
+#### Step 7 â€" Front with Azure API Management
 
 ```powershell
 # Import the MCP endpoint into APIM
@@ -292,7 +292,7 @@ APIM policy example for the MCP endpoint:
 </inbound>
 ```
 
-#### Step 8 â€” Connect to Microsoft Foundry Agent Service
+#### Step 8 â€" Connect to Microsoft Foundry Agent Service
 
 ```python
 from azure.ai.projects import AIProjectClient
@@ -341,16 +341,16 @@ print(f"Agent created: {agent.id}")
 | 2 | Oracle Private Endpoint | MCP connects to Oracle via PE (port 1521) |
 | 3 | Key Vault Private Endpoint | Secrets retrieved via PE using Managed Identity |
 | 4 | ACR Private Endpoint | Image pulls stay private (ACR Premium required) |
-| 5 | APIM with VNET integration | Fronts MCPâ€”OAuth2 validation + rate limiting + WAF |
-| 6 | NSGs â€” ingress | Container Apps subnet â† APIM (8000); deny all else |
-| 7 | NSGs â€” egress | Container Apps subnet â†’ Oracle PE (1521), KV PE (443); block internet |
+| 5 | APIM with VNET integration | Fronts MCPâ€"OAuth2 validation + rate limiting + WAF |
+| 6 | NSGs â€" ingress | Container Apps subnet â† APIM (8000); deny all else |
+| 7 | NSGs â€" egress | Container Apps subnet â†' Oracle PE (1521), KV PE (443); block internet |
 
 ### Security
 
 | Control | Details |
 |---------|---------|
 | **No credentials in env vars** | All OCI secrets stored in Key Vault; referenced via Managed Identity |
-| **Read-only Oracle user** | `mcp_agent_user` has only `SELECT` grantsâ€”no DDL/DML |
+| **Read-only Oracle user** | `mcp_agent_user` has only `SELECT` grantsâ€"no DDL/DML |
 | **Entra ID auth via APIM** | OAuth2 tokens validated before requests reach the container |
 | **Image signing (optional)** | Sign container images with Notation/Cosign; verify on pull |
 | **Revision pinning** | Pin to specific image tags (`v1`, `v2`); never use `latest` in production |
@@ -380,8 +380,8 @@ Once registered (locally or hosted), MCP tools can be used by:
 | **Custom applications** | Call MCP server endpoint directly via HTTP |
 
 **Common MCP operations agents can perform:**
-- `schema-information` â€” List tables, columns, types, constraints
-- `sql-query` â€” Execute SELECT, WITH, aggregate queries
-- `explain-plan` â€” Get query execution plans
-- `generate-sql` â€” Generate SQL from natural language
-- `run-plsql` â€” Execute PL/SQL blocks (with appropriate permissions)
+- `schema-information` â€" List tables, columns, types, constraints
+- `sql-query` â€" Execute SELECT, WITH, aggregate queries
+- `explain-plan` â€" Get query execution plans
+- `generate-sql` â€" Generate SQL from natural language
+- `run-plsql` â€" Execute PL/SQL blocks (with appropriate permissions)

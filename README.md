@@ -1,6 +1,6 @@
-# Oracle Database@Azure — AI Adoption Playbook
+# Oracle Database@Azure â€" AI Adoption Playbook
 
-**Version:** 2.1 · **Date:** April 2026
+**Version:** 2.1 Â· **Date:** April 2026
 
 **Audience:** Field sellers, CSA/SSP, Solution architects
 

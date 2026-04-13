@@ -1,4 +1,4 @@
-﻿# 17. Step-by-Step Implementation Guides
+# 17. Step-by-Step Implementation Guides
 
 ## 17.1 Guide: Build a Microsoft Foundry agent with Oracle MCP + ORDS in 1 Hour
 
@@ -14,12 +14,12 @@
 
 | Step | Action | Time |
 |------|--------|------|
-| 1 | Open [ai.azure.com](https://ai.azure.com) â†’ select your project | 2 min |
-| 2 | **Agents** â†’ **+ New Agent** â†’ Name: `Oracle Sales Agent` â†’ Model: `gpt-4.1` | 3 min |
-| 3 | Paste system prompt from [Path 2 â€” Agent System Prompt](04-foundry-agents.md#104-agent-system-prompt-template) into System message | 5 min |
-| 4 | **+ Add Tool** â†’ **OpenAPI** â†’ Upload `promotion-insights-api.json` â†’ Set base URL â†’ Enable all operations | 10 min |
-| 5 | **+ Add Tool** â†’ **OpenAPI** â†’ Upload `clinical-vector-search-api.json` â†’ Set base URL â†’ Configure Basic Auth credentials | 10 min |
-| 6 | [Optional] **+ Add Tool** â†’ **MCP Server** â†’ Configure Oracle SQLcl connection | 10 min |
+| 1 | Open [ai.azure.com](https://ai.azure.com) â†' select your project | 2 min |
+| 2 | **Agents** â†' **+ New Agent** â†' Name: `Oracle Sales Agent` â†' Model: `gpt-4.1` | 3 min |
+| 3 | Paste system prompt from [Path 2 â€" Agent System Prompt](04-foundry-agents.md#104-agent-system-prompt-template) into System message | 5 min |
+| 4 | **+ Add Tool** â†' **OpenAPI** â†' Upload `promotion-insights-api.json` â†' Set base URL â†' Enable all operations | 10 min |
+| 5 | **+ Add Tool** â†' **OpenAPI** â†' Upload `clinical-vector-search-api.json` â†' Set base URL â†' Configure Basic Auth credentials | 10 min |
+| 6 | [Optional] **+ Add Tool** â†' **MCP Server** â†' Configure Oracle SQLcl connection | 10 min |
 | 7 | Test in Playground: "What were the top 5 promotions by ROI?" | 5 min |
 | 8 | Test: "Search for adverse events related to severe breathing problems" | 5 min |
 | 9 | Test: "Compare promotion performance across internet vs TV channels" | 5 min |
@@ -29,17 +29,17 @@
 
 ## 17.2 Guide: Set Up Oracle MCP in VS Code in 15 Minutes
 
-**Goal:** Get natural language â†’ SQL working on Oracle Database@Azure in VS Code.
+**Goal:** Get natural language â†' SQL working on Oracle Database@Azure in VS Code.
 
 **Steps:**
 
 | Step | Action | Time |
 |------|--------|------|
 | 1 | Install **SQL Developer Extension for VS Code** from marketplace | 2 min |
-| 2 | Click the Database icon â†’ **+ New Connection** | 2 min |
+| 2 | Click the Database icon â†' **+ New Connection** | 2 min |
 | 3 | Enter Oracle Database@Azure connection details (host, port, service name, username, password) | 3 min |
-| 4 | Test connection â†’ connected âœ… | 1 min |
-| 5 | Open **GitHub Copilot** â†’ switch to **Agent Mode** | 1 min |
+| 4 | Test connection â†' connected âœ... | 1 min |
+| 5 | Open **GitHub Copilot** â†' switch to **Agent Mode** | 1 min |
 | 6 | Type: `@oracle List all tables in the SH schema` | 1 min |
 | 7 | Type: `@oracle Write a query to find the top 10 products by revenue` | 2 min |
 | 8 | Type: `@oracle Explain the execution plan for this query` | 2 min |
@@ -60,17 +60,17 @@
 
 | Step | Action | Time |
 |------|--------|------|
-| 1 | Add VECTOR column to existing table (see [Pattern 2 â€” Step 1](04-foundry-agents.md#step-1--add-vector-columns-to-existing-tables)) | 10 min |
-| 2 | Configure Azure OpenAI credential in Oracle (DBMS_CLOUD) (see [Pattern 2 â€” Step 2](04-foundry-agents.md#step-2--configure-embedding-generation)) | 10 min |
-| 3 | Create embedding generation function ([Pattern 2 â€” Step 2](04-foundry-agents.md#step-2--configure-embedding-generation)) | 15 min |
+| 1 | Add VECTOR column to existing table (see [Pattern 2 â€" Step 1](04-foundry-agents.md#step-1--add-vector-columns-to-existing-tables)) | 10 min |
+| 2 | Configure Azure OpenAI credential in Oracle (DBMS_CLOUD) (see [Pattern 2 â€" Step 2](04-foundry-agents.md#step-2--configure-embedding-generation)) | 10 min |
+| 3 | Create embedding generation function ([Pattern 2 â€" Step 2](04-foundry-agents.md#step-2--configure-embedding-generation)) | 15 min |
 | 4 | Backfill embeddings for existing data (batch process) | 15 min |
-| 5 | Create vector index ([Pattern 2 â€” Step 2](04-foundry-agents.md#step-2--configure-embedding-generation)) | 5 min |
+| 5 | Create vector index ([Pattern 2 â€" Step 2](04-foundry-agents.md#step-2--configure-embedding-generation)) | 5 min |
 | 6 | Test vector search via SQL | 5 min |
-| 7 | Create ORDS endpoint ([Pattern 2 â€” Step 4](04-foundry-agents.md#step-4--expose-vector-search-via-ords-already-running-on-oracle-26ai)) | 15 min |
+| 7 | Create ORDS endpoint ([Pattern 2 â€" Step 4](04-foundry-agents.md#step-4--expose-vector-search-via-ords-already-running-on-oracle-26ai)) | 15 min |
 | 8 | Test ORDS endpoint via curl/Postman | 5 min |
 | 9 | Create OpenAPI spec for the endpoint | 15 min |
 | 10 | Register as tool in Microsoft Foundry agent | 10 min |
-| 11 | Test end-to-end: natural language â†’ embedding â†’ vector search â†’ LLM answer | 15 min |
+| 11 | Test end-to-end: natural language â†' embedding â†' vector search â†' LLM answer | 15 min |
 
 ---
 
@@ -82,13 +82,13 @@
 
 | Step | Action | Time |
 |------|--------|------|
-| 1 | Open Fabric workspace â†’ **+ New** â†’ **Mirrored Database** | 2 min |
+| 1 | Open Fabric workspace â†' **+ New** â†' **Mirrored Database** | 2 min |
 | 2 | Select **Oracle Database** as source | 1 min |
 | 3 | Enter Oracle Database@Azure connection: host, port, service name | 5 min |
 | 4 | Provide Oracle credentials (read-only user) | 2 min |
 | 5 | Select tables: SH.SALES, SH.PRODUCTS, SH.PROMOTIONS, SH.CUSTOMERS, SH.TIMES | 5 min |
 | 6 | Configure refresh schedule (e.g., every 15 minutes) | 3 min |
-| 7 | Start mirroring â†’ wait for initial sync | 10 min |
+| 7 | Start mirroring â†' wait for initial sync | 10 min |
 | 8 | Create SQL analytics endpoint on mirrored data | 5 min |
 | 9 | Build a semantic model with business-friendly names | 10 min |
 | 10 | Create a Fabric Data Agent on the semantic model | 10 min |

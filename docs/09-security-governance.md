@@ -1,4 +1,4 @@
-﻿# 16. Security & Governance Guardrails
+# 16. Security & Governance Guardrails
 
 ## 16.1 Security Architecture
 
@@ -46,18 +46,18 @@ graph LR
 
 | # | Control | Required | Notes |
 |---|---------|----------|-------|
-| 1 | Dedicated read-only Oracle user per agent | âœ… Yes | Never use ADMIN/SYS |
-| 2 | Private Endpoints for Oracle Database@Azure | âœ… Yes | No public IP |
-| 3 | Entra ID auth for Azure services | âœ… Yes | Managed identities preferred |
-| 4 | Key Vault for Oracle credentials | âœ… Yes | No plaintext secrets |
-| 5 | System prompt restricts DDL/DML | âœ… Yes | Agent can only read by default |
+| 1 | Dedicated read-only Oracle user per agent | âœ... Yes | Never use ADMIN/SYS |
+| 2 | Private Endpoints for Oracle Database@Azure | âœ... Yes | No public IP |
+| 3 | Entra ID auth for Azure services | âœ... Yes | Managed identities preferred |
+| 4 | Key Vault for Oracle credentials | âœ... Yes | No plaintext secrets |
+| 5 | System prompt restricts DDL/DML | âœ... Yes | Agent can only read by default |
 | 6 | Column masking for PII | âš ï¸ Recommended | Data Redaction for sensitive columns |
-| 7 | MCP audit logging enabled | âœ… Yes | Check `DBTOOLS$MCP_LOG` |
+| 7 | MCP audit logging enabled | âœ... Yes | Check `DBTOOLS$MCP_LOG` |
 | 8 | Rate limiting via APIM | âš ï¸ Recommended | Prevents runaway agent queries |
 | 9 | Azure AI Content Safety | âš ï¸ Recommended | Filters harmful inputs/outputs |
-| 10 | Network segmentation (NSGs) | âœ… Yes | Agent services in separate subnet |
-| 11 | Encryption at rest and in transit | âœ… Yes | TLS 1.2+ for all connections; Oracle TDE |
+| 10 | Network segmentation (NSGs) | âœ... Yes | Agent services in separate subnet |
+| 11 | Encryption at rest and in transit | âœ... Yes | TLS 1.2+ for all connections; Oracle TDE |
 
 ## 16.3 Key Principle
 
-> **MCP does not bypass Oracle security â€” it operates inside it.** Every SQL statement executed via MCP runs under the connected Oracle user's privileges, subject to Oracle's standard authentication, authorization, auditing, and VPD policies.
+> **MCP does not bypass Oracle security â€" it operates inside it.** Every SQL statement executed via MCP runs under the connected Oracle user's privileges, subject to Oracle's standard authentication, authorization, auditing, and VPD policies.
