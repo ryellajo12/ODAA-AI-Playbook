@@ -104,6 +104,10 @@ graph TB
     subgraph CS[Microsoft Copilot Studio]
         COP[Custom Copilot]
         CC[Copilot Studio MCP Tool]
+        subgraph OBS[Native Observability]
+            AN[Analytics Tab<br/>DAU, Total sessions, Total Reactions, Engagement etc.]
+            DV[Dataverse<br/>ConversationTranscript + related tables]
+        end
     end
 
     subgraph GOV[Governance / Publishing Plane]
@@ -160,6 +164,10 @@ graph TB
 
         subgraph Actions[Connector Actions]
             CC1[Custom Connector's:<br/>ORDS REST APIs<br/>1. Vector Search 26ai RAG<br/>2. Pre-built Analytics]
+        end
+        subgraph OBS[Native Observability]
+            AN[Analytics Tab<br/>DAU, Total sessions, Total Reactions, Engagement etc.]
+            DV[Dataverse<br/>ConversationTranscript + related tables]
         end
     end
 
