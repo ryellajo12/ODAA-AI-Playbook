@@ -11,43 +11,51 @@ Agents query Oracle data directly running on Oracle Database@Azure at runtime. N
 
 | Pattern | AI Platform | How It Connects | Surfaces | Value Proposition |
 |---------|------------|-----------------|----------|-------------------|
-| **1** | **Copilot Studio** | Gateway / Oracle as Knowledge / Oracle as Tool | Teams, Web, M365 | • Fastest time-to-value (hours)<br/>• No-code builder<br/>• Business users self-serve answers<br/>• Zero data movement |
-| **2** | **MS Foundry** | Agent Framework: Oracle MCP server (hosted on Azure Functions / Azure Container Apps) + ORDS APIs; Knowledge Base (Blob, SharePoint, Fabric Files); Oracle 23ai vectors | API, M365 Copilot, Agent Store | • Full model & tool control<br/>• Multi-agent orchestration<br/>• Production-grade custom AI apps<br/>• Live Oracle data, no migration<br/>• Publish to M365 + Agent Store |
-| **3** | **Oracle MCP** (developer) | SQLcl MCP in VS Code or hosted | VS Code, Foundry, Copilot Studio | • Natural language → SQL in minutes<br/>• Zero infrastructure to start<br/>• Schema discovery on demand<br/>• DBA task automation |
-| **4** | **Power Apps** | Gateway / Oracle Connector | Power Platform | • Modernize workflows without rebuilding<br/>• AI Builder for forms & predictions<br/>• Citizen developer friendly<br/>• Incremental AI adoption |
+| **1A** | **Copilot Studio** | Gateway / Oracle as Knowledge / Oracle as Tool | Teams, Web, M365 | • Fastest time-to-value (hours)<br/>• No-code builder<br/>• Business users self-serve answers<br/>• Zero data movement |
+| **1B** | **Copilot Studio** | Oracle MCP Server (hosted on Azure Functions / Azure Container Apps) + Copilot Studio MCP Tool  | Teams, Web, M365 | • Fastest time-to-value (hours)<br/>• No-code builder<br/>• Business users self-serve answers<br/>• Zero data movement<br/>• Better tool curation than generic Oracle connector |
+| **1C** | **Copilot Studio** | Oracle ORDS API Endpoints + Custom Connector  | Teams, Web, M365 | • Fastest time-to-value (hours)<br/>• No-code builder<br/>• Business users self-serve answers<br/>• Zero data movement<br/>• Seamless native 26ai vector search on the DB |
+| **1D** | **MS Foundry** | Agent Framework: Oracle MCP server (hosted on Azure Functions / Azure Container Apps) + ORDS APIs; Knowledge Base (Blob, SharePoint, Fabric Files); Oracle 23ai vectors | API, M365 Copilot, Agent Store | • Full model & tool control<br/>• Multi-agent orchestration<br/>• Production-grade custom AI apps<br/>• Live Oracle data, no migration<br/>• Publish to M365 + Agent Store |
+| **1E** | **Oracle MCP** (developer) | SQLcl MCP in VS Code or hosted | VS Code, Foundry, Copilot Studio | • Natural language → SQL in minutes<br/>• Zero infrastructure to start<br/>• Schema discovery on demand<br/>• DBA task automation |
+| **1F** | **Power Apps** | Gateway / Oracle Connector | Power Platform | • Modernize workflows without rebuilding<br/>• AI Builder for forms & predictions<br/>• Citizen developer friendly<br/>• Incremental AI adoption |
+| **1G** | **Logic Apps** | Oracle DB Connector / ORDS REST calls | Workflow orchestration, enterprise integration | • Event-driven automation<br/>• 400+ enterprise connectors<br/>• No custom code needed<br/>• Orchestrate Oracle + SaaS + Azure |
 
 ---
 
 ### Pattern 1A: Copilot Studio + Oracle Connector (On-Prem Data Gateway)
 
+
 ```mermaid
 graph TB
-    subgraph Users["End Users"]
-        BU["Business Users<br/>Teams / Web / M365"]
+    subgraph Users[End Users]
+        BU[Business Users<br/>Teams / Web / M365]
     end
 
-    subgraph EntraID["Microsoft Entra ID"]
-        AUTH["SSO / MFA<br/>Conditional Access"]
+    subgraph EntraID[Microsoft Entra ID / OAuth2]
+        AUTH[SSO / MFA<br/>Conditional Access]
     end
 
-    subgraph CS["Microsoft Copilot Studio"]
-        COP["Custom Copilot"]
-        C["Oracle Connector"]
-        K["Oracle as Knowledge<br/>Grounds on tables,<br/>views, data"]
-        T["Oracle as Tool<br/>Connector actions<br/>called during chat"]
+    subgraph CS[Microsoft Copilot Studio]
+        COP[Custom Copilot]
+        C[Oracle Connector]
+        K[Oracle as Knowledge<br/>Grounds on tables,<br/>views, data]
+        T[Oracle as Tool<br/>Connector actions<br/>called during chat]
     end
 
-    subgraph VNET["Azure VNET"]
-        subgraph GWSub["Gateway Subnet"]
-            GATEWAY["On-Premises<br/>Data Gateway<br/>(Azure VM)"]
+    subgraph GOV[Governance / Publishing Plane]
+        A365[Agent 365 / Copilot Control System<br/>Approve / Publish / Deploy / Assign]
+    end
+
+    subgraph VNET[Azure VNET]
+        subgraph GWSub[Gateway Subnet]
+            GATEWAY[On-Premises Data Gateway<br/>Azure VM]
         end
-        subgraph PESub["Private Endpoint Subnet"]
-            PE["Private Endpoint"]
+        subgraph PESub[Private Endpoint Subnet]
+            PE[Private Endpoint]
         end
     end
 
-    subgraph ODA["Oracle Database@Azure"]
-        DB[("ADBS / Exadata etc<br/>No Public IP")]
+    subgraph ODA[Oracle Database@Azure]
+        DB[(ADBS / Exadata etc<br/>No Public IP)]
     end
 
     BU -->|SSO| AUTH
@@ -59,19 +67,144 @@ graph TB
     T -->|Azure Relay<br/>HTTPS 443| GATEWAY
     GATEWAY -->|Port 1521<br/>Private Endpoint| PE
     PE --> DB
+
+    COP -.->|Submit / Publish request| A365
+    A365 -.->|Approval / Assignment / Deployment| BU
 ```
 Azure Relay is the service that the On-Premises Data Gateway uses to communicate with cloud services like Copilot Studio. This is already how the On-Premises Data Gateway works by default — you don't configure Azure Relay separately. It's built into the gateway installer.
 
 Here's how it works:
 
-How the Gateway Communicates:
 The gateway VM makes an outbound HTTPS connection (port 443) to Azure Relay when it starts up.
 This creates a persistent, secure tunnel — no inbound ports need to be opened on the gateway VM.
 When Copilot Studio needs Oracle data, the request flows through this tunnel to the gateway, which then queries Oracle over port 1521 via the Private Endpoint.
 
 ---
+### Pattern 1B: Copilot Studio + Oracle MCP Server
 
-### Pattern 1B: MS Foundry + Oracle MCP Server
+```mermaid
+graph TB
+    subgraph Users[End Users]
+        BU[Business Users<br/>Teams / Web / M365]
+    end
+
+    subgraph EntraID[Microsoft Entra ID / OAuth2]
+        AUTH[SSO / MFA<br/>Conditional Access]
+    end
+
+    subgraph CS[Microsoft Copilot Studio]
+        COP[Custom Copilot]
+        CC[Tool]
+    end
+
+    subgraph GOV[Governance / Publishing Plane]
+        A365[Agent 365 / Copilot Control System<br/>Approve / Publish / Deploy / Assign]
+    end
+
+    subgraph AZ[Azure Integration Layer]
+        MCP[Oracle MCP Server<br/>Azure Functions or Azure Container Apps]
+        TOOLS[Purpose-built Oracle tools<br/>Search / Lookup / Summarize / Actions]
+    end
+
+    subgraph VNET[Azure VNET]
+        subgraph PESub[Private Endpoint Subnet]
+            PE[Private Endpoint]
+        end
+    end
+
+    subgraph ODA[Oracle Database@Azure]
+        DB[(ADBS / Exadata / EBS-backed Oracle DB<br/>No Public IP)]
+    end
+
+    BU -->|SSO| AUTH
+    AUTH --> COP
+    COP --> CC
+    CC --> MCP
+    MCP --> TOOLS
+    TOOLS -->|Port 1521<br/>Private connectivity| PE
+    PE --> DB
+
+    COP -.->|Submit / Publish request| A365
+    A365 -.->|Approval / Assignment / Deployment| BU
+```
+---
+### Pattern 1C: Copilot Studio + ORDS API Endpoints (Pre-built Analytics / Vector Search)
+
+
+```mermaid
+graph TB
+    subgraph Users[End Users]
+        EU[Business Users / Analysts<br/>Teams / Web / M365]
+    end
+
+    subgraph EntraID[Microsoft Entra ID / OAuth2]
+        AUTH[SSO / MFA<br/>Conditional Access]
+    end
+
+    subgraph CS[Microsoft Copilot Studio]
+        COP[Custom Copilot]
+
+        subgraph Actions[Connector Actions]
+            CC1[Custom Connector's:<br/>ORDS REST APIs<br/>1. Vector Search 26ai RAG<br/>2. Pre-built Analytics]
+        end
+    end
+
+    subgraph GOV[Governance / Publishing Plane]
+        A365[Agent 365 / Copilot Control System<br/>Approve / Publish / Deploy / Assign]
+    end
+
+    subgraph PURV[Data Governance / Compliance Plane]
+        PURVIEW[Microsoft Purview<br/>Data Map + Catalog]
+    end
+
+    subgraph AOAI[Azure OpenAI]
+        EMB[Embedding API]
+    end
+
+    subgraph VNET[Azure VNET]
+        subgraph ORDSSub[ORDS Subnet]
+            ORDS[ORDS<br/>VNET-integrated<br/>App Service / Container Apps]
+        end
+        subgraph PESub[Private Endpoint Subnet]
+            PE[Private Endpoint]
+        end
+        KV[Azure Key Vault]
+        APIM[API Management<br/>OAuth2 validation<br/>Rate limiting]
+    end
+
+    subgraph ODA[Oracle Database@Azure]
+        ORDS_EP[ORDS REST Endpoints]
+        VEC[26ai Vector Engine<br/>Vector Search]
+        DATA[("Oracle Data<br/>No Public IP")]
+    end
+
+
+    EU -->|SSO| AUTH
+    AUTH --> COP
+
+    COP --> CC1
+
+    CC1 --> APIM
+
+    APIM -->|OAuth2 token validation| ORDS
+
+    ORDS -->|Port 1521<br/>Private Endpoint| PE
+    PE --> ORDS_EP
+    PE --> VEC
+
+    ORDS_EP --> DATA
+    VEC --> DATA
+    VEC -.->|Embeddings| EMB
+
+    COP -.->|Submit / Publish request| A365
+    A365 -.->|Approval / Assignment / Deployment| EU
+
+    PURVIEW -.-> DATA
+
+```
+
+---
+### Pattern 1D: MS Foundry + Oracle MCP Server
 
 ```mermaid
 graph TB
@@ -128,7 +261,7 @@ graph TB
 
 ---
 
-### Pattern 1B-2: MS Foundry + Oracle ORDS API Endpoints (RAG / Vector Search)
+### Pattern 1D-2: MS Foundry + Oracle ORDS API Endpoints (RAG / Vector Search)
 
 ```mermaid
 graph TB
@@ -200,7 +333,7 @@ graph TB
 
 ---
 
-### Pattern 1B-3: MS Foundry + Oracle MCP + Oracle ORDS APIs + Foundry IQ (Full Stack)
+### Pattern 1D-3: MS Foundry + Oracle MCP + Oracle ORDS APIs + Foundry IQ (Full Stack)
 
 ```mermaid
 graph TB
@@ -293,6 +426,47 @@ graph TB
 
 ---
 
+---
+
+### Pattern 1F: Logic Apps + Oracle connector
+
+```mermaid
+graph LR
+    subgraph Triggers["Event Triggers"]
+        SCHED["Schedule"]
+        HTTP["HTTP Request"]
+        EVENT["Event Grid"]
+    end
+
+    subgraph LA["Logic Apps"]
+        FLOW["Workflow Engine<br/>400+ Connectors"]
+        ORA_CONN["Oracle DB Connector"]
+        ORDS_CALL["ORDS REST Call"]
+    end
+
+    subgraph ODA["Oracle DB@Azure"]
+        DB[("ADBS / Exadata")]
+    end
+
+    subgraph Downstream["Downstream"]
+        TEAMS["Teams Notification"]
+        EMAIL["Email / Outlook"]
+        SAAS["SaaS Apps"]
+    end
+
+    SCHED --> FLOW
+    HTTP --> FLOW
+    EVENT --> FLOW
+    FLOW --> ORA_CONN
+    FLOW --> ORDS_CALL
+    ORA_CONN --> DB
+    ORDS_CALL --> DB
+    FLOW --> TEAMS
+    FLOW --> EMAIL
+    FLOW --> SAAS
+```
+
+---
 
 ## Category 2: Mirrored / Analytics Data
 
