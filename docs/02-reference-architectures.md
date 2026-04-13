@@ -99,7 +99,7 @@ graph TB
 
     subgraph CS[Microsoft Copilot Studio]
         COP[Custom Copilot]
-        CC[Tool]
+        CC[Copilot Studio MCP Tool]
     end
 
     subgraph GOV[Governance / Publishing Plane]
