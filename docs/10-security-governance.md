@@ -51,13 +51,12 @@ graph LR
 | 3 | Entra ID auth for Azure services | ✅ Yes | Managed identities preferred |
 | 4 | Key Vault for Oracle credentials | ✅ Yes | No plaintext secrets |
 | 5 | System prompt restricts DDL/DML | ✅ Yes | Agent can only read by default |
-| 6 | Oracle VPD for row-level security | ⚠️ Recommended | Limits data exposed to agents |
-| 7 | Column masking for PII | ⚠️ Recommended | Data Redaction for sensitive columns |
-| 8 | MCP audit logging enabled | ✅ Yes | Check `DBTOOLS$MCP_LOG` |
-| 9 | Rate limiting via APIM | ⚠️ Recommended | Prevents runaway agent queries |
-| 10 | Azure AI Content Safety | ⚠️ Recommended | Filters harmful inputs/outputs |
-| 11 | Network segmentation (NSGs) | ✅ Yes | Agent services in separate subnet |
-| 12 | Encryption at rest and in transit | ✅ Yes | TLS 1.2+ for all connections; Oracle TDE |
+| 6 | Column masking for PII | ⚠️ Recommended | Data Redaction for sensitive columns |
+| 7 | MCP audit logging enabled | ✅ Yes | Check `DBTOOLS$MCP_LOG` |
+| 8 | Rate limiting via APIM | ⚠️ Recommended | Prevents runaway agent queries |
+| 9 | Azure AI Content Safety | ⚠️ Recommended | Filters harmful inputs/outputs |
+| 10 | Network segmentation (NSGs) | ✅ Yes | Agent services in separate subnet |
+| 11 | Encryption at rest and in transit | ✅ Yes | TLS 1.2+ for all connections; Oracle TDE |
 
 ## 16.3 Key Principle
 
