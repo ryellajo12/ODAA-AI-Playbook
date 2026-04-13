@@ -20,7 +20,7 @@ This playbook has three layers:
 | Position AI on Oracle Database@Azure in 5 minutes | Section 3 + Section 4 |
 | Help a customer decide which path | Section 5 (Decision Matrix) |
 | Design an architecture | [Reference Patterns](02-reference-architectures.md) |
-| Build something today | [Step-by-Step Guides](10-implementation-guides.md) |
+| Build something today | [Step-by-Step Guides](11-implementation-guides.md) |
 | Implement RAG on Oracle 26ai vectors | [Vector Search (Pattern 2 -- Foundry Agents)](04-foundry-agents.md#2-ms-foundry--ords-endpoints-rag--vector-search) |
 | Wire up MCP tools for agents | [Path 3 -- Oracle MCP](05-oracle-mcp.md) |
 
@@ -174,7 +174,7 @@ AI-powered intelligence layers that process, enrich, and surface insights from s
 | Objection | Response |
 |--|--|
 | *"We can't move our Oracle data"* | You don't have to. Zero Data Movement patterns (1A--1E) all work on live Oracle data with zero data movement. Managed Replication uses managed Fabric mirroring only if analytics require it. |
-| *"We're worried about security and governance"* | Oracle Database@Azure runs in Azure with full network isolation (Private Endpoints, VNETs). Oracle MCP operates inside Oracle DB security -- it doesn't bypass it. All patterns support Entra ID. See [Security & Governance](09-security-governance.md) for full guardrails. |
+| *"We're worried about security and governance"* | Oracle Database@Azure runs in Azure with full network isolation (Private Endpoints, VNETs). Oracle MCP operates inside Oracle DB security -- it doesn't bypass it. All patterns support Entra ID. See [Security & Governance](10-security-governance.md) for full guardrails. |
 | *"We don't know where to start"* | Start with a single-scenario pilot. Most customers begin with Copilot Studio (1A -- 48-hour proof of value) or an MCP demo (1C -- 2-hour setup in VS Code). |
 | *"We already have a vector database"* | Oracle 26ai has native vector support -- one fewer service to manage. But Microsoft Foundry agents can also call external vector DBs via tools. Your choice. |
 | *"Is MCP production-ready?"* | MCP is an open standard (Anthropic-initiated, now broadly adopted). Oracle's SQLcl MCP server is GA. For production, host on Azure Functions with Entra ID auth and API Management. See [Path 3 -- Oracle MCP](05-oracle-mcp.md). |

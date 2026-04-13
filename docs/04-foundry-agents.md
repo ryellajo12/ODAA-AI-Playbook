@@ -1219,3 +1219,163 @@ graph TB
 | **Reserved capacity** | Use Reserved Instances for Oracle DB@Azure and Azure OpenAI provisioned throughput |
 | **Right-sizing** | Monitor Functions/Container Apps scaling metrics; downsize if over-provisioned |
 | **Chargeback** | Tag all agent resources with `CostCenter` and `AgentName`; use Azure Cost Management for cross-charge |
+
+---
+
+## Pattern 11: Foundry IQ -- Unified Knowledge Base for Unstructured Data
+
+### What is Foundry IQ
+
+Foundry IQ ingests unstructured documents (PDFs, Word, Excel, PowerPoint, emails) from multiple supported knowledge sources, processes them into a searchable knowledge base, and makes them available to Foundry agents as a grounding source alongside structured Oracle data.
+
+### Supported Knowledge Sources
+
+Foundry IQ supports the following knowledge source types for ingesting unstructured data:
+
+| Knowledge Source | Description | Best For |
+|---|---|---|
+| **Azure AI Search Index** | Enterprise-scale search for app development; connect to an existing Azure AI Search index | Organizations with existing search indexes; custom search pipelines |
+| **Azure Blob Storage** | Retrieve documents and files from Azure Blob Storage containers | PDFs, reports, contracts, SOPs, clinical trial documents |
+| **Web** | Ground with real-time web content via Bing | Supplementing internal knowledge with public domain information |
+| **Microsoft SharePoint (Remote)** | SharePoint search with Microsoft 365 governance; content retrieved without re-indexing | Company policies, HR procedures, compliance guides -- no data duplication |
+| **Microsoft SharePoint (Indexed)** | Indexes SharePoint content into Azure AI Search for custom pipelines | When you need custom search ranking or filtering on SharePoint content |
+| **Microsoft OneLake** | Retrieve from Microsoft OneLake unstructured data | Fabric notebook outputs, lakehouse exports, analytics reports stored in OneLake |
+
+> **Note**: When creating a knowledge source in Foundry, navigate to **Knowledge** --> **Create new** to see all available source types. You can add multiple knowledge sources to a single Foundry IQ configuration -- for example, compliance documents from Blob Storage + policies from SharePoint (Remote) + analytics outputs from OneLake.
+
+### Architecture
+
+```mermaid
+graph TB
+    subgraph DocSources["Supported Knowledge Sources"]
+        AISEARCH["Azure AI Search Index<br/>Existing search indexes"]
+        BLOB["Azure Blob Storage<br/>PDFs, Reports,<br/>Contracts, SOPs"]
+        WEB["Web (via Bing)<br/>Real-time public content"]
+        SP_R["SharePoint (Remote)<br/>M365 governance,<br/>no re-indexing"]
+        SP_I["SharePoint (Indexed)<br/>Custom search pipelines"]
+        OL["Microsoft OneLake<br/>Fabric outputs,<br/>analytics reports"]
+    end
+
+    subgraph FoundryIQ["Foundry IQ Processing"]
+        INGEST["Document Ingestion<br/>Chunking + Embedding"]
+        KB["Unified Knowledge Base<br/>Indexed + Searchable"]
+    end
+
+    subgraph Purview["Microsoft Purview"]
+        SCAN["Scan + Classify<br/>Before Grounding"]
+        LABEL["Sensitivity Labels<br/>(MIP)"]
+        DLP["DLP Policies"]
+    end
+
+    subgraph Foundry["Microsoft Foundry Agent"]
+        FA["Foundry Agent<br/>GPT-4.1 / o3"]
+        MCP_T["Oracle MCP Tool<br/>(structured data)"]
+        ORDS_T["ORDS Tool<br/>(vector search)"]
+        IQ_K["Foundry IQ<br/>Knowledge Source"]
+    end
+
+    subgraph ODA["Oracle Database@Azure"]
+        ODB["Oracle 26ai DB<br/>(live structured data)"]
+    end
+
+    subgraph Governance["A365 Control Plane"]
+        A365["A365 Admin Center<br/>Agent Policies<br/>IQ Administration"]
+    end
+
+    AISEARCH --> SCAN
+    BLOB --> SCAN
+    WEB --> FA
+    SP_R --> SCAN
+    SP_I --> SCAN
+    OL --> SCAN
+    SCAN --> LABEL
+    LABEL --> INGEST
+    INGEST --> KB
+    KB --> IQ_K
+    IQ_K --> FA
+    MCP_T --> FA
+    ORDS_T --> FA
+    FA -->|"PE"| ODB
+    DLP -.->|"Block PII"| FA
+    A365 -.->|"Manage IQ<br/>+ Agent Policies"| FA
+```
+
+### How Foundry IQ Creates a Unified Knowledge Base
+
+1. **Connect knowledge sources** to Foundry IQ (any combination of supported sources):
+   - **Azure AI Search Index**: Connect existing enterprise search indexes
+   - **Azure Blob Storage**: Technical reports, clinical trial documents, contracts, SOPs
+   - **Web (via Bing)**: Supplement with real-time public web content (no Purview scan needed)
+   - **Microsoft SharePoint (Remote)**: Company policies, HR procedures, compliance guides -- content stays in SharePoint with M365 governance, retrieved without re-indexing
+   - **Microsoft SharePoint (Indexed)**: SharePoint content indexed into Azure AI Search for custom ranking/filtering
+   - **Microsoft OneLake**: Fabric notebook outputs, lakehouse exports, analytics reports
+
+2. **Purview scans documents BEFORE grounding** (critical governance step):
+   - Register Blob and SharePoint sources in Purview Data Map
+   - Run classification scan -- identifies PII, PHI, financial data in documents
+   - Apply sensitivity labels (Public, Internal, Confidential, Highly Confidential)
+   - Documents labeled Highly Confidential are excluded from IQ grounding
+
+3. **Foundry IQ processes documents**:
+   - Chunks documents into semantic segments
+   - Generates embeddings for each chunk
+   - Indexes into a searchable knowledge base
+   - Preserves document metadata (source, date, author, sensitivity label)
+
+4. **Agent uses IQ alongside Oracle tools**:
+   - User asks: "What does our SOP say about adverse event reporting for products with high return rates?"
+   - Agent retrieves:
+     - SOP document from Foundry IQ knowledge base
+     - Product return rate data from Oracle via MCP/ORDS
+   - Agent combines both to generate a complete, grounded answer
+
+### Setup Steps (End-to-End)
+
+1. **Create a Foundry project** at [ai.azure.com](https://ai.azure.com)
+2. **Register document sources in Purview** -- scan Blob and SharePoint; apply sensitivity labels
+3. **Connect knowledge sources to Foundry IQ**:
+   - Foundry project --> **Knowledge** --> **Create new**
+   - Select from supported source types:
+     - **Azure AI Search Index** -- provide search service endpoint and index name
+     - **Azure Blob Storage** -- select container(s) with documents
+     - **Web** -- configure Bing grounding for real-time web content
+     - **Microsoft SharePoint (Remote)** -- select SharePoint site(s); content retrieved with M365 governance
+     - **Microsoft SharePoint (Indexed)** -- indexes SharePoint into Azure AI Search
+     - **Microsoft OneLake** -- select OneLake location(s)
+   - Configure **retrieval instructions** to guide how the agent prioritizes knowledge sources (e.g., "Prioritize compliance-guidelines for all compliance questions and customer-surveys for feedback responses")
+   - Set **retrieval reasoning effort** (Low / Medium / High) based on query complexity
+   - Set **output mode** (Extractive data / Generative summary)
+4. **Configure IQ processing pipeline**:
+   - Set chunk size (default: 512 tokens) and overlap (default: 128 tokens)
+   - Select embedding model (text-embedding-3-small or text-embedding-3-large)
+   - Set refresh schedule for document re-indexing
+5. **Create a Foundry Agent** with IQ + Oracle tools:
+   - Add Foundry IQ as a knowledge source
+   - Add Oracle MCP Server as an external tool (Pattern 2)
+   - Add ORDS vector search endpoints as OpenAPI tools (Pattern 3)
+   - Enable Azure AI Content Safety
+6. **Configure agent system prompt** -- instruct the agent to cite sources:
+   ```
+   When answering, cite both the document source (from Foundry IQ) and the 
+   Oracle data source (table/endpoint) used. If a document is labeled 
+   Confidential, include the sensitivity label in your response.
+   ```
+7. **Test cross-source queries** -- verify the agent can combine document knowledge with live Oracle data
+8. **Manage via A365 Admin Center**:
+   - Monitor IQ processing pipeline health and document ingestion status
+   - Set policies for which users can access IQ-grounded agents
+   - Configure DLP to prevent sensitive document content from appearing in responses
+
+### Design Considerations
+
+| Consideration | Guidance |
+|---|---|
+| **Scan before grounding** | Always classify documents in Purview before connecting to Foundry IQ -- prevents sensitive content from entering the knowledge base |
+| **Label propagation** | Sensitivity labels flow from documents through IQ into agent responses -- enables DLP enforcement |
+| **Chunk size tuning** | Smaller chunks (256-512 tokens) for precise Q&A; larger chunks (1024) for summary/context tasks |
+| **Refresh schedule** | Set IQ re-indexing after SharePoint/Blob content updates; stale documents = stale answers |
+| **Cross-source queries** | The real power is combining: "What does our policy say about X?" (IQ) + "How many X events occurred?" (Oracle) |
+| **Cost** | Embedding generation + index storage billable per document; monitor via A365 |
+
+---
+
