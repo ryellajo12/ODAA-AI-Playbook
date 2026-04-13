@@ -16,7 +16,7 @@
 
 | Component | Pricing Model | Typical Pilot Cost |
 |-----------|--------------|-------------------|
-| OD@A (ADBS) | OCPU-hour | Existing — no incremental for AI |
+| Oracle Database@Azure (ADBS) | OCPU-hour | Existing — no incremental for AI |
 | Azure OpenAI (GPT-4.1) | Per 1M tokens (input/output) | ~$50-200/month for pilot |
 | Azure OpenAI (Embeddings) | Per 1M tokens | ~$5-20/month for pilot |
 | Microsoft Foundry | Compute + model hosting | ~$100-300/month for pilot |

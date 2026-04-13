@@ -28,7 +28,7 @@ Once published, a Data Agent can be consumed as:
 2. **Configure Fabric Mirroring for Oracle:**
    - In Fabric workspace → **+ New** → **Mirrored Database**
    - Select Oracle Database as the source
-   - Provide OD@A connection via managed private endpoint
+   - Provide Oracle Database@Azure connection via managed private endpoint
    - Credentials: dedicated read-only Oracle user (stored securely in Fabric)
    - Select tables/schemas to mirror (e.g., SH schema)
    - Configure refresh schedule (near-real-time or scheduled)
@@ -59,12 +59,12 @@ Once published, a Data Agent can be consumed as:
    **Option C — To Copilot Studio:**
    - In Copilot Studio → **Tools** → Add **Fabric Data Agent** via native connector
    - Build copilots grounded on mirrored Oracle analytics data
-   - Combine with Oracle connector (Pattern 1A) for live + mirrored data in one copilot
+   - Combine with Oracle connector (Pattern 1) for live + mirrored data in one copilot
 
    **Option D — To MS Foundry:**
    - In Foundry → Agent → **+ Add Tool** → select Fabric Data Agent via native connector
    - Foundry agent uses Data Agent as one of its tools
-   - Combine with MCP (1B) and ORDS (1B-2) tools for live + mirrored in one agent
+   - Combine with MCP (Pattern 2) and ORDS (Pattern 3) tools for live + mirrored in one agent
 
 ## 12.4 Entra ID Authentication
 

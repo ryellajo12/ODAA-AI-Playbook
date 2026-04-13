@@ -138,7 +138,7 @@ graph TB
         EMB["2. Azure OpenAI Embedding API<br/>Model: text-embedding-3-small<br/>Dimensions: 1536"]
     end
 
-    subgraph Oracle26ai["Oracle 26ai on OD@A"]
+    subgraph Oracle26ai["Oracle 26ai on Oracle Database@Azure"]
         SEARCH["3. VECTOR_DISTANCE Search<br/>SELECT ae_id, description, severity,<br/>VECTOR_DISTANCE(embedding, :query_vector, COSINE)<br/>ORDER BY distance FETCH FIRST 5 ROWS ONLY"]
         VDATA[("VECTOR Column<br/>Pre-computed Embeddings")]
     end
@@ -532,7 +532,7 @@ You are an Oracle analytics agent with access to governed REST APIs and semantic
 
 ## Your Capabilities
 - Call pre-built ORDS endpoints for structured analytics
-- Perform semantic vector search via Oracle 23ai for RAG
+- Perform semantic vector search via Oracle 26ai for RAG
 
 ## Available Tools
 - get_promotion_summary: High-level promotion summaries
@@ -599,7 +599,7 @@ graph TB
     end
 
     subgraph "Oracle Database@Azure"
-        ODB["Oracle 23ai DB"]
+        ODB["Oracle 26ai DB"]
         VPD["VPD Row-Level Security"]
         DR["Data Redaction (PII)"]
         DBV["Database Vault"]
@@ -758,7 +758,7 @@ semantic search, and unstructured documents.
 ## Your Capabilities
 1. **Direct SQL Queries**: Execute SQL via Oracle MCP SQLcl tool
 2. **REST API Access**: Call pre-built ORDS endpoints for governed analytics
-3. **Vector Search**: Semantic similarity search via Oracle 23ai
+3. **Vector Search**: Semantic similarity search via Oracle 26ai
 4. **Document Knowledge**: Access PDFs, docs from Blob/SharePoint via Foundry IQ
 
 ## Safety Rules
@@ -794,10 +794,10 @@ graph TB
     end
 
     subgraph "Specialist Agents"
-        SALES["Sales Agent (1B-2)<br/>ORDS analytics tools"]
-        CLINICAL["Clinical Agent (1B-2)<br/>Vector search RAG"]
-        DBA["DBA Assistant (1B)<br/>MCP SQL tools"]
-        DOCS["Doc Analyst (1B-3)<br/>Foundry IQ + ORDS"]
+        SALES["Sales Agent (Pattern 3)<br/>ORDS analytics tools"]
+        CLINICAL["Clinical Agent (Pattern 3)<br/>Vector search RAG"]
+        DBA["DBA Assistant (Pattern 2)<br/>MCP SQL tools"]
+        DOCS["Doc Analyst (Pattern 4)<br/>Foundry IQ + ORDS"]
     end
 
     subgraph "Shared Services"
@@ -903,7 +903,7 @@ Prompt injection is a critical risk for AI agents with database access. Apply th
 | **App Registration secret monitoring** | Alert when client secrets are within 30 days of expiry; prefer certificates over secrets |
 | **Managed Identity everywhere** | MCP → Key Vault, ORDS → Key Vault, Foundry IQ → Blob/SharePoint all use Managed Identity (no stored secrets) |
 | **mTLS (optional)** | For MCP ↔ Oracle, configure Oracle wallet with mutual TLS certificates for service-to-service auth |
-| **Oracle 23ai Entra ID auth (preview)** | Use Entra ID tokens for Oracle authentication — eliminates Oracle password storage entirely |
+| **Oracle 26ai Entra ID auth (preview)** | Use Entra ID tokens for Oracle authentication — eliminates Oracle password storage entirely |
 
 ### 10.5.4 Encryption
 
@@ -979,13 +979,13 @@ graph TB
 | 1 | **Register Oracle in Purview Data Map** | Add Oracle Database@Azure as a managed data source; provide connection via PE | All |
 | 2 | **Run classification scan** | Use built-in classifiers (SSN, Credit Card, Email, Name, DOB) + custom classifiers for domain-specific PII/PHI | All |
 | 3 | **Apply sensitivity labels** | Map classifications to MIP labels: `Public`, `Internal`, `Confidential`, `Highly Confidential` | All |
-| 4 | **Register Blob Storage in Data Map** | Scan documents in Blob containers used by Foundry IQ; classify before grounding | 1B-3 |
-| 5 | **Register SharePoint in Data Map** | Scan SharePoint sites connected to Foundry IQ; apply labels | 1B-3 |
+| 4 | **Register Blob Storage in Data Map** | Scan documents in Blob containers used by Foundry IQ; classify before grounding | Pattern 4 |
+| 5 | **Register SharePoint in Data Map** | Scan SharePoint sites connected to Foundry IQ; apply labels | Pattern 4 |
 | 6 | **Configure DLP policies** | Create policies that block agent responses containing patterns matching `Confidential` or `Highly Confidential` data | All |
 | 7 | **Enable data lineage** | Track data flow: Oracle table → ORDS/MCP → Agent → User response | All |
 | 8 | **Configure Purview access policies** | Use Purview-managed access grants for Oracle datasets — acts as governance overlay on top of Oracle DB grants | All |
 | 9 | **Enable Purview audit** | Log all classification scans, label changes, access policy evaluations, and DLP triggers | All |
-| 10 | **Label propagation to Foundry IQ** | Ensure documents ingested by Foundry IQ carry their Purview sensitivity labels into RAG responses | 1B-3 |
+| 10 | **Label propagation to Foundry IQ** | Ensure documents ingested by Foundry IQ carry their Purview sensitivity labels into RAG responses | Pattern 4 |
 
 ### 10.6.3 Data Classification Taxonomy
 
@@ -1098,7 +1098,7 @@ graph LR
 |--------|----------|---------|
 | **Username/password in Key Vault** | GA | Current approach — Key Vault stores credentials; Managed Identity retrieves |
 | **Oracle wallet (mTLS)** | GA | Certificate-based auth; wallet stored in Key Vault as secret |
-| **Entra ID external auth (23ai)** | Preview | Oracle 23ai can accept Entra ID tokens — eliminates Oracle passwords entirely |
+| **Entra ID external auth (26ai)** | Preview | Oracle 26ai can accept Entra ID tokens — eliminates Oracle passwords entirely |
 
 ---
 

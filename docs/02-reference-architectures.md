@@ -19,7 +19,7 @@ Agents query Oracle data directly running on Oracle Database@Azure at runtime. N
 
 ---
 
-### Pattern 1A: Copilot Studio + Oracle Connector (On-Prem Data Gateway)
+### Pattern 1: Copilot Studio + Oracle Connector (On-Prem Data Gateway)
 
 ```mermaid
 graph TB
@@ -72,7 +72,7 @@ When Copilot Studio needs Oracle data, the request flows through this tunnel to 
 
 ---
 
-### Pattern 1B: MS Foundry + Oracle MCP Server
+### Pattern 2: MS Foundry + Oracle MCP Server
 
 ```mermaid
 graph TB
@@ -142,7 +142,7 @@ graph TB
 
 ---
 
-### Pattern 1B-2: MS Foundry + Oracle ORDS API Endpoints (RAG / Vector Search)
+### Pattern Pattern 3: MS Foundry + Oracle ORDS API Endpoints (RAG / Vector Search)
 
 ```mermaid
 graph TB
@@ -220,7 +220,7 @@ graph TB
 
 ---
 
-### Pattern 1B-3: MS Foundry + Oracle MCP + Oracle ORDS APIs + Foundry IQ (Full Stack)
+### Pattern Pattern 4: MS Foundry + Oracle MCP + Oracle ORDS APIs + Foundry IQ (Full Stack)
 
 ```mermaid
 graph TB
@@ -334,7 +334,7 @@ graph TB
 
 ---
 
-### Pattern 1C: Oracle MCP Server (Developer + Hosted)
+### Pattern 5: Oracle MCP Server (Developer + Hosted)
 
 ```mermaid
 graph TB
@@ -392,7 +392,7 @@ graph TB
 
 ---
 
-### Pattern 1D: Power Apps + Oracle Database@Azure
+### Pattern 6: Power Apps + Oracle Database@Azure
 
 ```mermaid
 graph TB
@@ -440,11 +440,11 @@ graph TB
     DB -.->|"Unified Audit"| LA
 ```
 
-> Power Apps connects to Oracle Database@Azure via the Oracle DB Connector and the On-Premises Data Gateway — same gateway infrastructure as Copilot Studio (Pattern 1A). AI Builder adds OCR, form processing, and predictions on top of Oracle data. See [Path 5 — Power Apps](07-path5-power-apps.md) for details.
+> Power Apps connects to Oracle Database@Azure via the Oracle DB Connector and the On-Premises Data Gateway — same gateway infrastructure as Copilot Studio (Pattern 1). AI Builder adds OCR, form processing, and predictions on top of Oracle data. See [Path 5 — Power Apps](07-path5-power-apps.md) for details.
 
 ---
 
-### Pattern 1E: Logic Apps + Oracle Database@Azure
+### Pattern 7: Logic Apps + Oracle Database@Azure
 
 #### Option A: Oracle DB Connector (via Gateway)
 
@@ -531,7 +531,7 @@ graph LR
     DB -.->|"Unified Audit"| LANA
 ```
 
-> **Option B is recommended** — ORDS runs natively on Oracle 26ai (no gateway infrastructure), APIM enforces OAuth2 + rate limiting, Logic App Standard provides VNET integration for fully private connectivity; supports vector search endpoints. See [Pattern 1E — Logic Apps](08-path6-logic-apps.md) for detailed setup, NSG rules, and workflow patterns.
+> **Option B is recommended** — ORDS runs natively on Oracle 26ai (no gateway infrastructure), APIM enforces OAuth2 + rate limiting, Logic App Standard provides VNET integration for fully private connectivity; supports vector search endpoints. See [Pattern 7 — Logic Apps](08-path6-logic-apps.md) for detailed setup, NSG rules, and workflow patterns.
 
 ---
 

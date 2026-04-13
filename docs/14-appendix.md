@@ -6,7 +6,7 @@
 |----------|-----|
 | Oracle Database@Azure | https://docs.oracle.com/en-us/iaas/Content/multicloud/oaa.htm |
 | Oracle MCP Server (SQLcl) | https://docs.oracle.com/en/database/oracle/sql-developer-command-line/ |
-| Oracle 23ai Vector Search | https://docs.oracle.com/en/database/oracle/oracle-database/23/vecse/ |
+| Oracle 26ai Vector Search | https://docs.oracle.com/en/database/oracle/oracle-database/23/vecse/ |
 | Oracle ORDS | https://docs.oracle.com/en/database/oracle/oracle-rest-data-services/ |
 | Microsoft Foundry | https://learn.microsoft.com/en-us/azure/ai-studio/ |
 | Copilot Studio | https://learn.microsoft.com/en-us/microsoft-copilot-studio/ |
@@ -39,8 +39,8 @@ Use this template when documenting a customer's chosen path:
 # ADR: AI Agent Architecture for [Customer Name]
 
 ## Context
-- Oracle DB version: [19c / 23ai]
-- OD@A deployment: [ADBS / Exadata]
+- Oracle DB version: [19c / 26ai]
+- Oracle Database@Azure deployment: [ADBS / Exadata]
 - Primary use case: [Q&A / Analytics / Automation / RAG]
 - User persona: [Business / Developer / DBA]
 - Data movement: [Allowed / Not allowed]
@@ -67,7 +67,7 @@ Rationale: [Why this path fits]
 
 | Term | Definition |
 |------|-----------|
-| **OD@A** | Oracle Database@Azure — Oracle databases running natively on Azure infrastructure |
+| **Oracle Database@Azure** | Oracle Database@Azure — Oracle databases running natively on Azure infrastructure |
 | **ADBS** | Autonomous Database Serverless — Oracle's fully managed database service |
 | **MCP** | Model Context Protocol — open standard for AI agent tool integration |
 | **ORDS** | Oracle REST Data Services — REST API layer for Oracle Database |
@@ -87,9 +87,9 @@ Rationale: [Why this path fits]
 | Version | Date | Change |
 |---------|------|--------|
 | 1.0 | 2025 | Initial field playbook (4 paths) |
-| 2.0 | February 2026 | Expanded to 6 paths; added Oracle 23ai vector search; added step-by-step implementation guides; added ORDS as AI tool layer; added monitoring and cost sections; added security checklist |
+| 2.0 | February 2026 | Expanded to 6 paths; added Oracle 26ai vector search; added step-by-step implementation guides; added ORDS as AI tool layer; added monitoring and cost sections; added security checklist |
 | 2.1 | April 2026 | Split monolithic README into modular docs/ structure for easier navigation and maintenance |
 
 ---
 
-*This playbook is maintained by the OD@A AI Solutions team. For contributions, corrections, or customer-specific architecture reviews, contact the authors.*
+*This playbook is maintained by the Oracle Database@Azure AI Solutions team. For contributions, corrections, or customer-specific architecture reviews, contact the authors.*

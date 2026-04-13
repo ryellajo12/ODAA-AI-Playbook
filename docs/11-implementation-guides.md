@@ -6,7 +6,7 @@
 
 **Prerequisites:**
 - Microsoft Foundry project with GPT-4.1 deployed
-- Oracle ADBS on OD@A with SH schema
+- Oracle ADBS on Oracle Database@Azure with SH schema
 - ORDS endpoints configured
 - [Optional] SQLcl MCP server accessible
 
@@ -29,7 +29,7 @@
 
 ## 17.2 Guide: Set Up Oracle MCP in VS Code in 15 Minutes
 
-**Goal:** Get natural language → SQL working on OD@A in VS Code.
+**Goal:** Get natural language → SQL working on Oracle Database@Azure in VS Code.
 
 **Steps:**
 
@@ -37,7 +37,7 @@
 |------|--------|------|
 | 1 | Install **SQL Developer Extension for VS Code** from marketplace | 2 min |
 | 2 | Click the Database icon → **+ New Connection** | 2 min |
-| 3 | Enter OD@A connection details (host, port, service name, username, password) | 3 min |
+| 3 | Enter Oracle Database@Azure connection details (host, port, service name, username, password) | 3 min |
 | 4 | Test connection → connected ✅ | 1 min |
 | 5 | Open **GitHub Copilot** → switch to **Agent Mode** | 1 min |
 | 6 | Type: `@oracle List all tables in the SH schema` | 1 min |
@@ -47,12 +47,12 @@
 
 ---
 
-## 17.3 Guide: Build Oracle 23ai Vector Search + RAG in 2 Hours
+## 17.3 Guide: Build Oracle 26ai Vector Search + RAG in 2 Hours
 
-**Goal:** Implement semantic search on Oracle data using 23ai vectors and Azure OpenAI embeddings.
+**Goal:** Implement semantic search on Oracle data using 26ai vectors and Azure OpenAI embeddings.
 
 **Prerequisites:**
-- Oracle 23ai on OD@A
+- Oracle 26ai on Oracle Database@Azure
 - Azure OpenAI with `text-embedding-3-small` deployed
 - ORDS configured
 
@@ -84,7 +84,7 @@
 |------|--------|------|
 | 1 | Open Fabric workspace → **+ New** → **Mirrored Database** | 2 min |
 | 2 | Select **Oracle Database** as source | 1 min |
-| 3 | Enter OD@A connection: host, port, service name | 5 min |
+| 3 | Enter Oracle Database@Azure connection: host, port, service name | 5 min |
 | 4 | Provide Oracle credentials (read-only user) | 2 min |
 | 5 | Select tables: SH.SALES, SH.PRODUCTS, SH.PROMOTIONS, SH.CUSTOMERS, SH.TIMES | 5 min |
 | 6 | Configure refresh schedule (e.g., every 15 minutes) | 3 min |

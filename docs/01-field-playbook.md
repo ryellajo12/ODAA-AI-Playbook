@@ -17,7 +17,7 @@ This playbook has three layers:
 
 | You need to… | Go to… |
 |---------------|--------|
-| Position AI on OD@A in 5 minutes | Section 3 + Section 4 |
+| Position AI on Oracle Database@Azure in 5 minutes | Section 3 + Section 4 |
 | Help a customer decide which path | Section 5 (Decision Matrix) |
 | Design an architecture | [Reference Patterns](02-reference-architectures.md) |
 | Build something today | [Step-by-Step Guides](11-implementation-guides.md) |
@@ -52,8 +52,8 @@ This playbook has three layers:
 | "We want insights and trends" | Analytics + AI | Microsoft Fabric |
 | "We're building an app / product" | Pro-dev, APIs, orchestration | Microsoft Foundry |
 | "DBAs need automation" | Schema exploration, SQL generation | Oracle MCP Server |
-| "We have Oracle 23ai" | Native vector search | Oracle 23ai + Azure OpenAI RAG |
-| "We want semantic search" | RAG / vector similarity | Oracle 23ai + Azure OpenAI RAG for vector search |
+| "We have Oracle 26ai" | Native vector search | Oracle 26ai + Azure OpenAI RAG |
+| "We want semantic search" | RAG / vector similarity | Oracle 26ai + Azure OpenAI RAG for vector search |
 | "We need multi-step workflows" | Agentic AI with tool orchestration | Microsoft Foundry + MCP |
 
 ---
@@ -67,9 +67,9 @@ This playbook has three layers:
 1. **Start with live Oracle data** — no ETL prerequisite
 2. **Choose your toolchain** — low-code (Copilot Studio, Power Apps) or pro-code (Microsoft Foundry, MCP, SDKs)
 3. **Evolve incrementally** — from Q&A → Agents → Analytics → AI Applications
-4. **Enterprise-grade security** — OD@A network isolation + Entra ID + Oracle DB security
+4. **Enterprise-grade security** — Oracle Database@Azure network isolation + Entra ID + Oracle DB security
 5. **11 proven patterns across 3 categories** — Live Data, Mirrored Data, and IQ layers; customers choose based on need
-6. **Oracle 23ai native vectors** — RAG without a separate vector database
+6. **Oracle 26ai native vectors** — RAG without a separate vector database
 
 ### Elevator Pitch (30 seconds)
 
@@ -77,7 +77,7 @@ This playbook has three layers:
 
 ---
 
-## 4. AI Patterns on OD@A — Overview
+## 4. AI Patterns on Oracle Database@Azure — Overview
 
 All patterns fall into three categories based on how Oracle data flows into the AI ecosystem.
 
@@ -87,13 +87,13 @@ Agents query Oracle Database@Azure directly at runtime. No data leaves Oracle.
 
 | Pattern | AI Platform | How It Connects | Surfaces | Value Proposition |
 |---------|------------|-----------------|----------|-------------------|
-| **1A** | **Copilot Studio** | Gateway / Oracle as Knowledge / Oracle as Tool | Teams, Web, M365 | • Fastest time-to-value (hours)<br/>• No-code builder<br/>• Business users self-serve answers<br/>• Zero data movement |
-| **1B** | **MS Foundry + MCP** | Oracle MCP Server on Functions / Container Apps (VNET-integrated) | API, M365 Copilot, Agent Store | • NL → SQL via MCP<br/>• Entra ID SSO/MFA + RBAC<br/>• Private Endpoints end-to-end<br/>• Simplest Foundry pattern |
-| **1B-2** | **MS Foundry + ORDS** | ORDS REST endpoints + Oracle 23ai vector search (RAG); APIM for OAuth2 | API, M365 Copilot, Agent Store | • Governed REST APIs, no raw SQL<br/>• Oracle 23ai RAG / vector search<br/>• APIM enforces Entra ID OAuth2<br/>• All traffic private |
-| **1B-3** | **MS Foundry + MCP + ORDS + Foundry IQ** | MCP + ORDS + 23ai vectors + Foundry IQ (Blob, SharePoint, Fabric Files) | API, M365 Copilot, Agent Store | • Complete: structured + unstructured + RAG<br/>• RBAC at every layer<br/>• Separate DB users per tool<br/>• Maximum AI value |
-| **1C** | **Oracle MCP** (developer) | SQLcl MCP in VS Code or hosted | VS Code, Foundry, Copilot Studio | • Natural language → SQL in minutes<br/>• Zero infrastructure to start<br/>• Schema discovery on demand<br/>• DBA task automation |
-| **1D** | **Power Apps** | Gateway / Oracle Connector | Power Platform | • Modernize workflows without rebuilding<br/>• AI Builder for forms & predictions<br/>• Citizen developer friendly<br/>• Incremental AI adoption |
-| **1E** | **Logic Apps** | Oracle DB Connector / ORDS REST calls | Workflow orchestration, enterprise integration | • Event-driven automation<br/>• 400+ enterprise connectors<br/>• No custom code needed<br/>• Orchestrate Oracle + SaaS + Azure |
+| **1** | **Copilot Studio** | Gateway / Oracle as Knowledge / Oracle as Tool | Teams, Web, M365 | • Fastest time-to-value (hours)<br/>• No-code builder<br/>• Business users self-serve answers<br/>• Zero data movement |
+| **2** | **MS Foundry + MCP** | Oracle MCP Server on Functions / Container Apps (VNET-integrated) | API, M365 Copilot, Agent Store | • NL → SQL via MCP<br/>• Entra ID SSO/MFA + RBAC<br/>• Private Endpoints end-to-end<br/>• Simplest Foundry pattern |
+| **3** | **MS Foundry + ORDS** | ORDS REST endpoints + Oracle 26ai vector search (RAG); APIM for OAuth2 | API, M365 Copilot, Agent Store | • Governed REST APIs, no raw SQL<br/>• Oracle 26ai RAG / vector search<br/>• APIM enforces Entra ID OAuth2<br/>• All traffic private |
+| **4** | **MS Foundry + MCP + ORDS + Foundry IQ** | MCP + ORDS + 26ai vectors + Foundry IQ (Blob, SharePoint, Fabric Files) | API, M365 Copilot, Agent Store | • Complete: structured + unstructured + RAG<br/>• RBAC at every layer<br/>• Separate DB users per tool<br/>• Maximum AI value |
+| **5** | **Oracle MCP** (developer) | SQLcl MCP in VS Code or hosted | VS Code, Foundry, Copilot Studio | • Natural language → SQL in minutes<br/>• Zero infrastructure to start<br/>• Schema discovery on demand<br/>• DBA task automation |
+| **6** | **Power Apps** | Gateway / Oracle Connector | Power Platform | • Modernize workflows without rebuilding<br/>• AI Builder for forms & predictions<br/>• Citizen developer friendly<br/>• Incremental AI adoption |
+| **7** | **Logic Apps** | Oracle DB Connector / ORDS REST calls | Workflow orchestration, enterprise integration | • Event-driven automation<br/>• 400+ enterprise connectors<br/>• No custom code needed<br/>• Orchestrate Oracle + SaaS + Azure |
 
 ### Category 2: Mirrored / Analytics Data
 
@@ -125,13 +125,13 @@ AI-powered intelligence layers that process, enrich, and surface insights from s
 
 | Customer Need | Lead With | Why |
 |--------------|-----------|-----|
-| Live data Q&A, no movement | **1A:** Copilot Studio | Direct gateway, no-code, fastest |
-| Custom AI apps — SQL-first | **1B:** MS Foundry + MCP | Natural language → SQL, schema discovery |
-| Custom AI apps — governed APIs + RAG | **1B-2:** MS Foundry + ORDS | Pre-built REST endpoints, 23ai vector search |
-| Full stack agent (structured + unstructured) | **1B-3:** MS Foundry + MCP + ORDS + Foundry IQ | Complete agent across all data types |
-| DBA / developer automation | **1C:** Oracle MCP | SQL generation, schema exploration |
-| Business workflow modernization | **1D:** Power Apps | Low-code, incremental AI |
-| Enterprise integration / event-driven | **1E:** Logic Apps | 400+ connectors, no custom code |
+| Live data Q&A, no movement | **Pattern 1:** Copilot Studio | Direct gateway, no-code, fastest |
+| Custom AI apps — SQL-first | **Pattern 2:** MS Foundry + MCP | Natural language → SQL, schema discovery |
+| Custom AI apps — governed APIs + RAG | **Pattern 3:** MS Foundry + ORDS | Pre-built REST endpoints, 26ai vector search |
+| Full stack agent (structured + unstructured) | **Pattern 4:** MS Foundry + MCP + ORDS + Foundry IQ | Complete agent across all data types |
+| DBA / developer automation | **Pattern 5:** Oracle MCP | SQL generation, schema exploration |
+| Business workflow modernization | **Pattern 6:** Power Apps | Low-code, incremental AI |
+| Enterprise integration / event-driven | **Pattern 7:** Logic Apps | 400+ connectors, no custom code |
 | Cross-source analytics | **2A:** Mirrored DB + Data Agents | Managed mirroring, NL queries, publish as MCP/Teams/Copilot Studio/Foundry |
 | AI agents on analytics data | **2B:** Fabric + Data Agents + Foundry | Data Agent as Foundry tool + live Oracle tools |
 | Automated data insights | **3A:** Fabric IQ | AI-powered pattern discovery |
@@ -141,14 +141,14 @@ AI-powered intelligence layers that process, enrich, and surface insights from s
 
 ### 5.2 Detailed Comparison
 
-| Dimension | 1A Copilot Studio | 1B Foundry+MCP | 1B-2 Foundry+ORDS | 1B-3 Full Stack | 1C Oracle MCP | 1D Power Apps | 1E Logic Apps | 2A Mirrored DB | 3D Unified IQ |
+| Dimension | Pattern 1 Copilot Studio | Pattern 2 Foundry+MCP | Pattern 3 Foundry+ORDS | Pattern 4 Full Stack | Pattern 5 Oracle MCP | Pattern 6 Power Apps | Pattern 7 Logic Apps | 2A Mirrored DB | 3D Unified IQ |
 |-----------|-------------------|----------------|-------------------|-----------------|---------------|---------------|---------------|----------------|---------------|
 | **Skill level** | Low-code | Pro-dev | Pro-dev | Pro-dev | DBA/Dev | Low-code | Low-code | Data eng | Pro-dev |
 | **Data movement** | None | None | None | None | None | None | None | Mirror | Mirror + IQ |
 | **Real-time data** | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ⚠️ Near-RT | ⚠️ Near-RT |
-| **Knowledge grounding** | ✅ Oracle as Knowledge | ⚠️ Schema context | ✅ Via ORDS + 23ai vectors | ✅ Foundry IQ + ORDS + 23ai | ⚠️ Schema context | ❌ No | ❌ No | ✅ Semantic model | ✅ All IQ layers |
+| **Knowledge grounding** | ✅ Oracle as Knowledge | ⚠️ Schema context | ✅ Via ORDS + 26ai vectors | ✅ Foundry IQ + ORDS + 26ai | ⚠️ Schema context | ❌ No | ❌ No | ✅ Semantic model | ✅ All IQ layers |
 | **Tool calling** | ✅ Connector | ✅ MCP | ✅ ORDS OpenAPI | ✅ MCP + ORDS | ✅ Native | ❌ No | ✅ Connectors | ⚠️ Via Foundry | ✅ Via Foundry |
-| **Vector search** | ❌ No | ❌ No | ✅ Oracle 23ai | ✅ Oracle 23ai | ✅ Via SQL | ❌ No | ❌ No | ❌ No | ✅ Via Foundry |
+| **Vector search** | ❌ No | ❌ No | ✅ Oracle 26ai | ✅ Oracle 26ai | ✅ Via SQL | ❌ No | ❌ No | ❌ No | ✅ Via Foundry |
 | **Unstructured data** | ❌ No | ❌ No | ❌ No | ✅ Foundry IQ | ❌ No | ❌ No | ❌ No | ❌ No | ✅ All IQ |
 | **RBAC** | Entra ID + DLP | Entra ID + Azure RBAC | Entra ID + APIM OAuth2 | All layers | DB users | Entra ID | Entra ID | Entra ID | Entra ID |
 | **Private networking** | Gateway + PE | VNET + PE | VNET + PE + APIM | VNET + PE + APIM | PE | Gateway + PE | Connectors | Fabric | Fabric + VNET |
@@ -158,14 +158,14 @@ AI-powered intelligence layers that process, enrich, and surface insights from s
 
 | Pattern | Combined | Use Case |
 |---------|----------|----------|
-| **SQL Agent + Live Data** | 1B + 1C | Foundry agent using MCP tools for live Oracle queries |
-| **RAG Agent** | 1B-2 | Foundry agent with ORDS + 23ai vector search for semantic answers |
-| **Full Stack Agent** | 1B-3 | MCP + ORDS + Foundry IQ — structured, unstructured, and RAG |
-| **Analytics + Agent** | 2A + 1B-2 | Mirrored data feeding Foundry agents with ORDS for insight delivery |
-| **Business + Dev** | 1A + 1B | Copilot Studio for business; Foundry+MCP for dev |
-| **Business Process AI** | 1D + 1A | Power Apps workflow with Copilot Studio Q&A |
-| **Enterprise Automation** | 1E + 1B-2 | Logic Apps orchestration triggering Foundry agents with ORDS |
-| **Complete Intelligence** | 1B-3 + 2A + 3D | Full stack agent + mirrored analytics + all IQ layers |
+| **SQL Agent + Live Data** | Pattern 2 + Pattern 5 | Foundry agent using MCP tools for live Oracle queries |
+| **RAG Agent** | Pattern 3 | Foundry agent with ORDS + 26ai vector search for semantic answers |
+| **Full Stack Agent** | Pattern 4 | MCP + ORDS + Foundry IQ — structured, unstructured, and RAG |
+| **Analytics + Agent** | 2A + Pattern 3 | Mirrored data feeding Foundry agents with ORDS for insight delivery |
+| **Business + Dev** | Pattern 1 + Pattern 2 | Copilot Studio for business; Foundry+MCP for dev |
+| **Business Process AI** | Pattern 6 + Pattern 1 | Power Apps workflow with Copilot Studio Q&A |
+| **Enterprise Automation** | Pattern 7 + Pattern 3 | Logic Apps orchestration triggering Foundry agents with ORDS |
+| **Complete Intelligence** | Pattern 4 + 2A + 3D | Full stack agent + mirrored analytics + all IQ layers |
 
 ---
 
@@ -174,12 +174,12 @@ AI-powered intelligence layers that process, enrich, and surface insights from s
 | Objection | Response |
 |-----------|----------|
 | *"We can't move our Oracle data"* | You don't have to. Category 1 patterns (1A–1E) all work on live Oracle data with zero data movement. Category 2 uses managed Fabric mirroring only if analytics require it. |
-| *"We're worried about security and governance"* | OD@A runs in Azure with full network isolation (Private Endpoints, VNETs). Oracle MCP operates inside Oracle DB security — it doesn't bypass it. All patterns support Entra ID. See [Security & Governance](10-security-governance.md) for full guardrails. |
+| *"We're worried about security and governance"* | Oracle Database@Azure runs in Azure with full network isolation (Private Endpoints, VNETs). Oracle MCP operates inside Oracle DB security — it doesn't bypass it. All patterns support Entra ID. See [Security & Governance](10-security-governance.md) for full guardrails. |
 | *"We don't know where to start"* | Start with a single-scenario pilot. Most customers begin with Copilot Studio (1A — 48-hour proof of value) or an MCP demo (1C — 2-hour setup in VS Code). |
-| *"We already have a vector database"* | Oracle 23ai has native vector support — one fewer service to manage. But Microsoft Foundry agents can also call external vector DBs via tools. Your choice. |
+| *"We already have a vector database"* | Oracle 26ai has native vector support — one fewer service to manage. But Microsoft Foundry agents can also call external vector DBs via tools. Your choice. |
 | *"Is MCP production-ready?"* | MCP is an open standard (Anthropic-initiated, now broadly adopted). Oracle's SQLcl MCP server is GA. For production, host on Azure Functions with Entra ID auth and API Management. See [Path 3 — Oracle MCP](05-path3-oracle-mcp.md). |
 | *"What about cost?"* | Start with free/low-cost paths: MCP local is free; Copilot Studio has per-message pricing; Azure OpenAI is pay-per-token. No upfront platform investment required. |
-| *"We need multi-agent orchestration"* | Microsoft Foundry supports multi-agent patterns natively. Combine with MCP tools for Oracle access and 23ai vectors for RAG. See [Combined Patterns](09-combined-patterns.md). |
+| *"We need multi-agent orchestration"* | Microsoft Foundry supports multi-agent patterns natively. Combine with MCP tools for Oracle access and 26ai vectors for RAG. See [Combined Patterns](09-combined-patterns.md). |
 
 ---
 

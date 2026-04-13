@@ -37,7 +37,7 @@ This playbook is organized into modular documents under the [`docs/`](docs/) fol
 | Version | Date | Change |
 |---------|------|--------|
 | 1.0 | 2025 | Initial field playbook (4 paths) |
-| 2.0 | February 2026 | Expanded to 6 paths; added Oracle 23ai vector search; added step-by-step implementation guides; added ORDS as AI tool layer; added monitoring and cost sections; added security checklist |
+| 2.0 | February 2026 | Expanded to 6 paths; added Oracle 26ai vector search; added step-by-step implementation guides; added ORDS as AI tool layer; added monitoring and cost sections; added security checklist |
 | 2.1 | April 2026 | Reorganized into 3 categories (Live Data, Mirrored, IQ) with 11 patterns; added Logic Apps, Foundry IQ, Fabric IQ, Work IQ, Unified IQ; split into modular `docs/` structure |
 
 ---

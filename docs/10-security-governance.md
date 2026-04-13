@@ -47,7 +47,7 @@ graph LR
 | # | Control | Required | Notes |
 |---|---------|----------|-------|
 | 1 | Dedicated read-only Oracle user per agent | ✅ Yes | Never use ADMIN/SYS |
-| 2 | Private Endpoints for OD@A | ✅ Yes | No public IP |
+| 2 | Private Endpoints for Oracle Database@Azure | ✅ Yes | No public IP |
 | 3 | Entra ID auth for Azure services | ✅ Yes | Managed identities preferred |
 | 4 | Key Vault for Oracle credentials | ✅ Yes | No plaintext secrets |
 | 5 | System prompt restricts DDL/DML | ✅ Yes | Agent can only read by default |

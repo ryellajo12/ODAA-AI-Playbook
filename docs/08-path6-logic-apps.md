@@ -1,4 +1,4 @@
-# Pattern 1E — Azure Logic Apps + Oracle Database@Azure
+# Pattern 7 — Azure Logic Apps + Oracle Database@Azure
 
 ## Overview
 
@@ -459,10 +459,10 @@ Logic Apps works best when combined with other patterns:
 
 | Combination | How It Works |
 |-------------|--------------|
-| **1E + Pattern 2 (Foundry)** | Logic App triggers a Foundry agent run via API when an Oracle event occurs; agent performs complex reasoning and writes results back via ORDS |
-| **1E + Pattern 1 (MCP)** | Logic App orchestrates multi-step workflows that include MCP tool calls for ad-hoc Oracle queries |
-| **1E + 1A (Copilot Studio)** | Logic App performs backend Oracle operations; Copilot Studio handles the user-facing conversational interface |
-| **1E + 1D (Power Apps)** | Power App triggers a Logic App flow for complex Oracle operations that exceed Power Automate capabilities |
+| **Pattern 7 + Pattern 2 (Foundry)** | Logic App triggers a Foundry agent run via API when an Oracle event occurs; agent performs complex reasoning and writes results back via ORDS |
+| **Pattern 7 + Pattern 1 (MCP)** | Logic App orchestrates multi-step workflows that include MCP tool calls for ad-hoc Oracle queries |
+| **Pattern 7 + Pattern 1 (Copilot Studio)** | Logic App performs backend Oracle operations; Copilot Studio handles the user-facing conversational interface |
+| **Pattern 7 + Pattern 6 (Power Apps)** | Power App triggers a Logic App flow for complex Oracle operations that exceed Power Automate capabilities |
 
 ---
 
