@@ -40,7 +40,7 @@ graph TB
         K[Oracle as Knowledge<br/>Grounds on tables,<br/>views, data]
         T[Oracle as Tool<br/>Connector actions<br/>called during chat]
         subgraph OBS[Native Observability]
-            AN[Native Analytics<br/>Copilot Studio "Analytics" tab]
+            AN[Native Analytics<br/>Copilot Studio Analytics tab]
             DV[Dataverse<br/>ConversationTranscript + related tables]
         end
     end
