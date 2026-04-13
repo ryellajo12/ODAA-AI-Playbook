@@ -21,7 +21,7 @@ This playbook has three layers:
 | Help a customer decide which path | Section 5 (Decision Matrix) |
 | Design an architecture | [Reference Patterns](02-reference-architectures.md) |
 | Build something today | [Step-by-Step Guides](11-implementation-guides.md) |
-| Implement RAG on Oracle 23ai vectors | [Path 6 — Vector Search](08-path6-vector-search-rag.md) |
+| Implement RAG on Oracle 26ai vectors | [Vector Search (Pattern 2 — Foundry Agents)](04-path2-foundry-agents.md#2-ms-foundry--ords-endpoints-rag--vector-search) |
 | Wire up MCP tools for agents | [Path 3 — Oracle MCP](05-path3-oracle-mcp.md) |
 
 ---

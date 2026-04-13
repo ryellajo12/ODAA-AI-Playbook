@@ -60,13 +60,13 @@
 
 | Step | Action | Time |
 |------|--------|------|
-| 1 | Create table with VECTOR column (see [Path 6 — Step 1](08-path6-vector-search-rag.md#step-1-create-the-vector-table)) | 10 min |
-| 2 | Configure Azure OpenAI credential in Oracle (DBMS_CLOUD) | 10 min |
-| 3 | Create embedding generation procedure ([Path 6 — Step 2](08-path6-vector-search-rag.md#step-2-generate-and-store-embeddings)) | 15 min |
-| 4 | Generate embeddings for existing data (batch process) | 15 min |
-| 5 | Create vector index ([Path 6 — Step 3](08-path6-vector-search-rag.md#step-3-create-vector-index)) | 5 min |
+| 1 | Add VECTOR column to existing table (see [Pattern 2 — Step 1](04-path2-foundry-agents.md#step-1--add-vector-columns-to-existing-tables)) | 10 min |
+| 2 | Configure Azure OpenAI credential in Oracle (DBMS_CLOUD) (see [Pattern 2 — Step 2](04-path2-foundry-agents.md#step-2--configure-embedding-generation)) | 10 min |
+| 3 | Create embedding generation function ([Pattern 2 — Step 2](04-path2-foundry-agents.md#step-2--configure-embedding-generation)) | 15 min |
+| 4 | Backfill embeddings for existing data (batch process) | 15 min |
+| 5 | Create vector index ([Pattern 2 — Step 2](04-path2-foundry-agents.md#step-2--configure-embedding-generation)) | 5 min |
 | 6 | Test vector search via SQL | 5 min |
-| 7 | Create ORDS endpoint ([Path 6 — Step 4](08-path6-vector-search-rag.md#step-4-create-ords-endpoint-for-vector-search)) | 15 min |
+| 7 | Create ORDS endpoint ([Pattern 2 — Step 4](04-path2-foundry-agents.md#step-4--expose-vector-search-via-ords-already-running-on-oracle-26ai)) | 15 min |
 | 8 | Test ORDS endpoint via curl/Postman | 5 min |
 | 9 | Create OpenAPI spec for the endpoint | 15 min |
 | 10 | Register as tool in Microsoft Foundry agent | 10 min |

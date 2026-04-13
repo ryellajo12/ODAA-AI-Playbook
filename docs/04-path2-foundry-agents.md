@@ -127,6 +127,39 @@ graph LR
 
 ## 2: MS Foundry + ORDS Endpoints (RAG / Vector Search)
 
+### Oracle Vector Search + RAG — How It Works
+
+Oracle Database 26ai introduces the native **VECTOR** data type and **VECTOR_DISTANCE** function, enabling semantic similarity search directly inside the database. Combined with **Azure OpenAI embeddings**, this creates a powerful RAG (Retrieval-Augmented Generation) pattern without requiring a separate vector database.
+
+```mermaid
+graph TB
+    subgraph RAG["RAG Flow"]
+        Q["1. User asks:<br/>Find adverse events<br/>related to breathing issues"]
+        EMB["2. Azure OpenAI Embedding API<br/>Model: text-embedding-3-small<br/>Dimensions: 1536"]
+    end
+
+    subgraph Oracle26ai["Oracle 26ai on OD@A"]
+        SEARCH["3. VECTOR_DISTANCE Search<br/>SELECT ae_id, description, severity,<br/>VECTOR_DISTANCE(embedding, :query_vector, COSINE)<br/>ORDER BY distance FETCH FIRST 5 ROWS ONLY"]
+        VDATA[("VECTOR Column<br/>Pre-computed Embeddings")]
+    end
+
+    subgraph Answer["Answer Generation"]
+        LLM["4. LLM (GPT-4.1 / o3)<br/>Generates answer grounded<br/>in retrieved Oracle data"]
+    end
+
+    Q --> EMB
+    EMB --> SEARCH
+    VDATA --> SEARCH
+    SEARCH --> LLM
+    Q -.-> LLM
+```
+
+The RAG flow in 4 steps:
+1. **User query** — natural language question sent to the Foundry Agent
+2. **Embed** — Azure OpenAI converts the query into a 1536-dimension vector
+3. **Search** — Oracle 26ai `VECTOR_DISTANCE` finds the most semantically similar rows in the database
+4. **Answer** — the LLM generates a grounded response using the retrieved Oracle data as context
+
 ### Architecture
 
 Agent uses ORDS REST endpoints running on the customer's existing Oracle 26ai instance for governed data access and semantic vector search — secured by Azure APIM with Entra ID OAuth2 and governed by Purview. 
