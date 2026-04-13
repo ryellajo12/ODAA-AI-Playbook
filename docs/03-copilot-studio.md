@@ -1,14 +1,14 @@
-# 9. Pattern 1A — Copilot Studio + Oracle (Connector-Only)
+﻿# 9. Pattern 1A â€” Copilot Studio + Oracle (Connector-Only)
 
 ## 9.1 Architecture
 
-Copilot Studio connects to Oracle Database@Azure through the **On-Premises Data Gateway connector**. All three integration modes use the connector — no ORDS required.
+Copilot Studio connects to Oracle Database@Azure through the **On-Premises Data Gateway connector**. All three integration modes use the connector â€” no ORDS required.
 
-1. **Oracle as a Connector** — Direct read/write access to Oracle tables through the On-Premises Data Gateway
-2. **Oracle as Knowledge** — Ground your copilot on specific Oracle tables/views via the connector so the LLM uses Oracle data as context
-3. **Oracle as a Tool** — Register Oracle connector actions as tools that the copilot calls during conversations
+1. **Oracle as a Connector** â€” Direct read/write access to Oracle tables through the On-Premises Data Gateway
+2. **Oracle as Knowledge** â€” Ground your copilot on specific Oracle tables/views via the connector so the LLM uses Oracle data as context
+3. **Oracle as a Tool** â€” Register Oracle connector actions as tools that the copilot calls during conversations
 
-All modes flow through: **Copilot Studio → On-Prem Data Gateway → Oracle DB@Azure (Private Endpoint)**
+All modes flow through: **Copilot Studio â†’ On-Prem Data Gateway â†’ Oracle DB@Azure (Private Endpoint)**
 
 ```mermaid
 graph TB
@@ -67,7 +67,7 @@ Copilot Studio allows you to add **Knowledge sources** that ground the copilot's
 
 **How it works:**
 1. Create Oracle views that expose the data you want to ground on (e.g., `V_PRODUCT_FAQ`, `V_POLICY_DOCS`)
-2. In Copilot Studio → **Knowledge** → Add the Oracle connector as data source
+2. In Copilot Studio â†’ **Knowledge** â†’ Add the Oracle connector as data source
 3. Select the specific tables, views, or data you want the copilot to use
 4. The copilot automatically retrieves relevant rows when answering questions
 
@@ -78,7 +78,7 @@ Register Oracle connector actions as **Tools** in Copilot Studio. The copilot de
 **Use when:** You want the copilot to perform specific Oracle operations (lookup a customer, check order status, run a report) as part of a conversation flow.
 
 **How it works:**
-1. In Copilot Studio → **Tools** → Add a **Connector** tool
+1. In Copilot Studio â†’ **Tools** â†’ Add a **Connector** tool
 2. Select the Oracle Database connector and choose the action (e.g., Get rows, Get row by ID, Insert row)
 3. Configure parameters and trigger conditions
 4. The copilot calls the connector action during conversations when relevant
@@ -109,16 +109,16 @@ Register Oracle connector actions as **Tools** in Copilot Studio. The copilot de
 
 **For Oracle as Knowledge:**
 5. **Create curated Oracle views** for the data you want to ground on
-6. In Copilot Studio → **Knowledge** → **+ Add data source** → Select the Oracle connector
+6. In Copilot Studio â†’ **Knowledge** â†’ **+ Add data source** â†’ Select the Oracle connector
 7. Select specific tables, views, or columns to include (don't expose entire schemas)
 
 **For Oracle as Tool:**
-8. In Copilot Studio → **Tools** → **+ Add tool** → Select the Oracle Database connector
+8. In Copilot Studio â†’ **Tools** â†’ **+ Add tool** â†’ Select the Oracle Database connector
 9. Choose the connector action (Get rows, Get row by ID, Insert row, etc.)
 10. Configure parameters and tool descriptions (the LLM uses these to decide when to call the tool)
 
 **Deploy:**
-11. **Test in the embedded chat** → Deploy to Teams / Web / Mobile
+11. **Test in the embedded chat** â†’ Deploy to Teams / Web / Mobile
 
 ## 9.5 Entra ID Authentication
 
@@ -221,21 +221,21 @@ graph TB
 
 | # | Control | Required | Details |
 |---|---------|----------|----------|
-| 1 | OD@A Private Endpoint | ✅ Yes | No public IP on Oracle database; all access through Private Endpoint |
-| 2 | Gateway VM in same VNET or peered VNET | ✅ Yes | Gateway must have network line-of-sight to Oracle Private Endpoint |
-| 3 | NSG on Gateway subnet | ✅ Yes | Allow outbound to Oracle PE subnet on port 1521; deny all other outbound |
-| 4 | NSG on Oracle PE subnet | ✅ Yes | Allow inbound from Gateway subnet on port 1521 only |
-| 5 | Azure Relay for gateway | ✅ Yes | Copilot Studio communicates with On-Prem Gateway via Azure Relay (HTTPS 443); no inbound ports needed on gateway VM |
-| 6 | TLS 1.2+ everywhere | ✅ Yes | All connections (Copilot → Gateway → Oracle) encrypted in transit |
-| 7 | DNS resolution | ✅ Yes | Private DNS zones configured for Oracle Private Endpoint hostname resolution |
-| 8 | No public internet egress for DB traffic | ✅ Yes | Oracle data never traverses the public internet |
+| 1 | OD@A Private Endpoint | âœ… Yes | No public IP on Oracle database; all access through Private Endpoint |
+| 2 | Gateway VM in same VNET or peered VNET | âœ… Yes | Gateway must have network line-of-sight to Oracle Private Endpoint |
+| 3 | NSG on Gateway subnet | âœ… Yes | Allow outbound to Oracle PE subnet on port 1521; deny all other outbound |
+| 4 | NSG on Oracle PE subnet | âœ… Yes | Allow inbound from Gateway subnet on port 1521 only |
+| 5 | Azure Relay for gateway | âœ… Yes | Copilot Studio communicates with On-Prem Gateway via Azure Relay (HTTPS 443); no inbound ports needed on gateway VM |
+| 6 | TLS 1.2+ everywhere | âœ… Yes | All connections (Copilot â†’ Gateway â†’ Oracle) encrypted in transit |
+| 7 | DNS resolution | âœ… Yes | Private DNS zones configured for Oracle Private Endpoint hostname resolution |
+| 8 | No public internet egress for DB traffic | âœ… Yes | Oracle data never traverses the public internet |
 
 ### Private Networking Best Practices
 
 - Deploy the **On-Prem Data Gateway on an Azure VM** (not on-premises) for lowest latency to OD@A Private Endpoint
 - Use **Azure Private DNS Zones** to resolve Oracle Private Endpoint hostnames within the VNET
 - Enable **VNET peering** if the gateway and Oracle DB are in different VNETs (same region preferred)
-- Use **Azure Bastion** for gateway VM management — no RDP exposed to the internet
+- Use **Azure Bastion** for gateway VM management â€” no RDP exposed to the internet
 - Monitor network flows with **Azure Network Watcher** and **NSG Flow Logs**
 
 ## 9.7 Design Considerations

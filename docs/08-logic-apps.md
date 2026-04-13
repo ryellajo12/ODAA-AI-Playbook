@@ -1,20 +1,20 @@
-# Pattern 7 — Azure Logic Apps + Oracle Database@Azure
+﻿# Pattern 7 â€” Azure Logic Apps + Oracle Database@Azure
 
 ## Overview
 
-Azure Logic Apps provides a low-code, event-driven workflow platform with 400+ enterprise connectors. When combined with Oracle Database@Azure, Logic Apps enables automated business processes that read from, write to, and orchestrate Oracle data — without writing custom application code.
+Azure Logic Apps provides a low-code, event-driven workflow platform with 400+ enterprise connectors. When combined with Oracle Database@Azure, Logic Apps enables automated business processes that read from, write to, and orchestrate Oracle data â€” without writing custom application code.
 
 ### When to Use Logic Apps
 
 | Use Case | Example |
 |----------|---------|
-| **Event-driven automation** | New row in Oracle → trigger approval workflow → update status |
+| **Event-driven automation** | New row in Oracle â†’ trigger approval workflow â†’ update status |
 | **Data integration** | Sync Oracle data to Dynamics 365, SAP, Salesforce, or ServiceNow on a schedule |
-| **Business process orchestration** | Order received → validate inventory in Oracle → create shipping label → send notification |
-| **Alert & notification** | Oracle Unified Audit detects anomaly → Logic App sends Teams/email alert |
-| **AI-augmented workflows** | Oracle data → Azure OpenAI summarization → store result back in Oracle |
-| **ETL / data movement** | Extract Oracle data → transform → load to Blob, Data Lake, or Fabric |
-| **Approval workflows** | Pull pending records from Oracle → route for approval in Teams → update Oracle on decision |
+| **Business process orchestration** | Order received â†’ validate inventory in Oracle â†’ create shipping label â†’ send notification |
+| **Alert & notification** | Oracle Unified Audit detects anomaly â†’ Logic App sends Teams/email alert |
+| **AI-augmented workflows** | Oracle data â†’ Azure OpenAI summarization â†’ store result back in Oracle |
+| **ETL / data movement** | Extract Oracle data â†’ transform â†’ load to Blob, Data Lake, or Fabric |
+| **Approval workflows** | Pull pending records from Oracle â†’ route for approval in Teams â†’ update Oracle on decision |
 
 ---
 
@@ -54,16 +54,16 @@ graph LR
 ```
 
 **Oracle DB Connector capabilities:**
-- `Get rows` — SELECT from Oracle tables/views with filters
-- `Get row` — SELECT a single row by key
-- `Insert row` — INSERT into Oracle tables
-- `Update row` — UPDATE a row by key
-- `Delete row` — DELETE a row by key
-- `Execute stored procedure` — Call PL/SQL procedures with parameters
+- `Get rows` â€” SELECT from Oracle tables/views with filters
+- `Get row` â€” SELECT a single row by key
+- `Insert row` â€” INSERT into Oracle tables
+- `Update row` â€” UPDATE a row by key
+- `Delete row` â€” DELETE a row by key
+- `Execute stored procedure` â€” Call PL/SQL procedures with parameters
 
-### Option B: ORDS REST Endpoints (via HTTP Connector — Recommended)
+### Option B: ORDS REST Endpoints (via HTTP Connector â€” Recommended)
 
-For governed, API-first access without a gateway — uses the ORDS endpoints already running on the Oracle 26ai instance:
+For governed, API-first access without a gateway â€” uses the ORDS endpoints already running on the Oracle 26ai instance:
 
 ```mermaid
 graph LR
@@ -72,7 +72,7 @@ graph LR
     end
 
     subgraph "Azure Logic Apps"
-        LA["Logic App<br/>(Standard — VNET integrated)"]
+        LA["Logic App<br/>(Standard â€” VNET integrated)"]
         HTTP["HTTP Action<br/>+ Entra ID OAuth2"]
         AI["Azure OpenAI<br/>Action (optional)"]
         OUT["Output Actions<br/>Teams / Email /<br/>Dynamics / SAP /<br/>Blob Storage"]
@@ -108,7 +108,7 @@ graph LR
 
 **Why ORDS via HTTP is recommended:**
 - No gateway infrastructure to manage
-- ORDS runs natively on Oracle 26ai — no separate compute
+- ORDS runs natively on Oracle 26ai â€” no separate compute
 - APIM enforces OAuth2, rate limiting, and WAF
 - Supports vector search endpoints (same as Pattern 2)
 - Logic App Standard supports VNET integration for private connectivity
@@ -124,29 +124,29 @@ graph LR
 - Oracle client libraries on the gateway VM
 - Dedicated Oracle DB user for Logic Apps (least privilege)
 
-### Option B (ORDS via HTTP — Recommended)
+### Option B (ORDS via HTTP â€” Recommended)
 - Azure Logic App Standard (for VNET integration)
 - ORDS enabled on Oracle 26ai instance with REST endpoints defined
 - Azure API Management with OAuth2 validation (same APIM used by Foundry agents)
 - Entra ID App Registration for Logic App to obtain OAuth2 tokens
-- Network connectivity: Logic App VNET → APIM → ORDS on Oracle 26ai
+- Network connectivity: Logic App VNET â†’ APIM â†’ ORDS on Oracle 26ai
 
 ---
 
 ## Private Networking
 
-Private networking is critical to ensure all traffic between Logic Apps and Oracle Database@Azure stays within the Azure backbone — no data traverses the public internet.
+Private networking is critical to ensure all traffic between Logic Apps and Oracle Database@Azure stays within the Azure backbone â€” no data traverses the public internet.
 
 ### Network Topology
 
 ```mermaid
 graph TB
-    subgraph "Azure VNET — Hub (Enterprise)"
+    subgraph "Azure VNET â€” Hub (Enterprise)"
         FW["Azure Firewall<br/>Centralized Egress<br/>FQDN Filtering"]
         NW["Network Watcher<br/>NSG Flow Logs"]
     end
 
-    subgraph "Azure VNET — Spoke"
+    subgraph "Azure VNET â€” Spoke"
         subgraph "Logic App Subnet<br/>(Delegated: Microsoft.Web/serverFarms)"
             LA["Logic App Standard<br/>VNET-integrated<br/>Outbound only"]
         end
@@ -192,28 +192,28 @@ graph TB
     DNS4 -.-> APIM
 ```
 
-### Option B: Private Network Path (ORDS via HTTP — Recommended)
+### Option B: Private Network Path (ORDS via HTTP â€” Recommended)
 
-Every hop in the Logic App → Oracle data path is private:
+Every hop in the Logic App â†’ Oracle data path is private:
 
 ```
 Logic App Standard (VNET-integrated, outbound via delegated subnet)
-  → [NSG: allow 443 to APIM subnet] →
+  â†’ [NSG: allow 443 to APIM subnet] â†’
 Azure API Management (internal mode, VNET-injected)
-  → [NSG: allow 8443 to Oracle ORDS] →
+  â†’ [NSG: allow 8443 to Oracle ORDS] â†’
 ORDS on Oracle 26ai instance (no public endpoint, port 8443)
-  → [localhost] →
+  â†’ [localhost] â†’
 Oracle 26ai Database
 ```
 
 | # | Control | Details |
 |---|---------|---------|
-| 1 | **Logic App Standard — VNET integration** | Logic App outbound traffic routes through a delegated subnet (`Microsoft.Web/serverFarms`). No public IP on outbound. All calls to APIM, Key Vault, and OpenAI go through the VNET. |
-| 2 | **APIM — internal VNET mode** | APIM deployed in internal mode within the spoke VNET. No public endpoint. Logic App reaches APIM via private IP within the VNET. |
-| 3 | **APIM → ORDS — private connectivity** | APIM connects to ORDS on the Oracle 26ai instance via VNET Peering or via the Oracle Database@Azure private networking (port 8443). No internet traversal. |
-| 4 | **Oracle ORDS — no public endpoint** | ORDS listens on port 8443 with public access disabled. Only APIM subnet is allowed inbound via NSG. |
-| 5 | **Key Vault Private Endpoint** | Logic App retrieves OAuth2 client secrets or certificates from Key Vault via PE — no public access. |
-| 6 | **Azure OpenAI Private Endpoint** | If using AI actions in the workflow, OpenAI calls route through PE — embedding and completion calls stay private. |
+| 1 | **Logic App Standard â€” VNET integration** | Logic App outbound traffic routes through a delegated subnet (`Microsoft.Web/serverFarms`). No public IP on outbound. All calls to APIM, Key Vault, and OpenAI go through the VNET. |
+| 2 | **APIM â€” internal VNET mode** | APIM deployed in internal mode within the spoke VNET. No public endpoint. Logic App reaches APIM via private IP within the VNET. |
+| 3 | **APIM â†’ ORDS â€” private connectivity** | APIM connects to ORDS on the Oracle 26ai instance via VNET Peering or via the Oracle Database@Azure private networking (port 8443). No internet traversal. |
+| 4 | **Oracle ORDS â€” no public endpoint** | ORDS listens on port 8443 with public access disabled. Only APIM subnet is allowed inbound via NSG. |
+| 5 | **Key Vault Private Endpoint** | Logic App retrieves OAuth2 client secrets or certificates from Key Vault via PE â€” no public access. |
+| 6 | **Azure OpenAI Private Endpoint** | If using AI actions in the workflow, OpenAI calls route through PE â€” embedding and completion calls stay private. |
 | 7 | **Private DNS Zones** | All Private Endpoints require Azure Private DNS Zones linked to the spoke VNET for name resolution: `privatelink.oraclecloud.com`, `privatelink.vaultcore.azure.net`, `privatelink.openai.azure.com`, `privatelink.azure-api.net`. |
 | 8 | **Hub-spoke with Azure Firewall** | For enterprise deployments, all Logic App egress routes through Azure Firewall in the hub VNET via UDR. Firewall performs FQDN filtering and TLS inspection. |
 | 9 | **DDoS Protection Standard** | Enabled on the spoke VNET. |
@@ -223,30 +223,30 @@ Oracle 26ai Database
 
 ```
 Logic App (Consumption or Standard)
-  → [Azure backbone] →
+  â†’ [Azure backbone] â†’
 On-Premises Data Gateway VM (in VNET, no public IP)
-  → [NSG: allow 1521 to Oracle PE subnet] →
+  â†’ [NSG: allow 1521 to Oracle PE subnet] â†’
 Oracle Private Endpoint (port 1521)
-  → Oracle 26ai Database
+  â†’ Oracle 26ai Database
 ```
 
 | # | Control | Details |
 |---|---------|---------|
-| 1 | **Gateway VM — VNET deployed, no public IP** | The on-premises data gateway VM sits inside the spoke VNET with no public IP. Only outbound to Azure Relay (for gateway registration) is allowed. |
+| 1 | **Gateway VM â€” VNET deployed, no public IP** | The on-premises data gateway VM sits inside the spoke VNET with no public IP. Only outbound to Azure Relay (for gateway registration) is allowed. |
 | 2 | **Oracle Private Endpoint** | Gateway VM connects to Oracle via PE (port 1521). No public IP on Oracle. |
 | 3 | **NSGs on Gateway subnet** | Inbound: deny all (gateway uses outbound Azure Relay). Outbound: allow 1521 to Oracle PE subnet; allow 443 to Azure Relay; deny all else. |
-| 4 | **Logic App → Gateway** | Logic App Consumption connects to the gateway via the Azure Relay service (managed by Microsoft). Logic App Standard can connect via VNET integration for a fully private path. |
+| 4 | **Logic App â†’ Gateway** | Logic App Consumption connects to the gateway via the Azure Relay service (managed by Microsoft). Logic App Standard can connect via VNET integration for a fully private path. |
 | 5 | **Gateway VM hardening** | Patch via Azure Update Manager; enable Defender for Servers; restrict RDP/SSH to Azure Bastion only. |
 
-### NSG Rules — Detailed
+### NSG Rules â€” Detailed
 
 #### Logic App Subnet NSGs
 
 | Direction | Priority | Source | Destination | Port | Protocol | Action | Purpose |
 |-----------|----------|--------|-------------|------|----------|--------|---------|
-| Outbound | 100 | Logic App Subnet | APIM Subnet | 443 | TCP | Allow | Logic App → APIM |
-| Outbound | 110 | Logic App Subnet | Key Vault PE | 443 | TCP | Allow | Logic App → Key Vault |
-| Outbound | 120 | Logic App Subnet | OpenAI PE | 443 | TCP | Allow | Logic App → Azure OpenAI |
+| Outbound | 100 | Logic App Subnet | APIM Subnet | 443 | TCP | Allow | Logic App â†’ APIM |
+| Outbound | 110 | Logic App Subnet | Key Vault PE | 443 | TCP | Allow | Logic App â†’ Key Vault |
+| Outbound | 120 | Logic App Subnet | OpenAI PE | 443 | TCP | Allow | Logic App â†’ Azure OpenAI |
 | Outbound | 130 | Logic App Subnet | AzureMonitor | 443 | TCP | Allow | Diagnostics |
 | Outbound | 4096 | Logic App Subnet | Internet | Any | Any | Deny | Block all internet egress |
 
@@ -254,10 +254,10 @@ Oracle Private Endpoint (port 1521)
 
 | Direction | Priority | Source | Destination | Port | Protocol | Action | Purpose |
 |-----------|----------|--------|-------------|------|----------|--------|---------|
-| Inbound | 100 | Logic App Subnet | APIM Subnet | 443 | TCP | Allow | Logic App → APIM |
+| Inbound | 100 | Logic App Subnet | APIM Subnet | 443 | TCP | Allow | Logic App â†’ APIM |
 | Inbound | 110 | Foundry/Agent IPs | APIM Subnet | 443 | TCP | Allow | Foundry agents (if shared APIM) |
 | Inbound | 4096 | Any | APIM Subnet | Any | Any | Deny | Block all other inbound |
-| Outbound | 100 | APIM Subnet | Oracle ORDS | 8443 | TCP | Allow | APIM → ORDS |
+| Outbound | 100 | APIM Subnet | Oracle ORDS | 8443 | TCP | Allow | APIM â†’ ORDS |
 | Outbound | 4096 | APIM Subnet | Internet | Any | Any | Deny | Block all internet egress |
 
 #### Gateway Subnet NSGs (Option A)
@@ -265,39 +265,39 @@ Oracle Private Endpoint (port 1521)
 | Direction | Priority | Source | Destination | Port | Protocol | Action | Purpose |
 |-----------|----------|--------|-------------|------|----------|--------|---------|
 | Inbound | 4096 | Any | Gateway Subnet | Any | Any | Deny | No inbound (gateway uses outbound Relay) |
-| Outbound | 100 | Gateway Subnet | Oracle PE Subnet | 1521 | TCP | Allow | Gateway → Oracle |
-| Outbound | 110 | Gateway Subnet | AzureCloud | 443 | TCP | Allow | Gateway → Azure Relay |
+| Outbound | 100 | Gateway Subnet | Oracle PE Subnet | 1521 | TCP | Allow | Gateway â†’ Oracle |
+| Outbound | 110 | Gateway Subnet | AzureCloud | 443 | TCP | Allow | Gateway â†’ Azure Relay |
 | Outbound | 4096 | Gateway Subnet | Internet | Any | Any | Deny | Block all internet egress |
 
 ---
 
-## Setup Steps — Option B (ORDS via HTTP)
+## Setup Steps â€” Option B (ORDS via HTTP)
 
-### Step 1 — Register Logic App in Entra ID
+### Step 1 â€” Register Logic App in Entra ID
 
 1. **Create an App Registration** for the Logic App (or reuse an existing one):
    - Name: `LogicApp-Oracle-Integration`
    - Add API permission for the ORDS App Registration scope: `ORDS.Read`, `ORDS.Write`
    - Generate a client secret (or use Managed Identity for Logic App Standard)
 
-### Step 2 — Configure Logic App with VNET Integration
+### Step 2 â€” Configure Logic App with VNET Integration
 
 2. **Create a Logic App Standard** in the same region as Oracle Database@Azure
-3. **Enable VNET integration** — connect to the same spoke VNET (or peered VNET) that has access to APIM
-   - Navigate to Logic App → Networking → VNET Integration → Add VNET
+3. **Enable VNET integration** â€” connect to the same spoke VNET (or peered VNET) that has access to APIM
+   - Navigate to Logic App â†’ Networking â†’ VNET Integration â†’ Add VNET
    - Select the delegated subnet (`Microsoft.Web/serverFarms`)
    - Set `WEBSITE_VNET_ROUTE_ALL = 1` to route all outbound traffic through the VNET
-4. **Enable Managed Identity** — use system-assigned identity for Key Vault and Entra ID token acquisition
+4. **Enable Managed Identity** â€” use system-assigned identity for Key Vault and Entra ID token acquisition
 
-### Step 3 — Build the Workflow
+### Step 3 â€” Build the Workflow
 
-5. **Add a trigger** — choose the appropriate trigger for your use case:
+5. **Add a trigger** â€” choose the appropriate trigger for your use case:
 
    | Trigger | Use Case |
    |---------|----------|
    | `Recurrence` | Scheduled polling (e.g., every 15 min) |
-   | `HTTP Request` | Webhook — external systems call the Logic App |
-   | `Service Bus` | Event-driven — message arrives on a queue/topic |
+   | `HTTP Request` | Webhook â€” external systems call the Logic App |
+   | `Service Bus` | Event-driven â€” message arrives on a queue/topic |
    | `Event Grid` | Azure resource events (e.g., Blob upload) |
    | `Teams` | Approval request triggers from Teams |
 
@@ -320,7 +320,7 @@ Oracle Private Endpoint (port 1521)
    }
    ```
 
-   For **Managed Identity** (preferred — no secrets):
+   For **Managed Identity** (preferred â€” no secrets):
    ```json
    {
      "type": "Http",
@@ -335,10 +335,10 @@ Oracle Private Endpoint (port 1521)
    }
    ```
 
-7. **Parse the JSON response** — add a `Parse JSON` action with the ORDS response schema
-8. **Add downstream actions** — Teams notification, email, Dynamics update, Blob write, etc.
+7. **Parse the JSON response** â€” add a `Parse JSON` action with the ORDS response schema
+8. **Add downstream actions** â€” Teams notification, email, Dynamics update, Blob write, etc.
 
-### Step 4 — Add AI Processing (Optional)
+### Step 4 â€” Add AI Processing (Optional)
 
 9. **Call Azure OpenAI** to summarize or analyze Oracle data within the workflow:
 
@@ -362,7 +362,7 @@ Oracle Private Endpoint (port 1521)
    }
    ```
 
-### Step 5 — Oracle Vector Search from Logic Apps
+### Step 5 â€” Oracle Vector Search from Logic Apps
 
 10. **Call the vector search ORDS endpoint** (same endpoint used by Foundry agents in Pattern 2):
 
@@ -384,7 +384,7 @@ Oracle Private Endpoint (port 1521)
     }
     ```
 
-    This enables Logic Apps to perform semantic search over Oracle data — useful for intelligent routing, alert triage, or content matching workflows.
+    This enables Logic Apps to perform semantic search over Oracle data â€” useful for intelligent routing, alert triage, or content matching workflows.
 
 ---
 
@@ -442,7 +442,7 @@ graph LR
 | Layer | Control | Details |
 |-------|---------|---------|
 | **Entra ID** | App Registration: `LogicApp-Oracle-Integration` | OAuth2 client credentials for ORDS access via APIM |
-| **Entra ID** | Managed Identity (preferred) | Logic App Standard system-assigned identity — no secrets stored |
+| **Entra ID** | Managed Identity (preferred) | Logic App Standard system-assigned identity â€” no secrets stored |
 | **APIM** | OAuth2 validation | Same APIM policies as Pattern 2; validates Logic App token before forwarding to ORDS |
 | **APIM** | Rate limiting | Per-client throttling; prevents Logic App from overwhelming ORDS |
 | **Oracle DB** | Dedicated Logic App user | `logic_app_user` with specific `SELECT`/`INSERT`/`UPDATE` grants per workflow |
@@ -470,11 +470,11 @@ Logic Apps works best when combined with other patterns:
 
 | Control | Details |
 |---------|---------|
-| **Run history** | Logic Apps provides built-in run history with input/output for every action — useful for debugging ORDS calls |
+| **Run history** | Logic Apps provides built-in run history with input/output for every action â€” useful for debugging ORDS calls |
 | **Log Analytics** | Send Logic App diagnostics to the same Log Analytics workspace used by Foundry/MCP |
 | **Alerts** | Alert on failed runs, high latency ORDS calls, or throttled APIM requests |
 | **Cost model** | Consumption: per-action billing; Standard: fixed App Service Plan + per-execution |
-| **Cost optimization** | Use batching for bulk Oracle operations; avoid polling — use Service Bus/Event Grid triggers instead |
+| **Cost optimization** | Use batching for bulk Oracle operations; avoid polling â€” use Service Bus/Event Grid triggers instead |
 
 ---
 
@@ -482,11 +482,11 @@ Logic Apps works best when combined with other patterns:
 
 | Aspect | Option A: Oracle DB Connector | Option B: ORDS via HTTP |
 |--------|-------------------------------|-------------------------|
-| **Setup effort** | Medium — requires gateway VM | Low — uses existing ORDS + APIM |
+| **Setup effort** | Medium â€” requires gateway VM | Low â€” uses existing ORDS + APIM |
 | **Infrastructure** | Gateway VM to manage and patch | No additional infrastructure |
 | **Operations** | `GET/INSERT/UPDATE/DELETE rows` | Any REST endpoint you define in ORDS |
-| **Vector search** | ❌ Not supported | ✅ Same ORDS vector endpoints as Pattern 2 |
-| **AI integration** | Possible but separate from data path | ✅ Seamless — ORDS response → OpenAI in same flow |
+| **Vector search** | âŒ Not supported | âœ… Same ORDS vector endpoints as Pattern 2 |
+| **AI integration** | Possible but separate from data path | âœ… Seamless â€” ORDS response â†’ OpenAI in same flow |
 | **Security** | Gateway auth + Oracle credentials | Entra ID OAuth2 + APIM + Managed Identity |
 | **Private networking** | Gateway on VNET + Oracle PE | Logic App VNET integration + APIM internal + ORDS private |
 | **Recommended for** | Legacy connectors, simple CRUD | Enterprise, governed, AI-augmented workflows |
