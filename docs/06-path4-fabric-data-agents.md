@@ -1,4 +1,4 @@
-# 12. Patterns 2A / 2B — Fabric Mirrored Database + Data Agents
+# 12. Patterns 8 / 9 — Fabric Mirrored Database + Data Agents
 
 ## 12.1 Architecture
 

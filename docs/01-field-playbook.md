@@ -81,7 +81,7 @@ This playbook has three layers:
 
 All patterns fall into three categories based on how Oracle data flows into the AI ecosystem.
 
-### Category 1: Live Oracle Data (No Migration)
+### Zero Data Movement � Live Oracle Data
 
 Agents query Oracle Database@Azure directly at runtime. No data leaves Oracle.
 
@@ -95,25 +95,25 @@ Agents query Oracle Database@Azure directly at runtime. No data leaves Oracle.
 | **6** | **Power Apps** | Gateway / Oracle Connector | Power Platform | • Modernize workflows without rebuilding<br/>• AI Builder for forms & predictions<br/>• Citizen developer friendly<br/>• Incremental AI adoption |
 | **7** | **Logic Apps** | Oracle DB Connector / ORDS REST calls | Workflow orchestration, enterprise integration | • Event-driven automation<br/>• 400+ enterprise connectors<br/>• No custom code needed<br/>• Orchestrate Oracle + SaaS + Azure |
 
-### Category 2: Mirrored / Analytics Data
+### Managed Replication � Mirrored Analytics Data
 
 Oracle data is replicated into Fabric Mirrored Database via managed private endpoints. Data Agents on Mirrored Database can be published as MCP servers, to Teams, or connected to Copilot Studio and MS Foundry via native connectors.
 
 | Pattern | AI Platform | How It Connects | Surfaces | Value Proposition |
 |---------|------------|-----------------|----------|-------------------|
-| **2A** | **Mirrored Database + Data Agents** | Oracle → Fabric Mirroring (private PE) → Mirrored Database → Data Agents → Published as MCP Server / Teams / Copilot Studio / Foundry | Teams, Copilot Studio, Foundry, MCP clients | • NL analytics on mirrored Oracle data<br/>• Data Agent as MCP server for any client<br/>• Publish direct to Teams<br/>• Native connectors to Copilot Studio + Foundry<br/>• Entra ID + private networking end-to-end |
-| **2B** | **Fabric Mirroring + Data Agents + Foundry** | Mirrored Database → Data Agent → Foundry agent (native connector as tool) | API, M365 Copilot, Agent Store | • Foundry agent uses Data Agent as a tool<br/>• Combine mirrored analytics with live MCP/ORDS<br/>• Best of Fabric + Foundry<br/>• Entra ID RBAC at every layer |
+| **Pattern 8** | **Mirrored Database + Data Agents** | Oracle → Fabric Mirroring (private PE) → Mirrored Database → Data Agents → Published as MCP Server / Teams / Copilot Studio / Foundry | Teams, Copilot Studio, Foundry, MCP clients | • NL analytics on mirrored Oracle data<br/>• Data Agent as MCP server for any client<br/>• Publish direct to Teams<br/>• Native connectors to Copilot Studio + Foundry<br/>• Entra ID + private networking end-to-end |
+| **Pattern 9** | **Fabric Mirroring + Data Agents + Foundry** | Mirrored Database → Data Agent → Foundry agent (native connector as tool) | API, M365 Copilot, Agent Store | • Foundry agent uses Data Agent as a tool<br/>• Combine mirrored analytics with live MCP/ORDS<br/>• Best of Fabric + Foundry<br/>• Entra ID RBAC at every layer |
 
-### Category 3: IQ — Intelligent Data Processing
+### AI Enrichment: IQ — Intelligent Data Processing
 
 AI-powered intelligence layers that process, enrich, and surface insights from structured, unstructured, and work data.
 
 | Pattern | AI Platform | What It Does | Surfaces | Value Proposition |
 |---------|------------|--------------|----------|-------------------|
-| **3A** | **Fabric IQ** | AI-powered analytics and insights over data in OneLake (mirrored Oracle + other sources) | Fabric, Data Agents | • Automated insight discovery<br/>• AI finds patterns humans miss<br/>• Multi-source data intelligence<br/>• Scales with Fabric capacity |
-| **3B** | **Foundry IQ** | Unstructured data processing — ingests docs from Blob, SharePoint, Fabric Files to ground Foundry agents | Foundry, M365 Copilot | • Unlock PDFs, docs, emails<br/>• Combine unstructured + structured Oracle data<br/>• Single agent, full context<br/>• Enterprise-grade grounding |
-| **3C** | **Work IQ** | AI-driven productivity insights across M365 work patterns connected to Oracle business data | M365, Copilot | • Bridge work signals + business data<br/>• Meeting, email, doc intelligence<br/>• Organizational productivity insights<br/>• Connected to Oracle context |
-| **3D** | **Unified IQ** | All IQ layers combined — Fabric IQ + Foundry IQ + Work IQ feeding a single intelligent agent | Fabric, Foundry, M365 Copilot | • Complete organizational intelligence<br/>• Structured + unstructured + work signals<br/>• One agent, all context<br/>• Maximum AI value from Oracle investment |
+| **Pattern 10** | **Fabric IQ** | AI-powered analytics and insights over data in OneLake (mirrored Oracle + other sources) | Fabric, Data Agents | • Automated insight discovery<br/>• AI finds patterns humans miss<br/>• Multi-source data intelligence<br/>• Scales with Fabric capacity |
+| **Pattern 11** | **Foundry IQ** | Unstructured data processing — ingests docs from Blob, SharePoint, Fabric Files to ground Foundry agents | Foundry, M365 Copilot | • Unlock PDFs, docs, emails<br/>• Combine unstructured + structured Oracle data<br/>• Single agent, full context<br/>• Enterprise-grade grounding |
+| **Pattern 12** | **Work IQ** | AI-driven productivity insights across M365 work patterns connected to Oracle business data | M365, Copilot | • Bridge work signals + business data<br/>• Meeting, email, doc intelligence<br/>• Organizational productivity insights<br/>• Connected to Oracle context |
+| **Pattern 13** | **Unified IQ** | All IQ layers combined — Fabric IQ + Foundry IQ + Work IQ feeding a single intelligent agent | Fabric, Foundry, M365 Copilot | • Complete organizational intelligence<br/>• Structured + unstructured + work signals<br/>• One agent, all context<br/>• Maximum AI value from Oracle investment |
 
 > **See [Reference Architecture Patterns](02-reference-architectures.md) for detailed Mermaid diagrams of each pattern.**
 
@@ -132,16 +132,16 @@ AI-powered intelligence layers that process, enrich, and surface insights from s
 | DBA / developer automation | **Pattern 5:** Oracle MCP | SQL generation, schema exploration |
 | Business workflow modernization | **Pattern 6:** Power Apps | Low-code, incremental AI |
 | Enterprise integration / event-driven | **Pattern 7:** Logic Apps | 400+ connectors, no custom code |
-| Cross-source analytics | **2A:** Mirrored DB + Data Agents | Managed mirroring, NL queries, publish as MCP/Teams/Copilot Studio/Foundry |
-| AI agents on analytics data | **2B:** Fabric + Data Agents + Foundry | Data Agent as Foundry tool + live Oracle tools |
-| Automated data insights | **3A:** Fabric IQ | AI-powered pattern discovery |
-| Unstructured + structured grounding | **3B:** Foundry IQ | PDFs, docs, emails + Oracle data |
-| Productivity + business data | **3C:** Work IQ | M365 signals + Oracle context |
-| Full organizational intelligence | **3D:** Unified IQ | All IQ layers in one agent |
+| Cross-source analytics | **Pattern 8:** Mirrored DB + Data Agents | Managed mirroring, NL queries, publish as MCP/Teams/Copilot Studio/Foundry |
+| AI agents on analytics data | **Pattern 9:** Fabric + Data Agents + Foundry | Data Agent as Foundry tool + live Oracle tools |
+| Automated data insights | **Pattern 10:** Fabric IQ | AI-powered pattern discovery |
+| Unstructured + structured grounding | **Pattern 11:** Foundry IQ | PDFs, docs, emails + Oracle data |
+| Productivity + business data | **Pattern 12:** Work IQ | M365 signals + Oracle context |
+| Full organizational intelligence | **Pattern 13:** Unified IQ | All IQ layers in one agent |
 
 ### 5.2 Detailed Comparison
 
-| Dimension | Pattern 1 Copilot Studio | Pattern 2 Foundry+MCP | Pattern 3 Foundry+ORDS | Pattern 4 Full Stack | Pattern 5 Oracle MCP | Pattern 6 Power Apps | Pattern 7 Logic Apps | 2A Mirrored DB | 3D Unified IQ |
+| Dimension | Pattern 1 Copilot Studio | Pattern 2 Foundry+MCP | Pattern 3 Foundry+ORDS | Pattern 4 Full Stack | Pattern 5 Oracle MCP | Pattern 6 Power Apps | Pattern 7 Logic Apps | Pattern 8 Mirrored DB | Pattern 13 Unified IQ |
 |-----------|-------------------|----------------|-------------------|-----------------|---------------|---------------|---------------|----------------|---------------|
 | **Skill level** | Low-code | Pro-dev | Pro-dev | Pro-dev | DBA/Dev | Low-code | Low-code | Data eng | Pro-dev |
 | **Data movement** | None | None | None | None | None | None | None | Mirror | Mirror + IQ |
@@ -161,11 +161,11 @@ AI-powered intelligence layers that process, enrich, and surface insights from s
 | **SQL Agent + Live Data** | Pattern 2 + Pattern 5 | Foundry agent using MCP tools for live Oracle queries |
 | **RAG Agent** | Pattern 3 | Foundry agent with ORDS + 26ai vector search for semantic answers |
 | **Full Stack Agent** | Pattern 4 | MCP + ORDS + Foundry IQ — structured, unstructured, and RAG |
-| **Analytics + Agent** | 2A + Pattern 3 | Mirrored data feeding Foundry agents with ORDS for insight delivery |
+| **Analytics + Agent** | Pattern 8 + Pattern 3 | Mirrored data feeding Foundry agents with ORDS for insight delivery |
 | **Business + Dev** | Pattern 1 + Pattern 2 | Copilot Studio for business; Foundry+MCP for dev |
 | **Business Process AI** | Pattern 6 + Pattern 1 | Power Apps workflow with Copilot Studio Q&A |
 | **Enterprise Automation** | Pattern 7 + Pattern 3 | Logic Apps orchestration triggering Foundry agents with ORDS |
-| **Complete Intelligence** | Pattern 4 + 2A + 3D | Full stack agent + mirrored analytics + all IQ layers |
+| **Complete Intelligence** | Pattern 4 + Pattern 8 + Pattern 13 | Full stack agent + mirrored analytics + all IQ layers |
 
 ---
 
@@ -173,7 +173,7 @@ AI-powered intelligence layers that process, enrich, and surface insights from s
 
 | Objection | Response |
 |-----------|----------|
-| *"We can't move our Oracle data"* | You don't have to. Category 1 patterns (1A–1E) all work on live Oracle data with zero data movement. Category 2 uses managed Fabric mirroring only if analytics require it. |
+| *"We can't move our Oracle data"* | You don't have to. Zero Data Movement patterns (1A–1E) all work on live Oracle data with zero data movement. Managed Replication uses managed Fabric mirroring only if analytics require it. |
 | *"We're worried about security and governance"* | Oracle Database@Azure runs in Azure with full network isolation (Private Endpoints, VNETs). Oracle MCP operates inside Oracle DB security — it doesn't bypass it. All patterns support Entra ID. See [Security & Governance](10-security-governance.md) for full guardrails. |
 | *"We don't know where to start"* | Start with a single-scenario pilot. Most customers begin with Copilot Studio (1A — 48-hour proof of value) or an MCP demo (1C — 2-hour setup in VS Code). |
 | *"We already have a vector database"* | Oracle 26ai has native vector support — one fewer service to manage. But Microsoft Foundry agents can also call external vector DBs via tools. Your choice. |
