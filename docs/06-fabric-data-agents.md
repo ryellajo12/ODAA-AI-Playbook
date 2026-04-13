@@ -328,16 +328,34 @@ graph TB
 
 ### What is Foundry IQ
 
-Foundry IQ ingests unstructured documents (PDFs, Word, Excel, PowerPoint, emails) from Azure Blob Storage, SharePoint, and Fabric Files (OneLake), processes them into a searchable knowledge base, and makes them available to Foundry agents as a grounding source alongside structured Oracle data.
+Foundry IQ ingests unstructured documents (PDFs, Word, Excel, PowerPoint, emails) from multiple supported knowledge sources, processes them into a searchable knowledge base, and makes them available to Foundry agents as a grounding source alongside structured Oracle data.
+
+### Supported Knowledge Sources
+
+Foundry IQ supports the following knowledge source types for ingesting unstructured data:
+
+| Knowledge Source | Description | Best For |
+|---|---|---|
+| **Azure AI Search Index** | Enterprise-scale search for app development; connect to an existing Azure AI Search index | Organizations with existing search indexes; custom search pipelines |
+| **Azure Blob Storage** | Retrieve documents and files from Azure Blob Storage containers | PDFs, reports, contracts, SOPs, clinical trial documents |
+| **Web** | Ground with real-time web content via Bing | Supplementing internal knowledge with public domain information |
+| **Microsoft SharePoint (Remote)** | SharePoint search with Microsoft 365 governance; content retrieved without re-indexing | Company policies, HR procedures, compliance guides -- no data duplication |
+| **Microsoft SharePoint (Indexed)** | Indexes SharePoint content into Azure AI Search for custom pipelines | When you need custom search ranking or filtering on SharePoint content |
+| **Microsoft OneLake** | Retrieve from Microsoft OneLake unstructured data | Fabric notebook outputs, lakehouse exports, analytics reports stored in OneLake |
+
+> **Note**: When creating a knowledge source in Foundry, navigate to **Knowledge** --> **Create new** to see all available source types. You can add multiple knowledge sources to a single Foundry IQ configuration -- for example, compliance documents from Blob Storage + policies from SharePoint (Remote) + analytics outputs from OneLake.
 
 ### Architecture
 
 ```mermaid
 graph TB
-    subgraph DocSources["Document Sources"]
+    subgraph DocSources["Supported Knowledge Sources"]
+        AISEARCH["Azure AI Search Index<br/>Existing search indexes"]
         BLOB["Azure Blob Storage<br/>PDFs, Reports,<br/>Contracts, SOPs"]
-        SP["SharePoint<br/>Policies, Procedures,<br/>Team Files"]
-        FL["Fabric Files<br/>(OneLake)<br/>Analytics Outputs"]
+        WEB["Web (via Bing)<br/>Real-time public content"]
+        SP_R["SharePoint (Remote)<br/>M365 governance,<br/>no re-indexing"]
+        SP_I["SharePoint (Indexed)<br/>Custom search pipelines"]
+        OL["Microsoft OneLake<br/>Fabric outputs,<br/>analytics reports"]
     end
 
     subgraph FoundryIQ["Foundry IQ Processing"]
@@ -366,9 +384,12 @@ graph TB
         A365["A365 Admin Center<br/>Agent Policies<br/>IQ Administration"]
     end
 
+    AISEARCH --> SCAN
     BLOB --> SCAN
-    SP --> SCAN
-    FL --> SCAN
+    WEB --> FA
+    SP_R --> SCAN
+    SP_I --> SCAN
+    OL --> SCAN
     SCAN --> LABEL
     LABEL --> INGEST
     INGEST --> KB
@@ -383,10 +404,13 @@ graph TB
 
 ### How Foundry IQ Creates a Unified Knowledge Base
 
-1. **Connect document sources** to Foundry IQ:
-   - Azure Blob Storage: Technical reports, clinical trial documents, contracts, SOPs
-   - SharePoint: Company policies, HR procedures, compliance guides, meeting notes
-   - Fabric Files / OneLake: Analytics outputs, Fabric notebook exports, lakehouse data extracts
+1. **Connect knowledge sources** to Foundry IQ (any combination of supported sources):
+   - **Azure AI Search Index**: Connect existing enterprise search indexes
+   - **Azure Blob Storage**: Technical reports, clinical trial documents, contracts, SOPs
+   - **Web (via Bing)**: Supplement with real-time public web content (no Purview scan needed)
+   - **Microsoft SharePoint (Remote)**: Company policies, HR procedures, compliance guides -- content stays in SharePoint with M365 governance, retrieved without re-indexing
+   - **Microsoft SharePoint (Indexed)**: SharePoint content indexed into Azure AI Search for custom ranking/filtering
+   - **Microsoft OneLake**: Fabric notebook outputs, lakehouse exports, analytics reports
 
 2. **Purview scans documents BEFORE grounding** (critical governance step):
    - Register Blob and SharePoint sources in Purview Data Map
@@ -411,11 +435,18 @@ graph TB
 
 1. **Create a Foundry project** at [ai.azure.com](https://ai.azure.com)
 2. **Register document sources in Purview** -- scan Blob and SharePoint; apply sensitivity labels
-3. **Connect document sources to Foundry IQ**:
-   - Foundry project --> Knowledge --> **+ Add data source**
-   - Select Azure Blob Storage container(s)
-   - Select SharePoint site(s)
-   - Select Fabric Files / OneLake location(s)
+3. **Connect knowledge sources to Foundry IQ**:
+   - Foundry project --> **Knowledge** --> **Create new**
+   - Select from supported source types:
+     - **Azure AI Search Index** -- provide search service endpoint and index name
+     - **Azure Blob Storage** -- select container(s) with documents
+     - **Web** -- configure Bing grounding for real-time web content
+     - **Microsoft SharePoint (Remote)** -- select SharePoint site(s); content retrieved with M365 governance
+     - **Microsoft SharePoint (Indexed)** -- indexes SharePoint into Azure AI Search
+     - **Microsoft OneLake** -- select OneLake location(s)
+   - Configure **retrieval instructions** to guide how the agent prioritizes knowledge sources (e.g., "Prioritize compliance-guidelines for all compliance questions and customer-surveys for feedback responses")
+   - Set **retrieval reasoning effort** (Low / Medium / High) based on query complexity
+   - Set **output mode** (Extractive data / Generative summary)
 4. **Configure IQ processing pipeline**:
    - Set chunk size (default: 512 tokens) and overlap (default: 128 tokens)
    - Select embedding model (text-embedding-3-small or text-embedding-3-large)
