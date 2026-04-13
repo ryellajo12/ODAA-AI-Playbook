@@ -41,6 +41,10 @@ graph TB
         T[Oracle as Tool<br/>Connector actions<br/>called during chat]
     end
 
+    subgraph PURV[Data Governance / Compliance Plane]
+        PURVIEW[Microsoft Purview<br/>Data Map + Catalog]
+    end
+
     subgraph GOV[Governance / Publishing Plane]
         A365[Agent 365 / Copilot Control System<br/>Approve / Publish / Deploy / Assign]
     end
@@ -70,6 +74,7 @@ graph TB
 
     COP -.->|Submit / Publish request| A365
     A365 -.->|Approval / Assignment / Deployment| BU
+    PURVIEW -.-> DB
 ```
 Azure Relay is the service that the On-Premises Data Gateway uses to communicate with cloud services like Copilot Studio. This is already how the On-Premises Data Gateway works by default — you don't configure Azure Relay separately. It's built into the gateway installer.
 
@@ -101,6 +106,10 @@ graph TB
         A365[Agent 365 / Copilot Control System<br/>Approve / Publish / Deploy / Assign]
     end
 
+    subgraph PURV[Data Governance / Compliance Plane]
+        PURVIEW[Microsoft Purview<br/>Data Map + Catalog]
+    end
+
     subgraph AZ[Azure Integration Layer]
         MCP[Oracle MCP Server<br/>Azure Functions or Azure Container Apps]
         TOOLS[Purpose-built Oracle tools<br/>Search / Lookup / Summarize / Actions]
@@ -126,6 +135,7 @@ graph TB
 
     COP -.->|Submit / Publish request| A365
     A365 -.->|Approval / Assignment / Deployment| BU
+    PURVIEW -.-> DB
 ```
 ---
 ### Pattern 1C: Copilot Studio + ORDS API Endpoints (Pre-built Analytics / Vector Search)
