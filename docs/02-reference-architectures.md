@@ -1,7 +1,7 @@
 # 8. Reference Architecture Patterns
 
 Patterns are organized into three categories based on how Oracle data flows into the Microsoft AI ecosystem.
-Platforms used are Microsoft Foundry, Copilot Studio, Power Apps, Logic apps for workflows 
+Platforms used are **Microsoft Foundry, Copilot Studio, Power Apps, Logic apps** for workflows 
 
 --
 
