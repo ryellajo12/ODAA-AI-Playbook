@@ -606,7 +606,210 @@ This enables:
 
 which are required for enterprise production deployment of MCP‑ or ORDS‑enabled agent architectures.
 
-
-
 ## Publishing and Governance
+
+When Copilot Studio agents interact with enterprise Oracle systems (via Native Connector, MCP Tooling, or ORDS APIs), publishing is no longer simply a deployment step.
+
+Publishing an agent enables runtime access to:
+
+- Production operational databases  
+- Infrastructure configuration metadata  
+- Compliance‑regulated datasets  
+- Sensitive enterprise records  
+
+This introduces enterprise risk in environments governed by:
+
+- SOX (Sarbanes-Oxley)
+- HIPAA (Health Insurance Portability and Accountability Act)
+- PCI-DSS
+- Internal ITGC and audit controls
+
+As a result, enterprise Copilot Studio agent rollout must be governed across multiple independent control planes.
+
+---
+
+### Enterprise Governance Model
+
+| Governance Domain | Control Plane | Responsibility |
+|-------------------|--------------|---------------|
+Agent Lifecycle | Agent365 | Whether an agent can exist in tenant |
+Runtime Data Access | Microsoft Purview | What data an agent can retrieve |
+Channel Exposure | Teams Admin Center | Where users can interact with it |
+Connector Invocation | Power Platform DLP | Which APIs/tools may be invoked |
+
+These governance layers apply at different stages of the publishing lifecycle.
+
+---
+
+## 1. Agent365 – Agent Lifecycle Governance
+
+Agent365 serves as Microsoft's enterprise control plane for managing AI agents across Microsoft 365 and third‑party systems.
+
+It provides:
+
+- Centralized agent registry  
+- Identity and access control  
+- Policy-based lifecycle governance  
+- Ownership assignment  
+- Approval workflows  
+- Audit logging  
+
+Agent365 allows IT administrators to:
+
+- Discover all agents operating in the tenant  
+- Require approval before activation  
+- Assign ownership to deployed agents  
+- Apply baseline governance templates  
+- Enforce expiration or retirement policies  
+
+Agent365 enables organizations to:
+
+- Register and identify every agent  
+- Manage identity and access to organizational resources  
+- Apply policies across collaboration tools  
+- Monitor risks such as unmanaged agents  
+
+In regulated environments (e.g., SOX or HIPAA), lifecycle governance ensures:
+
+- Agents cannot be deployed without IT approval  
+- Agents cannot access enterprise APIs without identity governance  
+- Agents cannot persist beyond approved operational timelines  
+
+Agent365 can also enforce governance templates during approval so that:
+
+> Security, compliance, and access controls are automatically applied to agents during activation in the Microsoft Admin Center [1](https://learn.microsoft.com/en-us/microsoft-copilot-studio/faqs-generative-orchestration)  
+
+Without Agent365:
+
+- Agents may exist in production environments  
+- Ownership may be undefined  
+- Connector permissions may be uncontrolled  
+- Lifecycle auditability cannot be enforced  
+
+---
+
+## 2. Microsoft Purview – Runtime Data Governance
+
+Agent365 governs whether an agent may exist.
+
+Microsoft Purview governs what data that agent may access during runtime.
+
+Oracle-connected agents retrieve enterprise data dynamically through:
+
+- MCP tool execution  
+- ORDS REST invocation  
+- Native connector queries  
+
+Purview applies enterprise governance policies to:
+
+- Agent prompts  
+- Generated responses  
+- Connector‑retrieved content  
+- Interaction transcripts  
+
+Purview enables:
+
+- Sensitivity labeling  
+- Data classification  
+- Information protection  
+- Lifecycle management  
+- eDiscovery  
+- Audit logging  
+
+This allows organizations to:
+
+- Prevent agents from processing labeled Oracle datasets  
+- Block connector invocation against sensitive systems  
+- Enforce DLP policies on MCP or ORDS tool usage  
+
+For example:
+
+HIPAA‑governed patient data retrieved through Oracle APIs may be:
+
+- Masked  
+- Logged  
+- Blocked from runtime response generation  
+
+Purview audit logs capture:
+
+- Administrative agent changes  
+- Runtime interaction activity  
+
+which support:
+
+- Compliance tracking  
+- Security monitoring  
+- Investigation workflows  
+
+Purview policies may also prevent:
+
+- Agent testing  
+- Publishing  
+- Connector execution  
+
+until enterprise data protection policies are satisfied.
+
+---
+
+## 3. Teams Admin Center – Runtime Surface Governance
+
+Agent365 governs agent lifecycle.
+
+Purview governs runtime data interaction.
+
+Teams Admin Center governs:
+
+> Where users are allowed to interact with the agent.
+
+Agents deployed through Microsoft 365 Admin Center may still be:
+
+- Invisible  
+- Non-interactive  
+
+within Microsoft Teams until explicitly approved by a Teams Administrator.
+
+This separation allows enterprise tenants to:
+
+- Restrict Oracle-connected agents from appearing in Teams  
+- Limit runtime availability to Microsoft 365 Copilot Chat  
+- Enforce staged rollout across business units  
+
+Teams Admin Center therefore governs:
+
+- Channel exposure  
+- User discoverability  
+- Runtime interaction surfaces  
+
+---
+
+## 4. Enterprise Publishing Workflow
+
+Recommended enterprise rollout sequence:
+
+1. Configure Microsoft Purview data governance policies  
+2. Enable Agent365 lifecycle governance  
+3. Build agents in Copilot Studio  
+4. Submit agent to organizational catalog  
+5. Apply Agent365 approval + governance templates  
+6. Approve runtime channel exposure via Teams Admin Center  
+
+---
+
+## Governance Summary
+
+| Platform | Governs | Applies To |
+|----------|---------|------------|
+Agent365 | Agent existence and lifecycle | Deployment stage |
+Microsoft Purview | Runtime data interaction | Execution stage |
+Teams Admin Center | User interaction surfaces | Runtime stage |
+
+---
+
+Enterprise customers operating under SOX, HIPAA, or PCI‑regulated workloads should:
+
+- Configure Purview before production rollout  
+- Require Agent365 approval workflows  
+- Restrict Teams channel exposure  
+
+to ensure that Oracle production environments are not exposed through agent runtime without appropriate governance controls.
 
