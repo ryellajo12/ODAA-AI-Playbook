@@ -22,7 +22,6 @@ This playbook has three layers:
 | Implement RAG on Oracle 26ai vectors | [Vector Search (Pattern 2 -- Foundry Agents)](04-foundry-agents.md#2-ms-foundry--ords-endpoints-rag--vector-search) |
 | Wire up MCP tools for agents | [Path 3 -- Oracle MCP](05-oracle-mcp.md) |
 
---
 
 ## 2. Customer Discovery Framework
 
