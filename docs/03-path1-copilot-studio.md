@@ -290,6 +290,19 @@ graph TB
     PURVIEW -.-> DATA
 
 ```
+### Prerequisites
+
+- **Existing Oracle 26ai instance** on Oracle Database@Azure with ORDS already enabled
+- **Existing tables with text-heavy columns** (e.g., `CLOB`, `VARCHAR2`) that you want to enable for vector search
+- Azure subscription with Microsoft Foundry access
+- Microsoft Entra ID tenant with App Registration for ORDS OAuth2
+- Azure API Management (APIM) with WAF for OAuth2 validation and rate limiting
+- Azure OpenAI with `text-embedding-3-small` or similar models deployed (for embedding generation)
+- Network connectivity from APIM to ORDS (via VNET Peering or Private Endpoint to the Oracle 26ai instance)
+- Network connectivity from Oracle 26ai to Azure OpenAI (via Private Endpoint for `DBMS_CLOUD` calls)
+- Microsoft Purview for data classification and DLP
+
+### Setup Steps
 
 ## Entra ID Authentication
 
