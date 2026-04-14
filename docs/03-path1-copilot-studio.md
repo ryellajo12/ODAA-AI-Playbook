@@ -139,6 +139,7 @@ graph TB
 - Use **Azure Bastion** for gateway VM management — no RDP exposed to the internet
 - Monitor network flows with **Azure Network Watcher** and **NSG Flow Logs**
 
+---
 ### Prerequisites
 
 - Microsoft 365 license with Copilot Studio entitlement
@@ -149,6 +150,7 @@ graph TB
 - Azure VNET with appropriate subnets for gateway VM and OD@A connectivity
 - Network Security Groups (NSGs) configured to restrict traffic to required ports only
 
+---
 ### Integration Modes Setup Steps
 
 #### Installing On-Prem Data Gateway
@@ -251,7 +253,7 @@ graph TB
     A365 -.->|Approval / Assignment / Deployment| BU
     PURVIEW -.-> DB
 ```
-
+---
 ### Prerequisites
 
 - Microsoft 365 license with Copilot Studio entitlement
@@ -264,8 +266,8 @@ graph TB
 - Network Security Groups (NSGs) configured to restrict traffic to required ports only
 - Microsoft Purview account for data governance
 
+---
 ### Setup Steps
-
 1. **Deploy Oracle Database tools MCP Server** on VNET-integrated Azure Functions or Container Apps
 2. **Configure Oracle connection** — store Oracle database connection credentials in Azure Key Vault; MCP host uses Managed Identity to access Key Vault
 3. **Connect DB tools MCP server to Oracle instance running on Oracle Database@Azure** via Private Endpoint (port 1521)
@@ -353,6 +355,7 @@ graph TB
     PURVIEW -.-> DATA
 
 ```
+---
 ### Prerequisites
 
 - **Existing Oracle 26ai instance** on Oracle Database@Azure with ORDS already enabled
@@ -378,7 +381,9 @@ graph TB
     - Go back to your Copilot Studio agent,  select "Tools" → "Add a tool" → search for your connector name. The different actions defined in the OpenAPI file should surface now.
     - Once you add and configure your tool, make sure to add a strong description of what the tool does, this allows the orchestrator to know when to call your tool
     - You can now test your tool by using the test chat window in the Copilot Studio platform.
-   
+  
+
+---   
 ## Observability for Oracle-Connected Copilot Studio Agents
 
 When Copilot Studio agents interact with enterprise Oracle data (via Native Connector, MCP Tooling, or ORDS APIs), runtime execution becomes a multi‑layered orchestration across:
@@ -396,8 +401,6 @@ Observability in these deployments must therefore capture both:
 | Agent Runtime | Conversation and orchestration execution |
 | Tool Runtime | External Oracle interaction behavior |
 | Inference Runtime | Generative reasoning and response formation |
-
----
 
 ### 1. Agent Runtime Telemetry (Copilot Studio Analytics)
 
@@ -423,8 +426,6 @@ However, this telemetry is generated at the **conversation layer**, and therefor
 - MCP execution chains  
 - Tool reasoning decisions  
 - Generative orchestration planning  
-
----
 
 ### 2. Interaction-Level Telemetry (Dataverse Conversation Logs)
 
@@ -458,8 +459,6 @@ This becomes critical in Oracle MCP scenarios where:
 Agent → MCP Tool → Oracle REST → Vector Engine → Embeddings → Response
 
 must be analyzed as a full execution chain rather than as an isolated conversational response.
-
----
 
 ### 3. Inference-Level Telemetry (Azure Application Insights in Azure Monitor)
 
@@ -510,8 +509,6 @@ This allows enterprise operators to:
 - Troubleshoot runtime planning across multi‑tool orchestration  
 
 Without this telemetry, downstream Oracle integrations effectively operate as a runtime “black box”, making production‑level debugging dependent on vendor escalation rather than tenant‑level diagnostics. **For guidance on setting up Application Insights on your Copilot Studio agent refer to [this link.](https://learn.microsoft.com/en-us/microsoft-copilot-studio/advanced-bot-framework-composer-capture-telemetry)**
-
----
 
 ### 4. Enterprise Observability Strategy
 
