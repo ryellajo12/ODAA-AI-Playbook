@@ -1,6 +1,4 @@
-# PART I -- FIELD PLAYBOOK
-
---
+# PART I - FIELD PLAYBOOK
 
 ## 1. How to Use This Playbook
 
