@@ -18,7 +18,7 @@ Copilot Studio connects to Oracle Database@Azure through the **On-Premises Data 
 1. **Oracle as Knowledge** — Ground your copilot on specific Oracle tables/views via the connector so the agent uses Oracle data as context
 2. **Oracle as a Tool** — Register Oracle connector actions as tools that the agent calls during conversations
 
-All modes flow through: **Copilot Studio → Oracle Connector → On-Prem Data Gateway → Oracle DB@Azure (Private Endpoint)**
+All modes flow through: **Copilot Studio → Oracle Connector → On-Prem Data Gateway → Oracle Database@Azure (Private Endpoint)**
 
 ```mermaid
 graph TB
@@ -86,6 +86,68 @@ graph TB
 - Azure VNET with appropriate subnets for gateway VM and OD@A connectivity
 - Network Security Groups (NSGs) configured to restrict traffic to required ports only
 
+### Private Networking
+
+All traffic between Copilot Studio and Oracle Database@Azure flows through private, non-internet-routable paths.
+
+#### Network Architecture
+
+```mermaid
+graph TB
+    subgraph Internet["Internet / M365"]
+        CS["Copilot Studio<br/>(SaaS)"]
+    end
+
+    subgraph AzureVNET["Azure VNET"]
+        subgraph GWSub["Gateway Subnet"]
+            GW["On-Prem Data Gateway<br/>Azure VM"]
+        end
+
+        subgraph PESub["Private Endpoint Subnet"]
+            PE["Private Endpoint<br/>Oracle DB@Azure"]
+        end
+
+        subgraph ORDSSub["ORDS Subnet (optional)"]
+            ORDS["ORDS on Compute<br/>or App Service"]
+        end
+
+        NSG1["NSG: Allow 1521<br/>from Gateway Subnet"]
+        NSG2["NSG: Allow 443<br/>from ORDS Subnet"]
+    end
+
+    subgraph ODA["Oracle DB@Azure"]
+        DB[("ADBS / Exadata<br/>No Public IP")]
+    end
+
+    CS -->|HTTPS via<br/>Azure Relay| GW
+    GW -->|Private Endpoint<br/>Port 1521| PE
+    PE --> DB
+    ORDS -->|Private Endpoint<br/>Port 1521| PE
+    GWSub --- NSG1
+    ORDSSub --- NSG2
+```
+
+#### Network Configuration Checklist
+
+| # | Control | Required | Details |
+|---|---------|----------|----------|
+| 1 | OD@A Private Endpoint | ✅ Yes | No public IP on Oracle database; all access through Private Endpoint |
+| 2 | Gateway VM in same VNET or peered VNET | ✅ Yes | Gateway must have network line-of-sight to Oracle Private Endpoint |
+| 3 | NSG on Gateway subnet | ✅ Yes | Allow outbound to Oracle PE subnet on port 1521; deny all other outbound |
+| 4 | NSG on Oracle PE subnet | ✅ Yes | Allow inbound from Gateway subnet on port 1521 only |
+| 5 | Azure Relay for gateway | ✅ Yes | Copilot Studio communicates with On-Prem Gateway via Azure Relay (HTTPS 443); no inbound ports needed on gateway VM |
+| 6 | TLS 1.2+ everywhere | ✅ Yes | All connections (Copilot → Gateway → Oracle) encrypted in transit |
+| 7 | DNS resolution | ✅ Yes | Private DNS zones configured for Oracle Private Endpoint hostname resolution |
+| 8 | No public internet egress for DB traffic | ✅ Yes | Oracle data never traverses the public internet |
+
+#### Private Networking Best Practices
+
+- Deploy the **On-Prem Data Gateway on an Azure VM** (not on-premises) for lowest latency to OD@A Private Endpoint
+- Use **Azure Private DNS Zones** to resolve Oracle Private Endpoint hostnames within the VNET
+- Enable **VNET peering** if the gateway and Oracle DB are in different VNETs (same region preferred)
+- Use **Azure Bastion** for gateway VM management — no RDP exposed to the internet
+- Monitor network flows with **Azure Network Watcher** and **NSG Flow Logs**
+
 ### Integration Modes Setup Steps
 
 #### Installing On-Prem Data Gateway
@@ -102,7 +164,7 @@ In order to use Oracle connectors, the On-Premises Data Gateway needs to be setu
    - Configure the gateway data source with Entra ID single sign-on (SSO) where supported
 4. **Configure the Oracle connection** in Power Platform Admin Center:
    - Connection type: Oracle Database
-   - Server: `<OD@A private endpoint hostname>:<port>/<service_name>`
+   - Server: `<Oracle Database@Azure private endpoint hostname>:<port>/<service_name>`
    - Authentication: Basic (Oracle DB user) with credentials stored in Azure Key Vault, or Entra ID pass-through
 
 #### Mode A: Oracle as Knowledge Source (Grounding)
@@ -203,7 +265,7 @@ graph TB
 
 ### Setup Steps
 
-1. **Deploy Oracle DB tools MCP Server** on VNET-integrated Azure Functions or Container Apps
+1. **Deploy Oracle Database tools MCP Server** on VNET-integrated Azure Functions or Container Apps
 2. **Configure Oracle connection** — store Oracle database connection credentials in Azure Key Vault; MCP host uses Managed Identity to access Key Vault
 3. **Connect DB tools MCP server to Oracle instance running on Oracle Database@Azure** via Private Endpoint (port 1521)
 4. **Configure Private DNS Zones** — create zones for `privatelink.oraclecloud.com`, `privatelink.vaultcore.azure.net`
@@ -306,8 +368,7 @@ graph TB
 ### Setup Steps
 1. **Follow steps 1-6 outlined [here](https://github.com/ryellajo12/ODAA-AI-Agent-Playbook/blob/editsv2/docs/04-path2-foundry-agents.md#setup-steps-1)** for setting up your ORDS Endpoints and RAG.
 2. **Create a Copilot Studio Agent** — go [here](https://copilotstudio.microsoft.com/), and make sure to select the right environment from the top right and then select "Create an agent".
-3. **Connect your ORDS Endpoints through a custom connector**
-    - Once your agent has the basic configurations, select "Tools" → "Add a tool" → "Add new custom connector".
+3. **Connect your ORDS Endpoints through a custom connector**a. Once your agent has the basic configurations, select "Tools" → "Add a tool" → "Add new custom connector".
     - You will be redirected to a PowerApps page where you will click on "New Custom Connector" at the top right.
     - Choose a method of your choice, for this playbook we will focus on importing an OpenAPI file.
     - Give your connector a name and import the OpenAPI file for the ORDS endpoints. If you do not have an OpenAPI file, then you will need to create one.
@@ -317,124 +378,6 @@ graph TB
     - Once you add and configure your tool, make sure to add a strong description of what the tool does, this allows the orchestrator to know when to call your tool
     - You can now test your tool by using the test chat window in the Copilot Studio platform.
    
-
-## Entra ID Authentication
-
-Entra ID provides centralized identity management across the Copilot Studio + Oracle integration stack.
-
-### Authentication Flow
-
-```mermaid
-graph LR
-    subgraph User["End User"]
-        EU["Business User"]
-    end
-
-    subgraph EntraID["Microsoft Entra ID"]
-        AUTH["Authentication<br/>SSO / MFA"]
-        GROUPS["Security Groups<br/>Role Assignment"]
-        CA["Conditional Access<br/>Policies"]
-    end
-
-    subgraph CS["Copilot Studio"]
-        COP["Custom Copilot<br/>(Entra ID auth required)"]
-    end
-
-    subgraph GW["On-Prem Gateway"]
-        GWVM["Gateway VM<br/>Entra ID registered"]
-    end
-
-    subgraph ODA["Oracle DB@Azure"]
-        DB[("ADBS<br/>Private Endpoint")]
-    end
-
-    EU -->|SSO| AUTH
-    AUTH --> COP
-    GROUPS --> COP
-    CA --> COP
-    COP --> GWVM
-    GWVM -->|Dedicated DB user| DB
-```
-
-### Entra ID Configuration
-
-| Component | Entra ID Integration | Details |
-|-----------|---------------------|----------|
-| **Copilot Studio** | Native Entra ID auth | Users authenticate via SSO; enforce MFA through Conditional Access policies |
-| **On-Prem Gateway** | Entra ID registered | Gateway registered as enterprise application; access controlled via security groups |
-| **Oracle Connection** | Dedicated DB user | Oracle credentials stored in Azure Key Vault; gateway uses Key Vault reference for connection string |
-| **ORDS Endpoints** | OAuth2 with Entra ID | ORDS configured to accept Entra ID tokens for Tool/Knowledge mode calls |
-| **Power Platform** | DLP Policies | Data Loss Prevention policies restrict which connectors and data flows are allowed |
-
-### Entra ID Best Practices
-
-- Enable **Conditional Access** policies to enforce MFA and device compliance for Copilot Studio users
-- Use **Entra ID security groups** to control which users can access specific copilots
-- Configure **DLP (Data Loss Prevention) policies** in Power Platform to restrict Oracle connector usage to authorized environments
-- Use **Managed Identities** for the gateway VM to access Azure Key Vault (no stored credentials on the VM)
-- Enable **Entra ID audit logs** to track authentication events and access patterns
-
-## Private Networking
-
-All traffic between Copilot Studio and Oracle Database@Azure flows through private, non-internet-routable paths.
-
-### Network Architecture
-
-```mermaid
-graph TB
-    subgraph Internet["Internet / M365"]
-        CS["Copilot Studio<br/>(SaaS)"]
-    end
-
-    subgraph AzureVNET["Azure VNET"]
-        subgraph GWSub["Gateway Subnet"]
-            GW["On-Prem Data Gateway<br/>Azure VM"]
-        end
-
-        subgraph PESub["Private Endpoint Subnet"]
-            PE["Private Endpoint<br/>Oracle DB@Azure"]
-        end
-
-        subgraph ORDSSub["ORDS Subnet (optional)"]
-            ORDS["ORDS on Compute<br/>or App Service"]
-        end
-
-        NSG1["NSG: Allow 1521<br/>from Gateway Subnet"]
-        NSG2["NSG: Allow 443<br/>from ORDS Subnet"]
-    end
-
-    subgraph ODA["Oracle DB@Azure"]
-        DB[("ADBS / Exadata<br/>No Public IP")]
-    end
-
-    CS -->|HTTPS via<br/>Azure Relay| GW
-    GW -->|Private Endpoint<br/>Port 1521| PE
-    PE --> DB
-    ORDS -->|Private Endpoint<br/>Port 1521| PE
-    GWSub --- NSG1
-    ORDSSub --- NSG2
-```
-
-### Network Configuration Checklist
-
-| # | Control | Required | Details |
-|---|---------|----------|----------|
-| 1 | OD@A Private Endpoint | ✅ Yes | No public IP on Oracle database; all access through Private Endpoint |
-| 2 | Gateway VM in same VNET or peered VNET | ✅ Yes | Gateway must have network line-of-sight to Oracle Private Endpoint |
-| 3 | NSG on Gateway subnet | ✅ Yes | Allow outbound to Oracle PE subnet on port 1521; deny all other outbound |
-| 4 | NSG on Oracle PE subnet | ✅ Yes | Allow inbound from Gateway subnet on port 1521 only |
-| 5 | Azure Relay for gateway | ✅ Yes | Copilot Studio communicates with On-Prem Gateway via Azure Relay (HTTPS 443); no inbound ports needed on gateway VM |
-| 6 | TLS 1.2+ everywhere | ✅ Yes | All connections (Copilot → Gateway → Oracle) encrypted in transit |
-| 7 | DNS resolution | ✅ Yes | Private DNS zones configured for Oracle Private Endpoint hostname resolution |
-| 8 | No public internet egress for DB traffic | ✅ Yes | Oracle data never traverses the public internet |
-
-### Private Networking Best Practices
-
-- Deploy the **On-Prem Data Gateway on an Azure VM** (not on-premises) for lowest latency to OD@A Private Endpoint
-- Use **Azure Private DNS Zones** to resolve Oracle Private Endpoint hostnames within the VNET
-- Enable **VNET peering** if the gateway and Oracle DB are in different VNETs (same region preferred)
-- Use **Azure Bastion** for gateway VM management — no RDP exposed to the internet
-- Monitor network flows with **Azure Network Watcher** and **NSG Flow Logs**
 
 ## Design Considerations
 
@@ -606,6 +549,8 @@ This enables:
 
 which are required for enterprise production deployment of MCP‑ or ORDS‑enabled agent architectures.
 
+---
+
 ## Publishing and Governance
 
 When Copilot Studio agents interact with enterprise Oracle systems (via Native Connector, MCP Tooling, or ORDS APIs), publishing is no longer simply a deployment step.
@@ -626,7 +571,6 @@ This introduces enterprise risk in environments governed by:
 
 As a result, enterprise Copilot Studio agent rollout must be governed across multiple independent control planes.
 
----
 
 ### Enterprise Governance Model
 
@@ -639,7 +583,6 @@ Connector Invocation | Power Platform DLP | Which APIs/tools may be invoked |
 
 These governance layers apply at different stages of the publishing lifecycle.
 
----
 
 ## 1. Agent365 – Agent Lifecycle Governance
 
@@ -686,7 +629,6 @@ Without Agent365:
 - Connector permissions may be uncontrolled  
 - Lifecycle auditability cannot be enforced  
 
----
 
 ## 2. Microsoft Purview – Runtime Data Governance
 
@@ -749,7 +691,6 @@ Purview policies may also prevent:
 
 until enterprise data protection policies are satisfied.
 
----
 
 ## 3. Teams Admin Center – Runtime Surface Governance
 
@@ -780,7 +721,6 @@ Teams Admin Center therefore governs:
 - User discoverability  
 - Runtime interaction surfaces  
 
----
 
 ## 4. Enterprise Publishing Workflow
 
@@ -793,7 +733,6 @@ Recommended enterprise rollout sequence:
 5. Apply Agent365 approval + governance templates  
 6. Approve runtime channel exposure via Teams Admin Center  
 
----
 
 ## Governance Summary
 
@@ -803,7 +742,6 @@ Agent365 | Agent existence and lifecycle | Deployment stage |
 Microsoft Purview | Runtime data interaction | Execution stage |
 Teams Admin Center | User interaction surfaces | Runtime stage |
 
----
 
 Enterprise customers operating under SOX, HIPAA, or PCI‑regulated workloads should:
 
