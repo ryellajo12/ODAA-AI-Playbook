@@ -211,6 +211,86 @@ graph TB
 6. **Create a Copilot Studio Agent** — go [here](https://copilotstudio.microsoft.com/), and make sure to select the right environment from the top right and then select "Create an agent"
 7. **Connect your MCP through "Tools"** — Once your agent has the basic configurations, select "Tools" → "Add a tool" → "Add new MCP". Fill in the required information. For more guidance on setting this up click [here](https://learn.microsoft.com/en-us/microsoft-copilot-studio/agent-extend-action-mcp)
 
+---
+## Pattern 3 — Copilot Studio + Oracle ORDS API Endpoints + Custom Connector
+
+### Architecture
+```mermaid
+graph TB
+    subgraph Users[End Users]
+        EU[Business Users / Analysts<br/>Teams / Web / M365]
+    end
+
+    subgraph EntraID[Microsoft Entra ID / OAuth2]
+        AUTH[SSO / MFA<br/>Conditional Access]
+    end
+
+    subgraph CS[Microsoft Copilot Studio]
+        COP[Custom Copilot]
+
+        subgraph Actions[Connector Actions]
+            CC1[Custom Connector's:<br/>ORDS REST APIs<br/>1. Vector Search 26ai RAG<br/>2. Pre-built Analytics]
+        end
+        subgraph OBS[Native Observability]
+            AN[Analytics Tab<br/>DAU, Total sessions, Total Reactions, Engagement etc.]
+            DV[Dataverse<br/>ConversationTranscript + related tables]
+        end
+    end
+
+    subgraph GOV[Governance / Publishing Plane]
+        A365[Agent 365 / Copilot Control System<br/>Approve / Publish / Deploy / Assign]
+    end
+
+    subgraph PURV[Data Governance / Compliance Plane]
+        PURVIEW[Microsoft Purview<br/>Data Map + Catalog]
+    end
+
+    subgraph AOAI[Azure OpenAI]
+        EMB[Embedding API]
+    end
+
+    subgraph VNET[Azure VNET]
+        subgraph ORDSSub[ORDS Subnet]
+            ORDS[ORDS<br/>VNET-integrated<br/>App Service / Container Apps]
+        end
+        subgraph PESub[Private Endpoint Subnet]
+            PE[Private Endpoint]
+        end
+        KV[Azure Key Vault]
+        APIM[API Management<br/>OAuth2 validation<br/>Rate limiting]
+    end
+
+    subgraph ODA[Oracle Database@Azure]
+        ORDS_EP[ORDS REST Endpoints]
+        VEC[26ai Vector Engine<br/>Vector Search]
+        DATA[("Oracle Data<br/>No Public IP")]
+    end
+
+
+    EU -->|SSO| AUTH
+    AUTH --> COP
+
+    COP --> CC1
+
+    CC1 --> APIM
+
+    APIM -->|OAuth2 token validation| ORDS
+
+    ORDS -->|Port 1521<br/>Private Endpoint| PE
+    PE --> ORDS_EP
+    PE --> VEC
+
+    ORDS_EP --> DATA
+    VEC --> DATA
+    VEC -.->|Embeddings| EMB
+
+    COP -.->|Submit / Publish request| A365
+    A365 -.->|Approval / Assignment / Deployment| EU
+
+    PURVIEW -.-> DATA
+
+```
+
 ## Entra ID Authentication
 
 Entra ID provides centralized identity management across the Copilot Studio + Oracle integration stack.
