@@ -65,7 +65,7 @@ This playbook has three layers:
 2. **Choose your toolchain** -- low-code (Copilot Studio, Power Apps) or pro-code (Microsoft Foundry, MCP, SDKs)
 3. **Evolve incrementally** -- from Q&A --> Agents --> Analytics --> AI Applications
 4. **Enterprise-grade security** -- Oracle Database@Azure network isolation + Entra ID + Oracle DB security
-5. **11 proven patterns across 3 categories** -- Live Data, Mirrored Data, and IQ layers; customers choose based on need
+5. **13 proven patterns across 3 categories** -- Live Data, Mirrored Data, and IQ layers; customers choose based on need
 6. **Oracle 26ai native vectors** -- RAG without a separate vector database
 
 ### Elevator Pitch (30 seconds)
