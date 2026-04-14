@@ -370,7 +370,7 @@ graph TB
 - Microsoft Purview for data classification and DLP
 
 ### Setup Steps
-1. **Follow steps 1-6 outlined [here](https://github.com/ryellajo12/ODAA-AI-Agent-Playbook/blob/editsv2/docs/04-path2-foundry-agents.md#setup-steps-1)** for setting up your ORDS Endpoints and RAG.
+1. **Follow steps 1-6 outlined [here](https://github.com/ryellajo12/ODAA-AI-Agent-Playbook/blob/main/docs/04-foundry-agents.md#setup-steps-1)** for setting up your ORDS Endpoints and RAG.
 2. **Create a Copilot Studio Agent** — go [here](https://copilotstudio.microsoft.com/), and make sure to select the right environment from the top right and then select "Create an agent".
 3. **Connect your ORDS Endpoints through a custom connector**a. Once your agent has the basic configurations, select "Tools" → "Add a tool" → "Add new custom connector".
     - You will be redirected to a PowerApps page where you will click on "New Custom Connector" at the top right.
