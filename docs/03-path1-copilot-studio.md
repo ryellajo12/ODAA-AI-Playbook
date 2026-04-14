@@ -189,16 +189,27 @@ graph TB
     PURVIEW -.-> DB
 ```
 
-## Prerequisites
+### Prerequisites
 
 - Microsoft 365 license with Copilot Studio entitlement
 - Microsoft Entra ID tenant (for authentication and identity management)
-- On-Premises Data Gateway installed on an Azure VM or hybrid machine with network access to OD@A (for Gateway mode)
 - Oracle Database@Azure instance (ADBS or Exadata) with Private Endpoints configured
-- Oracle client libraries (Oracle Instant Client) on the gateway machine
-- Azure VNET with appropriate subnets for gateway VM and OD@A connectivity
+- Azure Functions or Azure Container Apps for hosting Oracle MCP server (VNET-integrated)
+- Azure Key Vault for Oracle credentials (rotation policy configured)
+- Azure VNET with subnets for Azure Functions/Container Apps and Oracle Private Endpoints
+- Azure Private DNS Zones for Private Endpoint resolution
 - Network Security Groups (NSGs) configured to restrict traffic to required ports only
+- Microsoft Purview account for data governance
 
+### Setup Steps
+
+1. **Deploy Oracle DB tools MCP Server** on VNET-integrated Azure Functions or Container Apps
+2. **Configure Oracle connection** — store Oracle database connection credentials in Azure Key Vault; MCP host uses Managed Identity to access Key Vault
+3. **Connect DB tools MCP server to Oracle instance running on Oracle Database@Azure** via Private Endpoint (port 1521)
+4. **Configure Private DNS Zones** — create zones for `privatelink.oraclecloud.com`, `privatelink.vaultcore.azure.net`
+5. **Register Oracle in Purview** — add Oracle Database@Azure as a data source; run classification scan
+6. **Create a Copilot Studio Agent** — go [here](https://copilotstudio.microsoft.com/), and make sure to select the right environment from the top right and then select "Create an agent"
+7. **Connect your MCP through "Tools"** — Once your agent has the basic configurations, select "Tools" → "Add a tool" → "Add new MCP". Fill in the required information. For more guidance on setting this up click [here](https://learn.microsoft.com/en-us/microsoft-copilot-studio/agent-extend-action-mcp)
 
 ## Entra ID Authentication
 
@@ -256,7 +267,7 @@ graph LR
 - Use **Managed Identities** for the gateway VM to access Azure Key Vault (no stored credentials on the VM)
 - Enable **Entra ID audit logs** to track authentication events and access patterns
 
-## 9.6 Private Networking
+## Private Networking
 
 All traffic between Copilot Studio and Oracle Database@Azure flows through private, non-internet-routable paths.
 
@@ -318,7 +329,7 @@ graph TB
 - Use **Azure Bastion** for gateway VM management — no RDP exposed to the internet
 - Monitor network flows with **Azure Network Watcher** and **NSG Flow Logs**
 
-## 9.7 Design Considerations
+## Design Considerations
 
 | Consideration | Guidance |
 |--------------|----------|
@@ -334,36 +345,7 @@ graph TB
 | **Scaling** | Gateway supports clustering for high availability |
 | **Data types** | Gateway handles standard Oracle types; LOBs and custom types may need views |
 
-## 9.8 Sample Configurations
+## Observability for Copilot Studio Agents
 
-**Knowledge Grounding Example:**
-```yaml
-Knowledge Source: Oracle Product Catalog
-Type: Oracle Database (via connector)
-Table: SH.PRODUCTS (view: V_PRODUCT_DETAILS)
-Columns: PROD_NAME, PROD_CATEGORY, PROD_DESC, PROD_LIST_PRICE, PROD_STATUS
-Behavior: Copilot answers "What products do we have in Golf?" by retrieving relevant rows
-```
+## Publishing and Governance
 
-**Tool Example:**
-```yaml
-Tool: Get Promotion Performance
-Type: Oracle Database Connector (via gateway)
-Action: Get rows
-Table: SH.V_PROMO_PERFORMANCE (view with pre-computed ROI metrics)
-Filter: SALES_YEAR = {year}
-Trigger: User asks about promotion performance or ROI
-Response: Copilot calls the connector action, formats the results as a table
-```
-
-**Topic + Connector Example:**
-```yaml
-Topic: Quarterly Sales Summary
-Trigger: "What were sales in {quarter} {year}?"
-Action:
-  - Get rows from Oracle (via gateway)
-  - Table: SH.SALES joined with SH.TIMES
-  - Filter: CALENDAR_QUARTER = {quarter}, CALENDAR_YEAR = {year}
-  - Aggregate: SUM(AMOUNT_SOLD), COUNT(*)
-Response: "In {quarter} {year}, total sales were ${total} across {count} transactions."
-```
