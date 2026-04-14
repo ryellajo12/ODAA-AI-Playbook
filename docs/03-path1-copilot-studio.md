@@ -310,7 +310,7 @@ graph TB
     - Once your agent has the basic configurations, select "Tools" → "Add a tool" → "Add new custom connector".
     - You will be redirected to a PowerApps page where you will click on "New Custom Connector" at the top right.
     - Choose a method of your choice, for this playbook we will focus on importing an OpenAPI file.
-    - Give your connector a name and import the OpenAPI file.
+    - Give your connector a name and import the OpenAPI file for the ORDS endpoints. If you do not have an OpenAPI file, then you will need to create one.
     - Go through the "General", "Security", "Definition", "Code" and "Test" tabs to make sure your OpenAPI file was imported correctly. Make any necessary changes in the setup in case there were mistakes.
     - Once all sections are validated, you will click on "Create connector". For more guidance on setting up your connector find information [here.](https://learn.microsoft.com/en-us/connectors/custom-connectors/)
     - Go back to your Copilot Studio agent,  select "Tools" → "Add a tool" → search for your connector name. The different actions defined in the OpenAPI file should surface now.
