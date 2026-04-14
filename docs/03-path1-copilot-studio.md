@@ -115,7 +115,7 @@ graph TB
         NSG2["NSG: Allow 443<br/>from ORDS Subnet"]
     end
 
-    subgraph ODA["Oracle DB@Azure"]
+    subgraph ODA["Oracle Database@Azure"]
         DB[("ADBS / Exadata<br/>No Public IP")]
     end
 
