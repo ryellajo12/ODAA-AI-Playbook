@@ -28,7 +28,6 @@ This playbook is organized into modular documents under the [`docs/`](docs/) fol
 | 2 | Security & Governance Guardrails | [docs/10-security-governance.md](docs/10-security-governance.md) | All |
 | 3 | Step-by-Step Implementation Guides | [docs/11-implementation-guides.md](docs/11-implementation-guides.md) | Devs / Partners |
 
---
 
 ## Version History
 
