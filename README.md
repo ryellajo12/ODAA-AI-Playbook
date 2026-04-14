@@ -1,8 +1,8 @@
-# Oracle Database@Azure -- AI Adoption Playbook
+# Oracle Database@Azure - AI Adoption Playbook
 
 **Version:** 2.1- **Date:** April 14th 2026
 
-**Audience:** Field sellers, CSA/SSP, Solution architects
+**Audience:** Field sellers, Solution architects
 
 **Purpose:** A concrete, end-to-end guide to building AI agents,RAG solutions and agentic AI solutions on Oracle Database@Azure using every available integration path in the Microsoft AI ecosystem.
 
