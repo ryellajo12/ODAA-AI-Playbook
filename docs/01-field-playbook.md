@@ -84,7 +84,7 @@ Agents query Oracle Database@Azure directly at runtime. No data leaves Oracle.
 
 | Pattern | AI Platform | How It Connects | Surfaces | Value Proposition |
 |--|--|--|--|--|
-| **1** | **Copilot Studio** | Gateway / Oracle as Knowledge / Oracle as Tool | Teams, Web, M365 | - Fastest time-to-value (hours)<br/>- No-code builder<br/>- Business users self-serve answers<br/>- Zero data movement |
+| **1** | **Copilot Studio** | On-Prem Data Gateway / Oracle as Knowledge / Oracle as Tool | Teams, Web, M365 | - Fastest time-to-value (hours)<br/>- No-code builder<br/>- Business users self-serve answers<br/>- Zero data movement |
 | **2** | **MS Foundry + MCP** | Oracle MCP Server on Functions / Container Apps (VNET-integrated) | API, M365 Copilot, Agent Store | - NL --> SQL via MCP<br/>- Entra ID SSO/MFA + RBAC<br/>- Private Endpoints end-to-end<br/>- Simplest Foundry pattern |
 | **3** | **MS Foundry + ORDS** | ORDS REST endpoints + Oracle 26ai vector search (RAG); APIM for OAuth2 | API, M365 Copilot, Agent Store | - Governed REST APIs, no raw SQL<br/>- Oracle 26ai RAG / vector search<br/>- APIM enforces Entra ID OAuth2<br/>- All traffic private |
 | **4** | **MS Foundry + MCP + ORDS + Foundry IQ** | MCP + ORDS + 26ai vectors + Foundry IQ (Blob, SharePoint, Fabric Files) | API, M365 Copilot, Agent Store | - Complete: structured + unstructured + RAG<br/>- RBAC at every layer<br/>- Separate DB users per tool<br/>- Maximum AI value |
