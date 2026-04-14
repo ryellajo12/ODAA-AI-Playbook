@@ -76,15 +76,6 @@ graph TB
     A365 -.->|Approval / Assignment / Deployment| BU
     PURVIEW -.-> DB
 ```
-### Prerequisites
-
-- Microsoft 365 license with Copilot Studio entitlement
-- Microsoft Entra ID tenant (for authentication and identity management)
-- On-Premises Data Gateway installed on an Azure VM or hybrid machine with network access to OD@A (for Gateway mode)
-- Oracle Database@Azure instance (ADBS or Exadata) with Private Endpoints configured
-- Oracle client libraries (Oracle Instant Client) on the gateway machine
-- Azure VNET with appropriate subnets for gateway VM and OD@A connectivity
-- Network Security Groups (NSGs) configured to restrict traffic to required ports only
 
 ### Private Networking
 
@@ -147,6 +138,16 @@ graph TB
 - Enable **VNET peering** if the gateway and Oracle DB are in different VNETs (same region preferred)
 - Use **Azure Bastion** for gateway VM management — no RDP exposed to the internet
 - Monitor network flows with **Azure Network Watcher** and **NSG Flow Logs**
+
+### Prerequisites
+
+- Microsoft 365 license with Copilot Studio entitlement
+- Microsoft Entra ID tenant (for authentication and identity management)
+- On-Premises Data Gateway installed on an Azure VM or hybrid machine with network access to OD@A (for Gateway mode)
+- Oracle Database@Azure instance (ADBS or Exadata) with Private Endpoints configured
+- Oracle client libraries (Oracle Instant Client) on the gateway machine
+- Azure VNET with appropriate subnets for gateway VM and OD@A connectivity
+- Network Security Groups (NSGs) configured to restrict traffic to required ports only
 
 ### Integration Modes Setup Steps
 
