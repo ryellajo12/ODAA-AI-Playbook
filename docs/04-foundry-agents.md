@@ -18,51 +18,51 @@ Agent uses Oracle DB tools MCP Server (hosted either on Azure Functions or Azure
 
 ```mermaid
 graph LR
-    subgraph "User Layer"
-        U["End User"]
-    end
+ subgraph "User Layer"
+ U["End User"]
+ end
 
-    subgraph "Microsoft Foundry"
-        FA["Foundry Agent<br/>GPT-4.1 / o3"]
-    end
+ subgraph "Microsoft Foundry"
+ FA["Foundry Agent<br/>GPT-4.1 / o3"]
+ end
 
-    subgraph "Azure VNET"
-        subgraph "Functions Subnet"
-            MCP["MCP Server<br/>Azure Functions /<br/>Container Apps"]
-        end
-        subgraph "Data Subnet"
-            OPE["Oracle PE<br/>port 1521"]
-        end
-        subgraph "Security Subnet"
-            KV["Azure Key Vault<br/>PE"]
-        end
-    end
+ subgraph "Azure VNET"
+ subgraph "Functions Subnet"
+ MCP["MCP Server<br/>Azure Functions /<br/>Container Apps"]
+ end
+ subgraph "Data Subnet"
+ OPE["Oracle PE<br/>port 1521"]
+ end
+ subgraph "Security Subnet"
+ KV["Azure Key Vault<br/>PE"]
+ end
+ end
 
-    subgraph "Oracle Database@Azure"
-        ODB["Oracle DB<br/>mcp_agent_user<br/>(read-only)"]
-    end
+ subgraph "Oracle Database@Azure"
+ ODB["Oracle DB<br/>mcp_agent_user<br/>(read-only)"]
+ end
 
-    subgraph "Governance"
-        PV["Microsoft Purview<br/>Data Map + Catalog"]
-        DEF["Defender for Cloud"]
-    end
+ subgraph "Governance"
+ PV["Microsoft Purview<br/>Data Map + Catalog"]
+ DEF["Defender for Cloud"]
+ end
 
-    subgraph "Observability"
-        LA["Log Analytics<br/>Workspace"]
-        AM["Azure Monitor<br/>Alerts"]
-    end
+ subgraph "Observability"
+ LA["Log Analytics<br/>Workspace"]
+ AM["Azure Monitor<br/>Alerts"]
+ end
 
-    U -->|"Entra ID + MFA<br/>Conditional Access"| FA
-    FA -->|"MCP Protocol"| MCP
-    MCP -->|"Managed Identity"| KV
-    MCP -->|"PE (1521)"| OPE
-    OPE --> ODB
-    ODB -.->|"Unified Audit"| LA
-    MCP -.->|"Diagnostics"| LA
-    KV -.->|"Diagnostics"| LA
-    LA --> AM
-    PV -.->|"Scan & Classify"| ODB
-    DEF -.->|"Threat Detection"| MCP
+ U -->|"Entra ID + MFA<br/>Conditional Access"| FA
+ FA -->|"MCP Protocol"| MCP
+ MCP -->|"Managed Identity"| KV
+ MCP -->|"PE (1521)"| OPE
+ OPE --> ODB
+ ODB -.->|"Unified Audit"| LA
+ MCP -.->|"Diagnostics"| LA
+ KV -.->|"Diagnostics"| LA
+ LA --> AM
+ PV -.->|"Scan & Classify"| ODB
+ DEF -.->|"Threat Detection"| MCP
 ```
 
 ### Prerequisites
@@ -85,9 +85,9 @@ graph LR
 4. **Configure Private DNS Zones** -- create zones for `privatelink.oraclecloud.com`, `privatelink.vaultcore.azure.net`
 5. **Register Oracle in Purview** -- add Oracle Database@Azure as a data source; run classification scan
 6. **Create a MS Foundry Agent** at [ai.azure.com](https://ai.azure.com):
-   - Model: `gpt-4.1` or `o3` or others of your choice
-   - Add Oracle DB tools MCP  server hosted on Azure Functions or Azure Container apps as an external tool
-   - Enable Azure AI Content Safety filters
+ - Model: `gpt-4.1` or `o3` or others of your choice
+ - Add Oracle DB tools MCP server hosted on Azure Functions or Azure Container apps as an external tool
+ - Enable Azure AI Content Safety filters
 7. **Configure Entra ID** -- register the agent; assign security group for user access; configure Conditional Access
 9. **Test in Playground** --' Deploy to M365 Copilot / Agent Store / API
 
@@ -133,25 +133,25 @@ Oracle Database 26ai introduces the native **VECTOR** data type and **VECTOR_DIS
 
 ```mermaid
 graph TB
-    subgraph RAG["RAG Flow"]
-        Q["1. User asks:<br/>Find adverse events<br/>related to breathing issues"]
-        EMB["2. Azure OpenAI Embedding API<br/>Model: text-embedding-3-small<br/>Dimensions: 1536"]
-    end
+ subgraph RAG["RAG Flow"]
+ Q["1. User asks:<br/>Find adverse events<br/>related to breathing issues"]
+ EMB["2. Azure OpenAI Embedding API<br/>Model: text-embedding-3-small<br/>Dimensions: 1536"]
+ end
 
-    subgraph Oracle26ai["Oracle 26ai on Oracle Database@Azure"]
-        SEARCH["3. VECTOR_DISTANCE Search<br/>SELECT ae_id, description, severity,<br/>VECTOR_DISTANCE(embedding, :query_vector, COSINE)<br/>ORDER BY distance FETCH FIRST 5 ROWS ONLY"]
-        VDATA[("VECTOR Column<br/>Pre-computed Embeddings")]
-    end
+ subgraph Oracle26ai["Oracle 26ai on Oracle Database@Azure"]
+ SEARCH["3. VECTOR_DISTANCE Search<br/>SELECT ae_id, description, severity,<br/>VECTOR_DISTANCE(embedding, :query_vector, COSINE)<br/>ORDER BY distance FETCH FIRST 5 ROWS ONLY"]
+ VDATA[("VECTOR Column<br/>Pre-computed Embeddings")]
+ end
 
-    subgraph Answer["Answer Generation"]
-        LLM["4. LLM (GPT-4.1 / o3)<br/>Generates answer grounded<br/>in retrieved Oracle data"]
-    end
+ subgraph Answer["Answer Generation"]
+ LLM["4. LLM (GPT-4.1 / o3)<br/>Generates answer grounded<br/>in retrieved Oracle data"]
+ end
 
-    Q --> EMB
-    EMB --> SEARCH
-    VDATA --> SEARCH
-    SEARCH --> LLM
-    Q -.-> LLM
+ Q --> EMB
+ EMB --> SEARCH
+ VDATA --> SEARCH
+ SEARCH --> LLM
+ Q -.-> LLM
 ```
 
 The RAG flow in 4 steps:
@@ -166,48 +166,48 @@ Agent uses ORDS REST endpoints running on the customer's existing Oracle 26ai in
 
 ```mermaid
 graph LR
-    subgraph "User Layer"
-        U["End User"]
-    end
+ subgraph "User Layer"
+ U["End User"]
+ end
 
-    subgraph "Microsoft Foundry"
-        FA["Foundry Agent<br/>GPT-4.1 / o3"]
-    end
+ subgraph "Microsoft Foundry"
+ FA["Foundry Agent<br/>GPT-4.1 / o3"]
+ end
 
-    subgraph "Azure VNET"
-        subgraph "APIM Subnet"
-            APIM["Azure API Mgmt<br/>OAuth2 + WAF<br/>Rate Limiting"]
-        end
-        subgraph "AI Subnet"
-            AOAI["Azure OpenAI<br/>Embeddings PE"]
-        end
-    end
+ subgraph "Azure VNET"
+ subgraph "APIM Subnet"
+ APIM["Azure API Mgmt<br/>OAuth2 + WAF<br/>Rate Limiting"]
+ end
+ subgraph "AI Subnet"
+ AOAI["Azure OpenAI<br/>Embeddings PE"]
+ end
+ end
 
-    subgraph "Oracle Database@Azure"
-        ORDS["ORDS<br/>(runs on Oracle 26ai<br/>instance)"]
-        ODB["Oracle 26ai DB<br/>Existing Tables +<br/>VECTOR Columns +<br/>ords_agent_user"]
-        ORDS -->|"localhost"| ODB
-    end
+ subgraph "Oracle Database@Azure"
+ ORDS["ORDS<br/>(runs on Oracle 26ai<br/>instance)"]
+ ODB["Oracle 26ai DB<br/>Existing Tables +<br/>VECTOR Columns +<br/>ords_agent_user"]
+ ORDS -->|"localhost"| ODB
+ end
 
-    subgraph "Governance"
-        PV["Microsoft Purview<br/>Data Map + DLP +<br/>Sensitivity Labels"]
-        DEF["Defender for Cloud"]
-    end
+ subgraph "Governance"
+ PV["Microsoft Purview<br/>Data Map + DLP +<br/>Sensitivity Labels"]
+ DEF["Defender for Cloud"]
+ end
 
-    subgraph "Observability"
-        LA["Log Analytics"]
-        AM["Azure Monitor Alerts"]
-    end
+ subgraph "Observability"
+ LA["Log Analytics"]
+ AM["Azure Monitor Alerts"]
+ end
 
-    U -->|"Entra ID + MFA"| FA
-    FA -->|"OpenAPI Tools"| APIM
-    APIM -->|"OAuth2 validated<br/>via PE / VNET Peering"| ORDS
-    ODB -->|"DBMS_CLOUD<br/>via PE"| AOAI
-    APIM -.->|"Diagnostics"| LA
-    ODB -.->|"Unified Audit"| LA
-    LA --> AM
-    PV -.->|"Scan & Classify<br/>+ DLP Policies"| ODB
-    DEF -.->|"Threat Detection"| APIM
+ U -->|"Entra ID + MFA"| FA
+ FA -->|"OpenAPI Tools"| APIM
+ APIM -->|"OAuth2 validated<br/>via PE / VNET Peering"| ORDS
+ ODB -->|"DBMS_CLOUD<br/>via PE"| AOAI
+ APIM -.->|"Diagnostics"| LA
+ ODB -.->|"Unified Audit"| LA
+ LA --> AM
+ PV -.->|"Scan & Classify<br/>+ DLP Policies"| ODB
+ DEF -.->|"Threat Detection"| APIM
 ```
 
 ### Prerequisites
@@ -230,138 +230,138 @@ You already have an Oracle 26ai instance with tables containing text-heavy colum
 
 1. **Identify text-heavy columns** suitable for vector search:
 
-   ```sql
-   -- Find CLOB and large VARCHAR2 columns in your schema
-   SELECT table_name, column_name, data_type, data_length
-   FROM all_tab_columns
-   WHERE owner = 'CLINICAL_APP'
-     AND data_type IN ('CLOB', 'NCLOB', 'VARCHAR2', 'NVARCHAR2')
-     AND (data_type = 'CLOB' OR data_length >= 200)
-   ORDER BY table_name, column_name;
-   ```
+ ```sql
+ -- Find CLOB and large VARCHAR2 columns in your schema
+ SELECT table_name, column_name, data_type, data_length
+ FROM all_tab_columns
+ WHERE owner = 'CLINICAL_APP'
+ AND data_type IN ('CLOB', 'NCLOB', 'VARCHAR2', 'NVARCHAR2')
+ AND (data_type = 'CLOB' OR data_length >= 200)
+ ORDER BY table_name, column_name;
+ ```
 
 2. **Add a `VECTOR` column to each existing table** -- no table rebuild required:
 
-   ```sql
-   -- Example: add embedding column to an existing adverse_events table
-   ALTER TABLE clinical_app.adverse_events
-   ADD (embedding VECTOR(1536, FLOAT64));  -- 1536 dims for text-embedding-3-small
+ ```sql
+ -- Example: add embedding column to an existing adverse_events table
+ ALTER TABLE clinical_app.adverse_events
+ ADD (embedding VECTOR(1536, FLOAT64)); -- 1536 dims for text-embedding-3-small
 
-   -- Repeat for other tables with text-heavy columns
-   ALTER TABLE clinical_app.clinical_notes
-   ADD (embedding VECTOR(1536, FLOAT64));
-   ```
+ -- Repeat for other tables with text-heavy columns
+ ALTER TABLE clinical_app.clinical_notes
+ ADD (embedding VECTOR(1536, FLOAT64));
+ ```
 
 #### Step 2 -- Configure Embedding Generation
 
 3. **Create an Azure OpenAI credential** inside Oracle to call the embedding API:
 
-   ```sql
-   -- Store Azure OpenAI API key as a DBMS_CLOUD credential
-   -- The Oracle 26ai instance calls Azure OpenAI via Private Endpoint
-   BEGIN
-       DBMS_CLOUD.CREATE_CREDENTIAL(
-           credential_name => 'AZURE_OPENAI_CRED',
-           username        => 'AZURE_OPENAI',
-           password        => '<your-azure-openai-api-key>'
-       );
-   END;
-   /
-   ```
+ ```sql
+ -- Store Azure OpenAI API key as a DBMS_CLOUD credential
+ -- The Oracle 26ai instance calls Azure OpenAI via Private Endpoint
+ BEGIN
+ DBMS_CLOUD.CREATE_CREDENTIAL(
+ credential_name => 'AZURE_OPENAI_CRED',
+ username => 'AZURE_OPENAI',
+ password => '<your-azure-openai-api-key>'
+ );
+ END;
+ /
+ ```
 
-   > **Network note**: Ensure the Oracle 26ai instance can reach Azure OpenAI via Private Endpoint. Configure the ACL to allow outbound HTTPS from the database to the OpenAI PE.
+ > **Network note**: Ensure the Oracle 26ai instance can reach Azure OpenAI via Private Endpoint. Configure the ACL to allow outbound HTTPS from the database to the OpenAI PE.
 
 4. **Create a generic PL/SQL procedure** that generates embeddings for any table/column:
 
-   ```sql
-   -- Reusable procedure -- generates embedding for a given text value
-   CREATE OR REPLACE FUNCTION clinical_app.generate_embedding(
-       p_text IN CLOB
-   ) RETURN VECTOR DETERMINISTIC IS
-       v_response CLOB;
-   BEGIN
-       v_response := DBMS_CLOUD.send_request(
-           credential_name => 'AZURE_OPENAI_CRED',
-           uri => 'https://<your-resource>.openai.azure.com/openai/deployments/'
-                  || 'text-embedding-3-small/embeddings?api-version=2024-02-01',
-           method => 'POST',
-           body   => JSON_OBJECT('input' VALUE p_text)
-       );
-       RETURN JSON_VALUE(v_response, '$.data[0].embedding'
-                         RETURNING VECTOR(1536, FLOAT64));
-   END;
-   /
-   ```
+ ```sql
+ -- Reusable procedure -- generates embedding for a given text value
+ CREATE OR REPLACE FUNCTION clinical_app.generate_embedding(
+ p_text IN CLOB
+ ) RETURN VECTOR DETERMINISTIC IS
+ v_response CLOB;
+ BEGIN
+ v_response := DBMS_CLOUD.send_request(
+ credential_name => 'AZURE_OPENAI_CRED',
+ uri => 'https://<your-resource>.openai.azure.com/openai/deployments/'
+ || 'text-embedding-3-small/embeddings?api-version=2024-02-01',
+ method => 'POST',
+ body => JSON_OBJECT('input' VALUE p_text)
+ );
+ RETURN JSON_VALUE(v_response, '$.data[0].embedding'
+ RETURNING VECTOR(1536, FLOAT64));
+ END;
+ /
+ ```
 
 5. **Backfill embeddings** on existing rows (batch process during off-peak hours):
 
-   ```sql
-   -- Backfill embeddings for adverse_events.description column
-   BEGIN
-       FOR rec IN (
-           SELECT ae_id, description
-           FROM clinical_app.adverse_events
-           WHERE embedding IS NULL AND description IS NOT NULL
-       ) LOOP
-           UPDATE clinical_app.adverse_events
-           SET embedding = clinical_app.generate_embedding(rec.description)
-           WHERE ae_id = rec.ae_id;
-           -- Commit in batches to avoid undo segment pressure
-           IF MOD(rec.ae_id, 500) = 0 THEN COMMIT; END IF;
-       END LOOP;
-       COMMIT;
-   END;
-   /
-   ```
+ ```sql
+ -- Backfill embeddings for adverse_events.description column
+ BEGIN
+ FOR rec IN (
+ SELECT ae_id, description
+ FROM clinical_app.adverse_events
+ WHERE embedding IS NULL AND description IS NOT NULL
+ ) LOOP
+ UPDATE clinical_app.adverse_events
+ SET embedding = clinical_app.generate_embedding(rec.description)
+ WHERE ae_id = rec.ae_id;
+ -- Commit in batches to avoid undo segment pressure
+ IF MOD(rec.ae_id, 500) = 0 THEN COMMIT; END IF;
+ END LOOP;
+ COMMIT;
+ END;
+ /
+ ```
 
 6. **Keep embeddings in sync** -- create a trigger so new/updated rows auto-generate embeddings:
 
-   ```sql
-   CREATE OR REPLACE TRIGGER clinical_app.trg_ae_embedding
-   BEFORE INSERT OR UPDATE OF description ON clinical_app.adverse_events
-   FOR EACH ROW
-   BEGIN
-       IF :NEW.description IS NOT NULL THEN
-           :NEW.embedding := clinical_app.generate_embedding(:NEW.description);
-       END IF;
-   END;
-   /
-   ```
+ ```sql
+ CREATE OR REPLACE TRIGGER clinical_app.trg_ae_embedding
+ BEFORE INSERT OR UPDATE OF description ON clinical_app.adverse_events
+ FOR EACH ROW
+ BEGIN
+ IF :NEW.description IS NOT NULL THEN
+ :NEW.embedding := clinical_app.generate_embedding(:NEW.description);
+ END IF;
+ END;
+ /
+ ```
 
-   > **Performance note**: For high-volume OLTP tables, use a `DBMS_SCHEDULER` job instead of a trigger to avoid latency on the Azure OpenAI call during DML.
+ > **Performance note**: For high-volume OLTP tables, use a `DBMS_SCHEDULER` job instead of a trigger to avoid latency on the Azure OpenAI call during DML.
 
 7. **Create a vector index** for fast similarity search:
 
-   ```sql
-   CREATE VECTOR INDEX idx_ae_embedding
-   ON clinical_app.adverse_events(embedding)
-   ORGANIZATION NEIGHBOR PARTITIONS
-   DISTANCE COSINE
-   WITH TARGET ACCURACY 95;
-   ```
+ ```sql
+ CREATE VECTOR INDEX idx_ae_embedding
+ ON clinical_app.adverse_events(embedding)
+ ORGANIZATION NEIGHBOR PARTITIONS
+ DISTANCE COSINE
+ WITH TARGET ACCURACY 95;
+ ```
 
 #### Step 3 -- Create a Query Embedding Helper
 
 7. **Create a function to embed a user query at search time**:
 
-   ```sql
-   CREATE OR REPLACE FUNCTION clinical_app.generate_query_embedding(
-       p_query IN VARCHAR2
-   ) RETURN VECTOR IS
-       v_response CLOB;
-   BEGIN
-       v_response := DBMS_CLOUD.send_request(
-           credential_name => 'AZURE_OPENAI_CRED',
-           uri => 'https://<your-resource>.openai.azure.com/openai/deployments/'
-                  || 'text-embedding-3-small/embeddings?api-version=2024-02-01',
-           method => 'POST',
-           body   => JSON_OBJECT('input' VALUE p_query)
-       );
-       RETURN JSON_VALUE(v_response, '$.data[0].embedding'
-                         RETURNING VECTOR(1536, FLOAT64));
-   END;
-   /
-   ```
+ ```sql
+ CREATE OR REPLACE FUNCTION clinical_app.generate_query_embedding(
+ p_query IN VARCHAR2
+ ) RETURN VECTOR IS
+ v_response CLOB;
+ BEGIN
+ v_response := DBMS_CLOUD.send_request(
+ credential_name => 'AZURE_OPENAI_CRED',
+ uri => 'https://<your-resource>.openai.azure.com/openai/deployments/'
+ || 'text-embedding-3-small/embeddings?api-version=2024-02-01',
+ method => 'POST',
+ body => JSON_OBJECT('input' VALUE p_query)
+ );
+ RETURN JSON_VALUE(v_response, '$.data[0].embedding'
+ RETURNING VECTOR(1536, FLOAT64));
+ END;
+ /
+ ```
 
 #### Step 4 -- Expose Vector Search via ORDS (Already Running on Oracle 26ai)
 
@@ -369,79 +369,79 @@ ORDS is already running on your Oracle 26ai instance. You just need to define ne
 
 8. **Define an ORDS module with a vector search handler**:
 
-   ```sql
-   BEGIN
-       ORDS.DEFINE_MODULE(
-           p_module_name    => 'vectorsearch',
-           p_base_path      => '/vectorsearch/',
-           p_items_per_page => 10
-       );
+ ```sql
+ BEGIN
+ ORDS.DEFINE_MODULE(
+ p_module_name => 'vectorsearch',
+ p_base_path => '/vectorsearch/',
+ p_items_per_page => 10
+ );
 
-       ORDS.DEFINE_TEMPLATE(
-           p_module_name => 'vectorsearch',
-           p_pattern     => 'search/'
-       );
+ ORDS.DEFINE_TEMPLATE(
+ p_module_name => 'vectorsearch',
+ p_pattern => 'search/'
+ );
 
-       ORDS.DEFINE_HANDLER(
-           p_module_name => 'vectorsearch',
-           p_pattern     => 'search/',
-           p_method      => 'POST',
-           p_source_type => ORDS.source_type_plsql,
-           p_source      => '
-           DECLARE
-               v_query_vector VECTOR(1536, FLOAT64);
-           BEGIN
-               v_query_vector := clinical_app.generate_query_embedding(:p_query);
-               OPEN :result FOR
-                   SELECT ae_id, description, severity, event_date,
-                          VECTOR_DISTANCE(embedding, v_query_vector, COSINE) AS distance
-                   FROM clinical_app.adverse_events
-                   ORDER BY distance
-                   FETCH FIRST :p_top_k ROWS ONLY;
-           END;'
-       );
-       COMMIT;
-   END;
-   /
-   ```
+ ORDS.DEFINE_HANDLER(
+ p_module_name => 'vectorsearch',
+ p_pattern => 'search/',
+ p_method => 'POST',
+ p_source_type => ORDS.source_type_plsql,
+ p_source => '
+ DECLARE
+ v_query_vector VECTOR(1536, FLOAT64);
+ BEGIN
+ v_query_vector := clinical_app.generate_query_embedding(:p_query);
+ OPEN :result FOR
+ SELECT ae_id, description, severity, event_date,
+ VECTOR_DISTANCE(embedding, v_query_vector, COSINE) AS distance
+ FROM clinical_app.adverse_events
+ ORDER BY distance
+ FETCH FIRST :p_top_k ROWS ONLY;
+ END;'
+ );
+ COMMIT;
+ END;
+ /
+ ```
 
 9. **(Optional) Define a hybrid search endpoint** combining vector similarity with SQL filters:
 
-   ```sql
-   -- Hybrid endpoint: vector search + severity + date filters
-   ORDS.DEFINE_HANDLER(
-       p_module_name => 'vectorsearch',
-       p_pattern     => 'hybrid_search/',
-       p_method      => 'POST',
-       p_source_type => ORDS.source_type_plsql,
-       p_source      => '
-       DECLARE
-           v_query_vector VECTOR(1536, FLOAT64);
-       BEGIN
-           v_query_vector := clinical_app.generate_query_embedding(:p_query);
-           OPEN :result FOR
-               SELECT ae_id, description, severity, event_date,
-                      VECTOR_DISTANCE(embedding, v_query_vector, COSINE) AS distance
-               FROM clinical_app.adverse_events
-               WHERE severity IN (''SEVERE'', ''LIFE_THREATENING'')
-                 AND event_date >= TO_DATE(:p_from_date, ''YYYY-MM-DD'')
-               ORDER BY distance
-               FETCH FIRST :p_top_k ROWS ONLY;
-       END;'
-   );
-   ```
+ ```sql
+ -- Hybrid endpoint: vector search + severity + date filters
+ ORDS.DEFINE_HANDLER(
+ p_module_name => 'vectorsearch',
+ p_pattern => 'hybrid_search/',
+ p_method => 'POST',
+ p_source_type => ORDS.source_type_plsql,
+ p_source => '
+ DECLARE
+ v_query_vector VECTOR(1536, FLOAT64);
+ BEGIN
+ v_query_vector := clinical_app.generate_query_embedding(:p_query);
+ OPEN :result FOR
+ SELECT ae_id, description, severity, event_date,
+ VECTOR_DISTANCE(embedding, v_query_vector, COSINE) AS distance
+ FROM clinical_app.adverse_events
+ WHERE severity IN (''SEVERE'', ''LIFE_THREATENING'')
+ AND event_date >= TO_DATE(:p_from_date, ''YYYY-MM-DD'')
+ ORDER BY distance
+ FETCH FIRST :p_top_k ROWS ONLY;
+ END;'
+ );
+ ```
 
 10. **Create standard analytics ORDS endpoints** for non-vector structured queries (e.g., promotion summaries, KPI rollups) using `ORDS.DEFINE_HANDLER` with `source_type_query`
 
 #### Step 5 -- Secure with APIM and Entra ID
 
 11. **Set up Azure API Management (APIM)** -- import ORDS OpenAPI spec; add OAuth2 validation policy with Entra ID; enable WAF policies for injection protection
-    - APIM connects to the ORDS endpoint on the Oracle 26ai instance via VNET Peering or Private Endpoint
-    - ORDS on Oracle 26ai should have no public endpoint; APIM is the only ingress path
+ - APIM connects to the ORDS endpoint on the Oracle 26ai instance via VNET Peering or Private Endpoint
+ - ORDS on Oracle 26ai should have no public endpoint; APIM is the only ingress path
 12. **Register Entra ID App** -- create App Registration for ORDS with scopes:
-    - `ORDS.Read` -- structured analytics endpoints
-    - `ORDS.VectorSearch` -- vector search endpoints
-    - Each scope maps to a specific ORDS module for fine-grained control
+ - `ORDS.Read` -- structured analytics endpoints
+ - `ORDS.VectorSearch` -- vector search endpoints
+ - Each scope maps to a specific ORDS module for fine-grained control
 
 #### Step 6 -- Governance and Networking
 
@@ -451,33 +451,33 @@ ORDS is already running on your Oracle 26ai instance. You just need to define ne
 #### Step 7 -- Create MS Foundry Agent
 
 15. **Create Foundry Agent** at [ai.azure.com](https://ai.azure.com):
-    - Model: `gpt-4.1` or `o3`
-    - Add ORDS vector search + analytics endpoints as OpenAPI tools (via APIM URL)
-    - Register the tool definition so the agent knows when to use vector search:
-      ```json
-      {
-        "type": "function",
-        "function": {
-          "name": "search_adverse_events",
-          "description": "Semantic vector search for clinical adverse events",
-          "parameters": {
-            "type": "object",
-            "properties": {
-              "p_query": {
-                "type": "string",
-                "description": "Natural language query (e.g., 'severe breathing problems')"
-              },
-              "p_top_k": {
-                "type": "integer",
-                "description": "Number of results to return (default: 5)"
-              }
-            },
-            "required": ["p_query"]
-          }
-        }
-      }
-      ```
-    - Enable Azure AI Content Safety filters
+ - Model: `gpt-4.1` or `o3`
+ - Add ORDS vector search + analytics endpoints as OpenAPI tools (via APIM URL)
+ - Register the tool definition so the agent knows when to use vector search:
+ ```json
+ {
+ "type": "function",
+ "function": {
+ "name": "search_adverse_events",
+ "description": "Semantic vector search for clinical adverse events",
+ "parameters": {
+ "type": "object",
+ "properties": {
+ "p_query": {
+ "type": "string",
+ "description": "Natural language query (e.g., 'severe breathing problems')"
+ },
+ "p_top_k": {
+ "type": "integer",
+ "description": "Number of results to return (default: 5)"
+ }
+ },
+ "required": ["p_query"]
+ }
+ }
+ }
+ ```
+ - Enable Azure AI Content Safety filters
 16. **Configure Entra ID** -- assign security group; configure Conditional Access policies
 17. **Test in Playground** --' Deploy to M365 Copilot / Agent Store / API
 
@@ -560,118 +560,118 @@ Complete agent combining structured data (Oracle DB tools MCP + ORDS), unstructu
 
 ```mermaid
 graph TB
-    subgraph "User Layer"
-        U["End User"]
-    end
+ subgraph "User Layer"
+ U["End User"]
+ end
 
-    subgraph "Identity & Access"
-        EID["Entra ID<br/>MFA + Conditional Access<br/>+ PIM"]
-        CA["Conditional Access<br/>Compliant Device<br/>Named Locations<br/>Sign-in Risk"]
-    end
+ subgraph "Identity & Access"
+ EID["Entra ID<br/>MFA + Conditional Access<br/>+ PIM"]
+ CA["Conditional Access<br/>Compliant Device<br/>Named Locations<br/>Sign-in Risk"]
+ end
 
-    subgraph "Microsoft Foundry"
-        FA["Foundry Agent<br/>GPT-4.1 / o3"]
-        FIQ["Foundry IQ<br/>Unstructured RAG"]
-        ACS["Azure AI<br/>Content Safety"]
-    end
+ subgraph "Microsoft Foundry"
+ FA["Foundry Agent<br/>GPT-4.1 / o3"]
+ FIQ["Foundry IQ<br/>Unstructured RAG"]
+ ACS["Azure AI<br/>Content Safety"]
+ end
 
-    subgraph "Azure VNET -- Hub"
-        FW["Azure Firewall<br/>Centralized Egress"]
-        NW["Network Watcher<br/>NSG Flow Logs"]
-    end
+ subgraph "Azure VNET -- Hub"
+ FW["Azure Firewall<br/>Centralized Egress"]
+ NW["Network Watcher<br/>NSG Flow Logs"]
+ end
 
-    subgraph "Azure VNET -- Spoke"
-        subgraph "APIM Subnet"
-            APIM["APIM + WAF<br/>OAuth2 + Rate Limit"]
-        end
-        subgraph "Compute Subnet"
-            MCP["MCP Server<br/>Functions / Container Apps"]
-            ORDS["ORDS<br/>App Service / Container Apps"]
-        end
-        subgraph "AI Subnet"
-            AOAI["Azure OpenAI PE<br/>Embeddings"]
-        end
-        subgraph "Data Subnet"
-            OPE["Oracle PE (1521)"]
-            KVPE["Key Vault PE"]
-            STPE["Storage PE"]
-        end
-    end
+ subgraph "Azure VNET -- Spoke"
+ subgraph "APIM Subnet"
+ APIM["APIM + WAF<br/>OAuth2 + Rate Limit"]
+ end
+ subgraph "Compute Subnet"
+ MCP["MCP Server<br/>Functions / Container Apps"]
+ ORDS["ORDS<br/>App Service / Container Apps"]
+ end
+ subgraph "AI Subnet"
+ AOAI["Azure OpenAI PE<br/>Embeddings"]
+ end
+ subgraph "Data Subnet"
+ OPE["Oracle PE (1521)"]
+ KVPE["Key Vault PE"]
+ STPE["Storage PE"]
+ end
+ end
 
-    subgraph "Oracle Database@Azure"
-        ODB["Oracle 26ai DB"]
-        VPD["VPD Row-Level Security"]
-        DR["Data Redaction (PII)"]
-        DBV["Database Vault"]
-        UA["Unified Audit"]
-        TDE["TDE Encryption at Rest"]
-    end
+ subgraph "Oracle Database@Azure"
+ ODB["Oracle 26ai DB"]
+ VPD["VPD Row-Level Security"]
+ DR["Data Redaction (PII)"]
+ DBV["Database Vault"]
+ UA["Unified Audit"]
+ TDE["TDE Encryption at Rest"]
+ end
 
-    subgraph "Document Sources"
-        BLOB["Azure Blob Storage<br/>(PDFs, Docs)"]
-        SP["SharePoint<br/>(Sites, Files)"]
-        FL["Fabric OneLake"]
-    end
+ subgraph "Document Sources"
+ BLOB["Azure Blob Storage<br/>(PDFs, Docs)"]
+ SP["SharePoint<br/>(Sites, Files)"]
+ FL["Fabric OneLake"]
+ end
 
-    subgraph "Governance -- Microsoft Purview"
-        PDM["Data Map<br/>Auto-discovery"]
-        PCL["Classification<br/>PII / PHI / Financial"]
-        PSL["Sensitivity Labels<br/>MIP Integration"]
-        PDLP["DLP Policies<br/>Block PII in Chat"]
-        PLN["Data Lineage<br/>Oracle --' Agent --' User"]
-        PAP["Access Policies<br/>Purview-managed Grants"]
-    end
+ subgraph "Governance -- Microsoft Purview"
+ PDM["Data Map<br/>Auto-discovery"]
+ PCL["Classification<br/>PII / PHI / Financial"]
+ PSL["Sensitivity Labels<br/>MIP Integration"]
+ PDLP["DLP Policies<br/>Block PII in Chat"]
+ PLN["Data Lineage<br/>Oracle --' Agent --' User"]
+ PAP["Access Policies<br/>Purview-managed Grants"]
+ end
 
-    subgraph "Observability"
-        LA["Log Analytics<br/>Workspace"]
-        AM["Azure Monitor Alerts"]
-        DEF["Defender for Cloud"]
-    end
+ subgraph "Observability"
+ LA["Log Analytics<br/>Workspace"]
+ AM["Azure Monitor Alerts"]
+ DEF["Defender for Cloud"]
+ end
 
-    U -->|"Entra ID Auth"| EID
-    EID -->|"Conditional Access"| CA
-    CA -->|"Authorized"| FA
-    FA --> ACS
-    FA -->|"MCP Protocol"| MCP
-    FA -->|"OpenAPI Tools"| APIM
-    FA -->|"Knowledge"| FIQ
-    FIQ --> BLOB
-    FIQ --> SP
-    FIQ --> FL
-    APIM -->|"OAuth2 validated"| ORDS
-    MCP -->|"PE (1521)"| OPE
-    ORDS -->|"PE (1521)"| OPE
-    ORDS -->|"PE"| AOAI
-    MCP -->|"Managed Identity"| KVPE
-    ORDS -->|"Managed Identity"| KVPE
-    OPE --> ODB
-    ODB -- VPD
-    ODB -- DR
-    ODB -- DBV
-    ODB -- UA
-    ODB -- TDE
+ U -->|"Entra ID Auth"| EID
+ EID -->|"Conditional Access"| CA
+ CA -->|"Authorized"| FA
+ FA --> ACS
+ FA -->|"MCP Protocol"| MCP
+ FA -->|"OpenAPI Tools"| APIM
+ FA -->|"Knowledge"| FIQ
+ FIQ --> BLOB
+ FIQ --> SP
+ FIQ --> FL
+ APIM -->|"OAuth2 validated"| ORDS
+ MCP -->|"PE (1521)"| OPE
+ ORDS -->|"PE (1521)"| OPE
+ ORDS -->|"PE"| AOAI
+ MCP -->|"Managed Identity"| KVPE
+ ORDS -->|"Managed Identity"| KVPE
+ OPE --> ODB
+ ODB -- VPD
+ ODB -- DR
+ ODB -- DBV
+ ODB -- UA
+ ODB -- TDE
 
-    PDM -.->|"Scan"| ODB
-    PDM -.->|"Scan"| BLOB
-    PDM -.->|"Scan"| SP
-    PCL -.->|"Classify"| ODB
-    PSL -.->|"Label"| FA
-    PDLP -.->|"Enforce"| FA
-    PLN -.->|"Track"| ORDS
-    PLN -.->|"Track"| MCP
+ PDM -.->|"Scan"| ODB
+ PDM -.->|"Scan"| BLOB
+ PDM -.->|"Scan"| SP
+ PCL -.->|"Classify"| ODB
+ PSL -.->|"Label"| FA
+ PDLP -.->|"Enforce"| FA
+ PLN -.->|"Track"| ORDS
+ PLN -.->|"Track"| MCP
 
-    UA -.-> LA
-    MCP -.-> LA
-    ORDS -.-> LA
-    APIM -.-> LA
-    LA --> AM
-    DEF -.->|"Threat Detection"| MCP
-    DEF -.->|"Threat Detection"| ORDS
-    DEF -.->|"Threat Detection"| APIM
+ UA -.-> LA
+ MCP -.-> LA
+ ORDS -.-> LA
+ APIM -.-> LA
+ LA --> AM
+ DEF -.->|"Threat Detection"| MCP
+ DEF -.->|"Threat Detection"| ORDS
+ DEF -.->|"Threat Detection"| APIM
 
-    MCP -->|"Egress"| FW
-    ORDS -->|"Egress"| FW
-    NW -.->|"Flow Logs"| LA
+ MCP -->|"Egress"| FW
+ ORDS -->|"Egress"| FW
+ NW -.->|"Flow Logs"| LA
 ```
 
 ### Prerequisites
@@ -691,20 +691,20 @@ All prerequisites from Patterns #1 and #2, plus:
 2. **Enable ORDS for vector search** (same as Pattern #2)
 3. **Configure APIM** with OAuth2 + WAF for ORDS endpoints
 4. **Configure Foundry IQ**:
-   - Connect Azure Blob Storage (documents, PDFs)
-   - Connect SharePoint (files, sites)
-   - Connect Fabric Files (OneLake)
+ - Connect Azure Blob Storage (documents, PDFs)
+ - Connect SharePoint (files, sites)
+ - Connect Fabric Files (OneLake)
 5. **Scan documents in Purview before grounding** -- ensure Blob/SharePoint sources are classified and labeled
 6. **Create Foundry Agent** at [ai.azure.com](https://ai.azure.com):
-   - Model: `gpt-4.1` or `o3`
-   - Add MCP as external tool
-   - Add ORDS endpoints as OpenAPI tools (via APIM)
-   - Enable Foundry IQ as knowledge source
-   - Enable Azure AI Content Safety filters
+ - Model: `gpt-4.1` or `o3`
+ - Add MCP as external tool
+ - Add ORDS endpoints as OpenAPI tools (via APIM)
+ - Enable Foundry IQ as knowledge source
+ - Enable Azure AI Content Safety filters
 7. **Configure Entra ID** -- security groups, Conditional Access, App Registration for ORDS, PIM for admin roles
-8. **Configure Purview end-to-end** (see ÃÂ§10.6)
+8. **Configure Purview end-to-end** (see Section 10.6)
 9. **Enable Defender for Cloud** -- threat detection across Functions, App Service, APIM, Storage
-10. **Configure centralized logging** (see ÃÂ§10.8)
+10. **Configure centralized logging** (see Section 10.8)
 11. **Test in Playground** --' Deploy to M365 Copilot / Agent Store / API
 
 ### RBAC Model
@@ -742,7 +742,7 @@ All prerequisites from Patterns #1 and #2, plus:
 | 7 | Storage Private Endpoint | Foundry IQ accesses Blob via PE; SharePoint via Graph API with Managed Identity |
 | 8 | Azure Private DNS Zones | All PE DNS zones linked to spoke VNET |
 | 9 | Hub-spoke with Azure Firewall | Centralized egress control, TLS inspection, FQDN filtering |
-| 10 | NSGs -- ingress | MCP --Â Foundry; ORDS --Â APIM (443); Oracle PE --Â MCP/ORDS (1521); deny all else |
+| 10 | NSGs -- ingress | MCP -- <- Foundry; ORDS -- <- APIM (443); Oracle PE -- <- MCP/ORDS (1521); deny all else |
 | 11 | NSGs -- egress | Compute subnets --' only PE destinations; all internet egress via Azure Firewall |
 | 12 | DDoS Protection Standard | Enabled on spoke VNET |
 | 13 | Network Watcher + NSG Flow Logs | Traffic audit, anomaly detection, connectivity diagnostics |
@@ -771,7 +771,7 @@ semantic search, and unstructured documents.
 ## Data Classification
 - Respect Microsoft Purview sensitivity labels on all data sources
 - If data is labeled Confidential or Highly Confidential, include the label
-  in your response and note access restrictions
+ in your response and note access restrictions
 
 ## Guidelines
 - Use ORDS endpoints for pre-built analytics; MCP SQL for custom queries
@@ -789,33 +789,33 @@ For complex scenarios, use multiple specialized agents across sub-patterns:
 
 ```mermaid
 graph TB
-    subgraph "Orchestration Layer"
-        ORCH["Orchestrator Agent<br/>Routes requests to specialists"]
-    end
+ subgraph "Orchestration Layer"
+ ORCH["Orchestrator Agent<br/>Routes requests to specialists"]
+ end
 
-    subgraph "Specialist Agents"
-        SALES["Sales Agent (Pattern 3)<br/>ORDS analytics tools"]
-        CLINICAL["Clinical Agent (Pattern 3)<br/>Vector search RAG"]
-        DBA["DBA Assistant (Pattern 2)<br/>MCP SQL tools"]
-        DOCS["Doc Analyst (Pattern 4)<br/>Foundry IQ + ORDS"]
-    end
+ subgraph "Specialist Agents"
+ SALES["Sales Agent (Pattern 3)<br/>ORDS analytics tools"]
+ CLINICAL["Clinical Agent (Pattern 3)<br/>Vector search RAG"]
+ DBA["DBA Assistant (Pattern 2)<br/>MCP SQL tools"]
+ DOCS["Doc Analyst (Pattern 4)<br/>Foundry IQ + ORDS"]
+ end
 
-    subgraph "Shared Services"
-        ACS["Azure AI Content Safety<br/>Input/Output Filters"]
-        PV["Microsoft Purview<br/>DLP Enforcement"]
-        AUDIT["Centralized Audit<br/>Log Analytics"]
-    end
+ subgraph "Shared Services"
+ ACS["Azure AI Content Safety<br/>Input/Output Filters"]
+ PV["Microsoft Purview<br/>DLP Enforcement"]
+ AUDIT["Centralized Audit<br/>Log Analytics"]
+ end
 
-    ORCH --> SALES
-    ORCH --> CLINICAL
-    ORCH --> DBA
-    ORCH --> DOCS
-    SALES --> ACS
-    CLINICAL --> ACS
-    DBA --> ACS
-    DOCS --> ACS
-    ACS --> PV
-    PV --> AUDIT
+ ORCH --> SALES
+ ORCH --> CLINICAL
+ ORCH --> DBA
+ ORCH --> DOCS
+ SALES --> ACS
+ CLINICAL --> ACS
+ DBA --> ACS
+ DOCS --> ACS
+ ACS --> PV
+ PV --> AUDIT
 ```
 
 Each specialist agent inherits the RBAC, networking, and Purview governance controls from its respective sub-pattern. The orchestrator enforces:
@@ -833,51 +833,51 @@ This section covers defense-in-depth controls that apply across all sub-patterns
 
 ```mermaid
 graph LR
-    subgraph L1["Layer 1 ÃÂ· Network"]
-        N1["Private Endpoints"]
-        N2["VNET Integration"]
-        N3["NSG + Egress Lockdown"]
-        N4["TLS 1.2+"]
-        N5["Azure Firewall"]
-        N6["DDoS Protection"]
-        N7["WAF on APIM/AppGW"]
-    end
+ subgraph L1["Layer 1 - Network"]
+ N1["Private Endpoints"]
+ N2["VNET Integration"]
+ N3["NSG + Egress Lockdown"]
+ N4["TLS 1.2+"]
+ N5["Azure Firewall"]
+ N6["DDoS Protection"]
+ N7["WAF on APIM/AppGW"]
+ end
 
-    subgraph L2["Layer 2 ÃÂ· Identity"]
-        I1["Entra ID + MFA"]
-        I2["Managed Identities"]
-        I3["Key Vault + Rotation"]
-        I4["PIM for Admins"]
-        I5["Conditional Access"]
-        I6["Break-Glass Accounts"]
-    end
+ subgraph L2["Layer 2 - Identity"]
+ I1["Entra ID + MFA"]
+ I2["Managed Identities"]
+ I3["Key Vault + Rotation"]
+ I4["PIM for Admins"]
+ I5["Conditional Access"]
+ I6["Break-Glass Accounts"]
+ end
 
-    subgraph L3["Layer 3 ÃÂ· Data"]
-        D1["Read-Only AI Users"]
-        D2["Oracle VPD Row-Level"]
-        D3["Data Redaction PII"]
-        D4["Database Vault"]
-        D5["TDE Encryption"]
-        D6["Purview Classification"]
-    end
+ subgraph L3["Layer 3 - Data"]
+ D1["Read-Only AI Users"]
+ D2["Oracle VPD Row-Level"]
+ D3["Data Redaction PII"]
+ D4["Database Vault"]
+ D5["TDE Encryption"]
+ D6["Purview Classification"]
+ end
 
-    subgraph L4["Layer 4 ÃÂ· AI Governance"]
-        G1["Content Safety Filters"]
-        G2["Prompt Injection Defense"]
-        G3["APIM Rate Limiting"]
-        G4["Token Budgets"]
-        G5["Purview DLP"]
-    end
+ subgraph L4["Layer 4 - AI Governance"]
+ G1["Content Safety Filters"]
+ G2["Prompt Injection Defense"]
+ G3["APIM Rate Limiting"]
+ G4["Token Budgets"]
+ G5["Purview DLP"]
+ end
 
-    subgraph L5["Layer 5 ÃÂ· Audit & Threat"]
-        A1["Oracle Unified Audit"]
-        A2["DBTOOLS$MCP_LOG"]
-        A3["Azure Monitor + Alerts"]
-        A4["Defender for Cloud"]
-        A5["Purview Audit Trail"]
-    end
+ subgraph L5["Layer 5 - Audit & Threat"]
+ A1["Oracle Unified Audit"]
+ A2["DBTOOLS$MCP_LOG"]
+ A3["Azure Monitor + Alerts"]
+ A4["Defender for Cloud"]
+ A5["Purview Audit Trail"]
+ end
 
-    L1 --> L2 --> L3 --> L4 --> L5
+ L1 --> L2 --> L3 --> L4 --> L5
 ```
 
 ### 10.5.2 Prompt Injection Defense
@@ -924,52 +924,52 @@ Purview provides the governance backbone across all sub-patterns. Every data sou
 
 ```mermaid
 graph TB
-    subgraph "Data Sources"
-        ODB["Oracle Database@Azure<br/>Schemas, Tables, Views"]
-        BLOB["Azure Blob Storage<br/>PDFs, Documents"]
-        SP["SharePoint<br/>Files, Sites"]
-        FL["Fabric OneLake<br/>Lakehouses"]
-    end
+ subgraph "Data Sources"
+ ODB["Oracle Database@Azure<br/>Schemas, Tables, Views"]
+ BLOB["Azure Blob Storage<br/>PDFs, Documents"]
+ SP["SharePoint<br/>Files, Sites"]
+ FL["Fabric OneLake<br/>Lakehouses"]
+ end
 
-    subgraph "Microsoft Purview"
-        DM["Data Map<br/>Auto-discovery +<br/>Schema Scanning"]
-        CL["Classification<br/>Built-in + Custom<br/>PII / PHI / Financial"]
-        SL["Sensitivity Labels<br/>MIP Integration<br/>Confidential / HC"]
-        DLP["DLP Policies<br/>Block PII in<br/>Agent Responses"]
-        LN["Data Lineage<br/>Source --' Agent --'<br/>User Tracking"]
-        AP["Access Policies<br/>Purview-managed<br/>Data Access"]
-        AR["Purview Audit<br/>Who accessed what<br/>+ when"]
-    end
+ subgraph "Microsoft Purview"
+ DM["Data Map<br/>Auto-discovery +<br/>Schema Scanning"]
+ CL["Classification<br/>Built-in + Custom<br/>PII / PHI / Financial"]
+ SL["Sensitivity Labels<br/>MIP Integration<br/>Confidential / HC"]
+ DLP["DLP Policies<br/>Block PII in<br/>Agent Responses"]
+ LN["Data Lineage<br/>Source --' Agent --'<br/>User Tracking"]
+ AP["Access Policies<br/>Purview-managed<br/>Data Access"]
+ AR["Purview Audit<br/>Who accessed what<br/>+ when"]
+ end
 
-    subgraph "Consumers"
-        MCP["MCP Server"]
-        ORDS["ORDS Endpoints"]
-        FIQ["Foundry IQ"]
-        FA["Foundry Agent"]
-    end
+ subgraph "Consumers"
+ MCP["MCP Server"]
+ ORDS["ORDS Endpoints"]
+ FIQ["Foundry IQ"]
+ FA["Foundry Agent"]
+ end
 
-    ODB --> DM
-    BLOB --> DM
-    SP --> DM
-    FL --> DM
-    DM --> CL
-    CL --> SL
-    SL --> DLP
-    DM --> LN
-    DM --> AP
+ ODB --> DM
+ BLOB --> DM
+ SP --> DM
+ FL --> DM
+ DM --> CL
+ CL --> SL
+ SL --> DLP
+ DM --> LN
+ DM --> AP
 
-    AP -->|"Enforce Access"| MCP
-    AP -->|"Enforce Access"| ORDS
-    SL -->|"Label Documents"| FIQ
-    DLP -->|"Block PII"| FA
-    LN -->|"Track Usage"| MCP
-    LN -->|"Track Usage"| ORDS
-    LN -->|"Track Usage"| FIQ
+ AP -->|"Enforce Access"| MCP
+ AP -->|"Enforce Access"| ORDS
+ SL -->|"Label Documents"| FIQ
+ DLP -->|"Block PII"| FA
+ LN -->|"Track Usage"| MCP
+ LN -->|"Track Usage"| ORDS
+ LN -->|"Track Usage"| FIQ
 
-    MCP --> AR
-    ORDS --> AR
-    FIQ --> AR
-    FA --> AR
+ MCP --> AR
+ ORDS --> AR
+ FIQ --> AR
+ FA --> AR
 ```
 
 ### 10.6.2 Purview Setup Checklist
@@ -1002,11 +1002,11 @@ Purview tracks the full data path across all sub-patterns:
 
 ```
 Oracle Table (SH.SALES)
-  --' Oracle View (SH.V_SALES_SUMMARY) [Data Redaction applied]
-    --' ORDS Endpoint (/ords/sh/sales/summary) [OAuth2 scoped]
-      --' APIM (/api/sales/summary) [rate-limited]
-        --' Foundry Agent (Sales Analyst)
-          --' End User (jane.doe@contoso.com)
+ --' Oracle View (SH.V_SALES_SUMMARY) [Data Redaction applied]
+ --' ORDS Endpoint (/ords/sh/sales/summary) [OAuth2 scoped]
+ --' APIM (/api/sales/summary) [rate-limited]
+ --' Foundry Agent (Sales Analyst)
+ --' End User (jane.doe@contoso.com)
 ```
 
 This lineage is critical for:
@@ -1022,48 +1022,48 @@ This lineage is critical for:
 
 ```mermaid
 graph LR
-    subgraph "Users"
-        EU["End User"]
-        DEV["Developer"]
-        ADM["Admin"]
-    end
+ subgraph "Users"
+ EU["End User"]
+ DEV["Developer"]
+ ADM["Admin"]
+ end
 
-    subgraph "Entra ID"
-        MFA["MFA<br/>Authenticator / FIDO2"]
-        CA["Conditional Access<br/>Device + Location +<br/>Risk"]
-        PIM["Privileged Identity Mgmt<br/>JIT Elevation"]
-        AR["Access Reviews<br/>Quarterly"]
-        BG["Break-Glass<br/>Emergency Accounts"]
-        TOU["Terms of Use<br/>Data Access Consent"]
-    end
+ subgraph "Entra ID"
+ MFA["MFA<br/>Authenticator / FIDO2"]
+ CA["Conditional Access<br/>Device + Location +<br/>Risk"]
+ PIM["Privileged Identity Mgmt<br/>JIT Elevation"]
+ AR["Access Reviews<br/>Quarterly"]
+ BG["Break-Glass<br/>Emergency Accounts"]
+ TOU["Terms of Use<br/>Data Access Consent"]
+ end
 
-    subgraph "Service Identities"
-        MI_MCP["Managed Identity<br/>MCP Server"]
-        MI_ORDS["Managed Identity<br/>ORDS"]
-        MI_FIQ["Managed Identity<br/>Foundry IQ"]
-        WIF["Workload Identity<br/>Federation (CI/CD)"]
-    end
+ subgraph "Service Identities"
+ MI_MCP["Managed Identity<br/>MCP Server"]
+ MI_ORDS["Managed Identity<br/>ORDS"]
+ MI_FIQ["Managed Identity<br/>Foundry IQ"]
+ WIF["Workload Identity<br/>Federation (CI/CD)"]
+ end
 
-    subgraph "Targets"
-        KV["Key Vault"]
-        ODB["Oracle DB"]
-        BLOB["Blob Storage"]
-        SP["SharePoint"]
-    end
+ subgraph "Targets"
+ KV["Key Vault"]
+ ODB["Oracle DB"]
+ BLOB["Blob Storage"]
+ SP["SharePoint"]
+ end
 
-    EU -->|"Password + MFA"| MFA
-    MFA --> CA
-    CA -->|"TOU acceptance"| TOU
-    DEV -->|"PIM request"| PIM
-    ADM -->|"Emergency"| BG
+ EU -->|"Password + MFA"| MFA
+ MFA --> CA
+ CA -->|"TOU acceptance"| TOU
+ DEV -->|"PIM request"| PIM
+ ADM -->|"Emergency"| BG
 
-    MI_MCP -->|"No secrets"| KV
-    MI_ORDS -->|"No secrets"| KV
-    MI_FIQ -->|"No secrets"| BLOB
-    MI_FIQ -->|"Graph API"| SP
-    WIF -->|"Federated token"| KV
+ MI_MCP -->|"No secrets"| KV
+ MI_ORDS -->|"No secrets"| KV
+ MI_FIQ -->|"No secrets"| BLOB
+ MI_FIQ -->|"Graph API"| SP
+ WIF -->|"Federated token"| KV
 
-    KV -->|"Oracle creds"| ODB
+ KV -->|"Oracle creds"| ODB
 ```
 
 ### 10.7.2 Conditional Access Policies
@@ -1108,51 +1108,51 @@ graph LR
 
 ```mermaid
 graph TB
-    subgraph "Data Sources"
-        OUA["Oracle Unified Audit"]
-        MCPL["MCP DBTOOLS$MCP_LOG"]
-        APML["APIM Diagnostics"]
-        ORDSL["ORDS App Logs"]
-        KVDL["Key Vault Diagnostics"]
-        DEFL["Defender Alerts"]
-        PVDL["Purview Audit Logs"]
-        NWFL["NSG Flow Logs"]
-    end
+ subgraph "Data Sources"
+ OUA["Oracle Unified Audit"]
+ MCPL["MCP DBTOOLS$MCP_LOG"]
+ APML["APIM Diagnostics"]
+ ORDSL["ORDS App Logs"]
+ KVDL["Key Vault Diagnostics"]
+ DEFL["Defender Alerts"]
+ PVDL["Purview Audit Logs"]
+ NWFL["NSG Flow Logs"]
+ end
 
-    subgraph "Central Platform"
-        LA["Log Analytics Workspace"]
-        KQL["KQL Queries<br/>Cross-source Correlation"]
-    end
+ subgraph "Central Platform"
+ LA["Log Analytics Workspace"]
+ KQL["KQL Queries<br/>Cross-source Correlation"]
+ end
 
-    subgraph "Actionable Outputs"
-        DASH["Azure Dashboard<br/>Agent Health +<br/>Security Posture"]
-        ALT["Alert Rules"]
-        WB["Azure Workbook<br/>Compliance Report"]
-    end
+ subgraph "Actionable Outputs"
+ DASH["Azure Dashboard<br/>Agent Health +<br/>Security Posture"]
+ ALT["Alert Rules"]
+ WB["Azure Workbook<br/>Compliance Report"]
+ end
 
-    subgraph "Alert Destinations"
-        EMAIL["Email / Teams"]
-        ITSM["ServiceNow / PagerDuty"]
-        SOAR["Sentinel SOAR<br/>Auto-response"]
-    end
+ subgraph "Alert Destinations"
+ EMAIL["Email / Teams"]
+ ITSM["ServiceNow / PagerDuty"]
+ SOAR["Sentinel SOAR<br/>Auto-response"]
+ end
 
-    OUA --> LA
-    MCPL --> LA
-    APML --> LA
-    ORDSL --> LA
-    KVDL --> LA
-    DEFL --> LA
-    PVDL --> LA
-    NWFL --> LA
+ OUA --> LA
+ MCPL --> LA
+ APML --> LA
+ ORDSL --> LA
+ KVDL --> LA
+ DEFL --> LA
+ PVDL --> LA
+ NWFL --> LA
 
-    LA --> KQL
-    KQL --> DASH
-    KQL --> ALT
-    KQL --> WB
+ LA --> KQL
+ KQL --> DASH
+ KQL --> ALT
+ KQL --> WB
 
-    ALT --> EMAIL
-    ALT --> ITSM
-    ALT --> SOAR
+ ALT --> EMAIL
+ ALT --> ITSM
+ ALT --> SOAR
 ```
 
 ### 10.8.2 Alert Rules
@@ -1186,14 +1186,14 @@ graph TB
 
 | Control Area | SOC 2 | ISO 27001 | HIPAA | GDPR | Implementation |
 |--|--|--|--|--|--|
-| **Access Control** | CC6.1 | A.9 | ÃÂ§164.312(a) | Art. 25 | Entra ID + PIM + Conditional Access |
-| **Encryption** | CC6.7 | A.10 | ÃÂ§164.312(a)(2)(iv) | Art. 32 | TLS 1.2+ / TDE / SSE |
-| **Audit Logging** | CC7.2 | A.12.4 | ÃÂ§164.312(b) | Art. 30 | Oracle Audit + Azure Monitor + Purview |
-| **Data Classification** | CC6.5 | A.8.2 | ÃÂ§164.312(d) | Art. 9 | Purview Classification + Sensitivity Labels |
-| **Least Privilege** | CC6.3 | A.9.4 | ÃÂ§164.312(a)(1) | Art. 25 | Read-only DB users + VPD + RBAC |
-| **Incident Response** | CC7.3 | A.16 | ÃÂ§164.308(a)(6) | Art. 33 | Defender + Sentinel + Alert Rules |
-| **Data Residency** | -- | -- | -- | Art. 44-49 | Oracle DB@Azure region selection; no cross-border replication without assessment |
-| **Right to be Forgotten** | -- | -- | -- | Art. 17 | Oracle data deletion procedures + Purview lineage to track all copies |
+| **Access Control** | CC6.1 | A.9 | Section 164.312(a) | Art. 25 | Entra ID + PIM + Conditional Access |
+| **Encryption** | CC6.7 | A.10 | Section 164.312(a)(2)(iv) | Art. 32 | TLS 1.2+ / TDE / SSE |
+| **Audit Logging** | CC7.2 | A.12.4 | Section 164.312(b) | Art. 30 | Oracle Audit + Azure Monitor + Purview |
+| **Data Classification** | CC6.5 | A.8.2 | Section 164.312(d) | Art. 9 | Purview Classification + Sensitivity Labels |
+| **Least Privilege** | CC6.3 | A.9.4 | Section 164.312(a)(1) | Art. 25 | Read-only DB users + VPD + RBAC |
+| **Incident Response** | CC7.3 | A.16 | Section 164.308(a)(6) | Art. 33 | Defender + Sentinel + Alert Rules |
+| **Data Residency** | | | | Art. 44-49 | Oracle DB@Azure region selection; no cross-border replication without assessment |
+| **Right to be Forgotten** | | | | Art. 17 | Oracle data deletion procedures + Purview lineage to track all copies |
 
 --
 
@@ -1247,124 +1247,124 @@ Foundry IQ supports the following knowledge source types for ingesting unstructu
 
 ```mermaid
 graph TB
-    subgraph DocSources["Supported Knowledge Sources"]
-        AISEARCH["Azure AI Search Index<br/>Existing search indexes"]
-        BLOB["Azure Blob Storage<br/>PDFs, Reports,<br/>Contracts, SOPs"]
-        WEB["Web (via Bing)<br/>Real-time public content"]
-        SP_R["SharePoint (Remote)<br/>M365 governance,<br/>no re-indexing"]
-        SP_I["SharePoint (Indexed)<br/>Custom search pipelines"]
-        OL["Microsoft OneLake<br/>Fabric outputs,<br/>analytics reports"]
-    end
+ subgraph DocSources["Supported Knowledge Sources"]
+ AISEARCH["Azure AI Search Index<br/>Existing search indexes"]
+ BLOB["Azure Blob Storage<br/>PDFs, Reports,<br/>Contracts, SOPs"]
+ WEB["Web (via Bing)<br/>Real-time public content"]
+ SP_R["SharePoint (Remote)<br/>M365 governance,<br/>no re-indexing"]
+ SP_I["SharePoint (Indexed)<br/>Custom search pipelines"]
+ OL["Microsoft OneLake<br/>Fabric outputs,<br/>analytics reports"]
+ end
 
-    subgraph FoundryIQ["Foundry IQ Processing"]
-        INGEST["Document Ingestion<br/>Chunking + Embedding"]
-        KB["Unified Knowledge Base<br/>Indexed + Searchable"]
-    end
+ subgraph FoundryIQ["Foundry IQ Processing"]
+ INGEST["Document Ingestion<br/>Chunking + Embedding"]
+ KB["Unified Knowledge Base<br/>Indexed + Searchable"]
+ end
 
-    subgraph Purview["Microsoft Purview"]
-        SCAN["Scan + Classify<br/>Before Grounding"]
-        LABEL["Sensitivity Labels<br/>(MIP)"]
-        DLP["DLP Policies"]
-    end
+ subgraph Purview["Microsoft Purview"]
+ SCAN["Scan + Classify<br/>Before Grounding"]
+ LABEL["Sensitivity Labels<br/>(MIP)"]
+ DLP["DLP Policies"]
+ end
 
-    subgraph Foundry["Microsoft Foundry Agent"]
-        FA["Foundry Agent<br/>GPT-4.1 / o3"]
-        MCP_T["Oracle MCP Tool<br/>(structured data)"]
-        ORDS_T["ORDS Tool<br/>(vector search)"]
-        IQ_K["Foundry IQ<br/>Knowledge Source"]
-    end
+ subgraph Foundry["Microsoft Foundry Agent"]
+ FA["Foundry Agent<br/>GPT-4.1 / o3"]
+ MCP_T["Oracle MCP Tool<br/>(structured data)"]
+ ORDS_T["ORDS Tool<br/>(vector search)"]
+ IQ_K["Foundry IQ<br/>Knowledge Source"]
+ end
 
-    subgraph ODA["Oracle Database@Azure"]
-        ODB["Oracle 26ai DB<br/>(live structured data)"]
-    end
+ subgraph ODA["Oracle Database@Azure"]
+ ODB["Oracle 26ai DB<br/>(live structured data)"]
+ end
 
-    subgraph Governance["A365 Control Plane"]
-        A365["A365 Admin Center<br/>Agent Policies<br/>IQ Administration"]
-    end
+ subgraph Governance["A365 Control Plane"]
+ A365["A365 Admin Center<br/>Agent Policies<br/>IQ Administration"]
+ end
 
-    AISEARCH --> SCAN
-    BLOB --> SCAN
-    WEB --> FA
-    SP_R --> SCAN
-    SP_I --> SCAN
-    OL --> SCAN
-    SCAN --> LABEL
-    LABEL --> INGEST
-    INGEST --> KB
-    KB --> IQ_K
-    IQ_K --> FA
-    MCP_T --> FA
-    ORDS_T --> FA
-    FA -->|"PE"| ODB
-    DLP -.->|"Block PII"| FA
-    A365 -.->|"Manage IQ<br/>+ Agent Policies"| FA
+ AISEARCH --> SCAN
+ BLOB --> SCAN
+ WEB --> FA
+ SP_R --> SCAN
+ SP_I --> SCAN
+ OL --> SCAN
+ SCAN --> LABEL
+ LABEL --> INGEST
+ INGEST --> KB
+ KB --> IQ_K
+ IQ_K --> FA
+ MCP_T --> FA
+ ORDS_T --> FA
+ FA -->|"PE"| ODB
+ DLP -.->|"Block PII"| FA
+ A365 -.->|"Manage IQ<br/>+ Agent Policies"| FA
 ```
 
 ### How Foundry IQ Creates a Unified Knowledge Base
 
 1. **Connect knowledge sources** to Foundry IQ (any combination of supported sources):
-   - **Azure AI Search Index**: Connect existing enterprise search indexes
-   - **Azure Blob Storage**: Technical reports, clinical trial documents, contracts, SOPs
-   - **Web (via Bing)**: Supplement with real-time public web content (no Purview scan needed)
-   - **Microsoft SharePoint (Remote)**: Company policies, HR procedures, compliance guides -- content stays in SharePoint with M365 governance, retrieved without re-indexing
-   - **Microsoft SharePoint (Indexed)**: SharePoint content indexed into Azure AI Search for custom ranking/filtering
-   - **Microsoft OneLake**: Fabric notebook outputs, lakehouse exports, analytics reports
+ - **Azure AI Search Index**: Connect existing enterprise search indexes
+ - **Azure Blob Storage**: Technical reports, clinical trial documents, contracts, SOPs
+ - **Web (via Bing)**: Supplement with real-time public web content (no Purview scan needed)
+ - **Microsoft SharePoint (Remote)**: Company policies, HR procedures, compliance guides -- content stays in SharePoint with M365 governance, retrieved without re-indexing
+ - **Microsoft SharePoint (Indexed)**: SharePoint content indexed into Azure AI Search for custom ranking/filtering
+ - **Microsoft OneLake**: Fabric notebook outputs, lakehouse exports, analytics reports
 
 2. **Purview scans documents BEFORE grounding** (critical governance step):
-   - Register Blob and SharePoint sources in Purview Data Map
-   - Run classification scan -- identifies PII, PHI, financial data in documents
-   - Apply sensitivity labels (Public, Internal, Confidential, Highly Confidential)
-   - Documents labeled Highly Confidential are excluded from IQ grounding
+ - Register Blob and SharePoint sources in Purview Data Map
+ - Run classification scan -- identifies PII, PHI, financial data in documents
+ - Apply sensitivity labels (Public, Internal, Confidential, Highly Confidential)
+ - Documents labeled Highly Confidential are excluded from IQ grounding
 
 3. **Foundry IQ processes documents**:
-   - Chunks documents into semantic segments
-   - Generates embeddings for each chunk
-   - Indexes into a searchable knowledge base
-   - Preserves document metadata (source, date, author, sensitivity label)
+ - Chunks documents into semantic segments
+ - Generates embeddings for each chunk
+ - Indexes into a searchable knowledge base
+ - Preserves document metadata (source, date, author, sensitivity label)
 
 4. **Agent uses IQ alongside Oracle tools**:
-   - User asks: "What does our SOP say about adverse event reporting for products with high return rates?"
-   - Agent retrieves:
-     - SOP document from Foundry IQ knowledge base
-     - Product return rate data from Oracle via MCP/ORDS
-   - Agent combines both to generate a complete, grounded answer
+ - User asks: "What does our SOP say about adverse event reporting for products with high return rates?"
+ - Agent retrieves:
+ - SOP document from Foundry IQ knowledge base
+ - Product return rate data from Oracle via MCP/ORDS
+ - Agent combines both to generate a complete, grounded answer
 
 ### Setup Steps (End-to-End)
 
 1. **Create a Foundry project** at [ai.azure.com](https://ai.azure.com)
 2. **Register document sources in Purview** -- scan Blob and SharePoint; apply sensitivity labels
 3. **Connect knowledge sources to Foundry IQ**:
-   - Foundry project --> **Knowledge** --> **Create new**
-   - Select from supported source types:
-     - **Azure AI Search Index** -- provide search service endpoint and index name
-     - **Azure Blob Storage** -- select container(s) with documents
-     - **Web** -- configure Bing grounding for real-time web content
-     - **Microsoft SharePoint (Remote)** -- select SharePoint site(s); content retrieved with M365 governance
-     - **Microsoft SharePoint (Indexed)** -- indexes SharePoint into Azure AI Search
-     - **Microsoft OneLake** -- select OneLake location(s)
-   - Configure **retrieval instructions** to guide how the agent prioritizes knowledge sources (e.g., "Prioritize compliance-guidelines for all compliance questions and customer-surveys for feedback responses")
-   - Set **retrieval reasoning effort** (Low / Medium / High) based on query complexity
-   - Set **output mode** (Extractive data / Generative summary)
+ - Foundry project --> **Knowledge** --> **Create new**
+ - Select from supported source types:
+ - **Azure AI Search Index** -- provide search service endpoint and index name
+ - **Azure Blob Storage** -- select container(s) with documents
+ - **Web** -- configure Bing grounding for real-time web content
+ - **Microsoft SharePoint (Remote)** -- select SharePoint site(s); content retrieved with M365 governance
+ - **Microsoft SharePoint (Indexed)** -- indexes SharePoint into Azure AI Search
+ - **Microsoft OneLake** -- select OneLake location(s)
+ - Configure **retrieval instructions** to guide how the agent prioritizes knowledge sources (e.g., "Prioritize compliance-guidelines for all compliance questions and customer-surveys for feedback responses")
+ - Set **retrieval reasoning effort** (Low / Medium / High) based on query complexity
+ - Set **output mode** (Extractive data / Generative summary)
 4. **Configure IQ processing pipeline**:
-   - Set chunk size (default: 512 tokens) and overlap (default: 128 tokens)
-   - Select embedding model (text-embedding-3-small or text-embedding-3-large)
-   - Set refresh schedule for document re-indexing
+ - Set chunk size (default: 512 tokens) and overlap (default: 128 tokens)
+ - Select embedding model (text-embedding-3-small or text-embedding-3-large)
+ - Set refresh schedule for document re-indexing
 5. **Create a Foundry Agent** with IQ + Oracle tools:
-   - Add Foundry IQ as a knowledge source
-   - Add Oracle MCP Server as an external tool (Pattern 2)
-   - Add ORDS vector search endpoints as OpenAPI tools (Pattern 3)
-   - Enable Azure AI Content Safety
+ - Add Foundry IQ as a knowledge source
+ - Add Oracle MCP Server as an external tool (Pattern 2)
+ - Add ORDS vector search endpoints as OpenAPI tools (Pattern 3)
+ - Enable Azure AI Content Safety
 6. **Configure agent system prompt** -- instruct the agent to cite sources:
-   ```
-   When answering, cite both the document source (from Foundry IQ) and the 
-   Oracle data source (table/endpoint) used. If a document is labeled 
-   Confidential, include the sensitivity label in your response.
-   ```
+ ```
+ When answering, cite both the document source (from Foundry IQ) and the 
+ Oracle data source (table/endpoint) used. If a document is labeled 
+ Confidential, include the sensitivity label in your response.
+ ```
 7. **Test cross-source queries** -- verify the agent can combine document knowledge with live Oracle data
 8. **Manage via A365 Admin Center**:
-   - Monitor IQ processing pipeline health and document ingestion status
-   - Set policies for which users can access IQ-grounded agents
-   - Configure DLP to prevent sensitive document content from appearing in responses
+ - Monitor IQ processing pipeline health and document ingestion status
+ - Set policies for which users can access IQ-grounded agents
+ - Configure DLP to prevent sensitive document content from appearing in responses
 
 ### Design Considerations
 

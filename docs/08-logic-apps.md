@@ -26,31 +26,31 @@ For Oracle Database@Azure instances accessible via the on-premises data gateway:
 
 ```mermaid
 graph LR
-    subgraph "Trigger"
-        TRIG["Schedule / HTTP /<br/>Event Grid / Service Bus"]
-    end
+ subgraph "Trigger"
+ TRIG["Schedule / HTTP /<br/>Event Grid / Service Bus"]
+ end
 
-    subgraph "Azure Logic Apps"
-        LA["Logic App<br/>(Standard or Consumption)"]
-        ORA_CONN["Oracle DB Connector<br/>(via Gateway)"]
-        AI["Azure OpenAI<br/>Action (optional)"]
-        OUT["Output Actions<br/>Teams / Email /<br/>Dynamics / SAP"]
-    end
+ subgraph "Azure Logic Apps"
+ LA["Logic App<br/>(Standard or Consumption)"]
+ ORA_CONN["Oracle DB Connector<br/>(via Gateway)"]
+ AI["Azure OpenAI<br/>Action (optional)"]
+ OUT["Output Actions<br/>Teams / Email /<br/>Dynamics / SAP"]
+ end
 
-    subgraph "On-Premises Data Gateway"
-        GW["Data Gateway<br/>(VNET-integrated VM)"]
-    end
+ subgraph "On-Premises Data Gateway"
+ GW["Data Gateway<br/>(VNET-integrated VM)"]
+ end
 
-    subgraph "Oracle Database@Azure"
-        ODB["Oracle 26ai<br/>Tables / Views /<br/>Stored Procedures"]
-    end
+ subgraph "Oracle Database@Azure"
+ ODB["Oracle 26ai<br/>Tables / Views /<br/>Stored Procedures"]
+ end
 
-    TRIG --> LA
-    LA --> ORA_CONN
-    ORA_CONN --> GW
-    GW -->|"PE (1521)"| ODB
-    LA --> AI
-    LA --> OUT
+ TRIG --> LA
+ LA --> ORA_CONN
+ ORA_CONN --> GW
+ GW -->|"PE (1521)"| ODB
+ LA --> AI
+ LA --> OUT
 ```
 
 **Oracle DB Connector capabilities:**
@@ -67,43 +67,43 @@ For governed, API-first access without a gateway -- uses the ORDS endpoints alre
 
 ```mermaid
 graph LR
-    subgraph "Trigger"
-        TRIG["Schedule / HTTP /<br/>Event Grid / Service Bus"]
-    end
+ subgraph "Trigger"
+ TRIG["Schedule / HTTP /<br/>Event Grid / Service Bus"]
+ end
 
-    subgraph "Azure Logic Apps"
-        LA["Logic App<br/>(Standard -- VNET integrated)"]
-        HTTP["HTTP Action<br/>+ Entra ID OAuth2"]
-        AI["Azure OpenAI<br/>Action (optional)"]
-        OUT["Output Actions<br/>Teams / Email /<br/>Dynamics / SAP /<br/>Blob Storage"]
-    end
+ subgraph "Azure Logic Apps"
+ LA["Logic App<br/>(Standard -- VNET integrated)"]
+ HTTP["HTTP Action<br/>+ Entra ID OAuth2"]
+ AI["Azure OpenAI<br/>Action (optional)"]
+ OUT["Output Actions<br/>Teams / Email /<br/>Dynamics / SAP /<br/>Blob Storage"]
+ end
 
-    subgraph "Azure VNET"
-        APIM["Azure API Mgmt<br/>OAuth2 + Rate Limit"]
-    end
+ subgraph "Azure VNET"
+ APIM["Azure API Mgmt<br/>OAuth2 + Rate Limit"]
+ end
 
-    subgraph "Oracle Database@Azure"
-        ORDS["ORDS REST<br/>Endpoints"]
-        ODB["Oracle 26ai<br/>Tables / Views /<br/>Vector Search"]
-        ORDS -->|"localhost"| ODB
-    end
+ subgraph "Oracle Database@Azure"
+ ORDS["ORDS REST<br/>Endpoints"]
+ ODB["Oracle 26ai<br/>Tables / Views /<br/>Vector Search"]
+ ORDS -->|"localhost"| ODB
+ end
 
-    subgraph "Governance"
-        PV["Microsoft Purview<br/>DLP + Classification"]
-    end
+ subgraph "Governance"
+ PV["Microsoft Purview<br/>DLP + Classification"]
+ end
 
-    subgraph "Observability"
-        LA_MON["Log Analytics"]
-    end
+ subgraph "Observability"
+ LA_MON["Log Analytics"]
+ end
 
-    TRIG --> LA
-    LA --> HTTP
-    HTTP -->|"OAuth2 Bearer Token"| APIM
-    APIM -->|"Validated"| ORDS
-    LA --> AI
-    LA --> OUT
-    LA -.->|"Diagnostics"| LA_MON
-    PV -.->|"Classify"| ODB
+ TRIG --> LA
+ LA --> HTTP
+ HTTP -->|"OAuth2 Bearer Token"| APIM
+ APIM -->|"Validated"| ORDS
+ LA --> AI
+ LA --> OUT
+ LA -.->|"Diagnostics"| LA_MON
+ PV -.->|"Classify"| ODB
 ```
 
 **Why ORDS via HTTP is recommended:**
@@ -141,55 +141,55 @@ Private networking is critical to ensure all traffic between Logic Apps and Orac
 
 ```mermaid
 graph TB
-    subgraph "Azure VNET -- Hub (Enterprise)"
-        FW["Azure Firewall<br/>Centralized Egress<br/>FQDN Filtering"]
-        NW["Network Watcher<br/>NSG Flow Logs"]
-    end
+ subgraph "Azure VNET -- Hub (Enterprise)"
+ FW["Azure Firewall<br/>Centralized Egress<br/>FQDN Filtering"]
+ NW["Network Watcher<br/>NSG Flow Logs"]
+ end
 
-    subgraph "Azure VNET -- Spoke"
-        subgraph "Logic App Subnet<br/>(Delegated: Microsoft.Web/serverFarms)"
-            LA["Logic App Standard<br/>VNET-integrated<br/>Outbound only"]
-        end
-        subgraph "APIM Subnet"
-            APIM["Azure API Mgmt<br/>Internal mode<br/>OAuth2 + WAF"]
-        end
-        subgraph "Gateway Subnet (Option A only)"
-            GW["Data Gateway VM<br/>Oracle Client<br/>installed"]
-        end
-        subgraph "Data Subnet"
-            OPE["Oracle PE<br/>port 1521"]
-            KVPE["Key Vault PE"]
-            AOAIPE["Azure OpenAI PE"]
-        end
-    end
+ subgraph "Azure VNET -- Spoke"
+ subgraph "Logic App Subnet<br/>(Delegated: Microsoft.Web/serverFarms)"
+ LA["Logic App Standard<br/>VNET-integrated<br/>Outbound only"]
+ end
+ subgraph "APIM Subnet"
+ APIM["Azure API Mgmt<br/>Internal mode<br/>OAuth2 + WAF"]
+ end
+ subgraph "Gateway Subnet (Option A only)"
+ GW["Data Gateway VM<br/>Oracle Client<br/>installed"]
+ end
+ subgraph "Data Subnet"
+ OPE["Oracle PE<br/>port 1521"]
+ KVPE["Key Vault PE"]
+ AOAIPE["Azure OpenAI PE"]
+ end
+ end
 
-    subgraph "Oracle Database@Azure"
-        ORDS["ORDS (port 8443)<br/>No public endpoint"]
-        ODB["Oracle 26ai DB"]
-        ORDS --> ODB
-    end
+ subgraph "Oracle Database@Azure"
+ ORDS["ORDS (port 8443)<br/>No public endpoint"]
+ ODB["Oracle 26ai DB"]
+ ORDS --> ODB
+ end
 
-    subgraph "Private DNS Zones"
-        DNS1["privatelink.oraclecloud.com"]
-        DNS2["privatelink.vaultcore.azure.net"]
-        DNS3["privatelink.openai.azure.com"]
-        DNS4["privatelink.azure-api.net<br/>(if APIM internal)"]
-    end
+ subgraph "Private DNS Zones"
+ DNS1["privatelink.oraclecloud.com"]
+ DNS2["privatelink.vaultcore.azure.net"]
+ DNS3["privatelink.openai.azure.com"]
+ DNS4["privatelink.azure-api.net<br/>(if APIM internal)"]
+ end
 
-    LA -->|"443"| APIM
-    APIM -->|"8443"| ORDS
-    GW -->|"1521"| OPE
-    OPE --> ODB
-    LA -->|"443"| KVPE
-    LA -->|"443"| AOAIPE
+ LA -->|"443"| APIM
+ APIM -->|"8443"| ORDS
+ GW -->|"1521"| OPE
+ OPE --> ODB
+ LA -->|"443"| KVPE
+ LA -->|"443"| AOAIPE
 
-    LA -->|"Egress"| FW
-    NW -.->|"Flow Logs"| NW
+ LA -->|"Egress"| FW
+ NW -.->|"Flow Logs"| NW
 
-    DNS1 -.-> OPE
-    DNS2 -.-> KVPE
-    DNS3 -.-> AOAIPE
-    DNS4 -.-> APIM
+ DNS1 -.-> OPE
+ DNS2 -.-> KVPE
+ DNS3 -.-> AOAIPE
+ DNS4 -.-> APIM
 ```
 
 ### Option B: Private Network Path (ORDS via HTTP -- Recommended)
@@ -198,11 +198,11 @@ Every hop in the Logic App --' Oracle data path is private:
 
 ```
 Logic App Standard (VNET-integrated, outbound via delegated subnet)
-  --' [NSG: allow 443 to APIM subnet] --'
+ --' [NSG: allow 443 to APIM subnet] --'
 Azure API Management (internal mode, VNET-injected)
-  --' [NSG: allow 8443 to Oracle ORDS] --'
+ --' [NSG: allow 8443 to Oracle ORDS] --'
 ORDS on Oracle 26ai instance (no public endpoint, port 8443)
-  --' [localhost] --'
+ --' [localhost] --'
 Oracle 26ai Database
 ```
 
@@ -223,11 +223,11 @@ Oracle 26ai Database
 
 ```
 Logic App (Consumption or Standard)
-  --' [Azure backbone] --'
+ --' [Azure backbone] --'
 On-Premises Data Gateway VM (in VNET, no public IP)
-  --' [NSG: allow 1521 to Oracle PE subnet] --'
+ --' [NSG: allow 1521 to Oracle PE subnet] --'
 Oracle Private Endpoint (port 1521)
-  --' Oracle 26ai Database
+ --' Oracle 26ai Database
 ```
 
 | # | Control | Details |
@@ -276,64 +276,64 @@ Oracle Private Endpoint (port 1521)
 ### Step 1 -- Register Logic App in Entra ID
 
 1. **Create an App Registration** for the Logic App (or reuse an existing one):
-   - Name: `LogicApp-Oracle-Integration`
-   - Add API permission for the ORDS App Registration scope: `ORDS.Read`, `ORDS.Write`
-   - Generate a client secret (or use Managed Identity for Logic App Standard)
+ - Name: `LogicApp-Oracle-Integration`
+ - Add API permission for the ORDS App Registration scope: `ORDS.Read`, `ORDS.Write`
+ - Generate a client secret (or use Managed Identity for Logic App Standard)
 
 ### Step 2 -- Configure Logic App with VNET Integration
 
 2. **Create a Logic App Standard** in the same region as Oracle Database@Azure
 3. **Enable VNET integration** -- connect to the same spoke VNET (or peered VNET) that has access to APIM
-   - Navigate to Logic App --' Networking --' VNET Integration --' Add VNET
-   - Select the delegated subnet (`Microsoft.Web/serverFarms`)
-   - Set `WEBSITE_VNET_ROUTE_ALL = 1` to route all outbound traffic through the VNET
+ - Navigate to Logic App --' Networking --' VNET Integration --' Add VNET
+ - Select the delegated subnet (`Microsoft.Web/serverFarms`)
+ - Set `WEBSITE_VNET_ROUTE_ALL = 1` to route all outbound traffic through the VNET
 4. **Enable Managed Identity** -- use system-assigned identity for Key Vault and Entra ID token acquisition
 
 ### Step 3 -- Build the Workflow
 
 5. **Add a trigger** -- choose the appropriate trigger for your use case:
 
-   | Trigger | Use Case |
-   |--|--|
-   | `Recurrence` | Scheduled polling (e.g., every 15 min) |
-   | `HTTP Request` | Webhook -- external systems call the Logic App |
-   | `Service Bus` | Event-driven -- message arrives on a queue/topic |
-   | `Event Grid` | Azure resource events (e.g., Blob upload) |
-   | `Teams` | Approval request triggers from Teams |
+ | Trigger | Use Case |
+ |--|--|
+ | `Recurrence` | Scheduled polling (e.g., every 15 min) |
+ | `HTTP Request` | Webhook -- external systems call the Logic App |
+ | `Service Bus` | Event-driven -- message arrives on a queue/topic |
+ | `Event Grid` | Azure resource events (e.g., Blob upload) |
+ | `Teams` | Approval request triggers from Teams |
 
 6. **Add an HTTP action** to call ORDS via APIM:
 
-   ```json
-   {
-     "type": "Http",
-     "inputs": {
-       "method": "GET",
-       "uri": "https://<apim-name>.azure-api.net/ords/sh/sales/summary",
-       "authentication": {
-         "type": "ActiveDirectoryOAuth",
-         "tenant": "<tenant-id>",
-         "audience": "<ords-app-registration-client-id>",
-         "clientId": "<logic-app-client-id>",
-         "secret": "@parameters('ords-client-secret')"
-       }
-     }
-   }
-   ```
+ ```json
+ {
+ "type": "Http",
+ "inputs": {
+ "method": "GET",
+ "uri": "https://<apim-name>.azure-api.net/ords/sh/sales/summary",
+ "authentication": {
+ "type": "ActiveDirectoryOAuth",
+ "tenant": "<tenant-id>",
+ "audience": "<ords-app-registration-client-id>",
+ "clientId": "<logic-app-client-id>",
+ "secret": "@parameters('ords-client-secret')"
+ }
+ }
+ }
+ ```
 
-   For **Managed Identity** (preferred -- no secrets):
-   ```json
-   {
-     "type": "Http",
-     "inputs": {
-       "method": "GET",
-       "uri": "https://<apim-name>.azure-api.net/ords/sh/sales/summary",
-       "authentication": {
-         "type": "ManagedServiceIdentity",
-         "audience": "<ords-app-registration-client-id>"
-       }
-     }
-   }
-   ```
+ For **Managed Identity** (preferred -- no secrets):
+ ```json
+ {
+ "type": "Http",
+ "inputs": {
+ "method": "GET",
+ "uri": "https://<apim-name>.azure-api.net/ords/sh/sales/summary",
+ "authentication": {
+ "type": "ManagedServiceIdentity",
+ "audience": "<ords-app-registration-client-id>"
+ }
+ }
+ }
+ ```
 
 7. **Parse the JSON response** -- add a `Parse JSON` action with the ORDS response schema
 8. **Add downstream actions** -- Teams notification, email, Dynamics update, Blob write, etc.
@@ -342,49 +342,49 @@ Oracle Private Endpoint (port 1521)
 
 9. **Call Azure OpenAI** to summarize or analyze Oracle data within the workflow:
 
-   ```json
-   {
-     "type": "Http",
-     "inputs": {
-       "method": "POST",
-       "uri": "https://<openai-resource>.openai.azure.com/openai/deployments/gpt-4.1/chat/completions?api-version=2024-02-01",
-       "body": {
-         "messages": [
-           {"role": "system", "content": "Summarize the following Oracle sales data"},
-           {"role": "user", "content": "@{body('Parse_ORDS_Response')}"}
-         ]
-       },
-       "authentication": {
-         "type": "ManagedServiceIdentity",
-         "audience": "https://cognitiveservices.azure.com"
-       }
-     }
-   }
-   ```
+ ```json
+ {
+ "type": "Http",
+ "inputs": {
+ "method": "POST",
+ "uri": "https://<openai-resource>.openai.azure.com/openai/deployments/gpt-4.1/chat/completions?api-version=2024-02-01",
+ "body": {
+ "messages": [
+ {"role": "system", "content": "Summarize the following Oracle sales data"},
+ {"role": "user", "content": "@{body('Parse_ORDS_Response')}"}
+ ]
+ },
+ "authentication": {
+ "type": "ManagedServiceIdentity",
+ "audience": "https://cognitiveservices.azure.com"
+ }
+ }
+ }
+ ```
 
 ### Step 5 -- Oracle Vector Search from Logic Apps
 
 10. **Call the vector search ORDS endpoint** (same endpoint used by Foundry agents in Pattern 2):
 
-    ```json
-    {
-      "type": "Http",
-      "inputs": {
-        "method": "POST",
-        "uri": "https://<apim-name>.azure-api.net/ords/clinical_app/vectorsearch/search/",
-        "body": {
-          "p_query": "severe breathing complications",
-          "p_top_k": 5
-        },
-        "authentication": {
-          "type": "ManagedServiceIdentity",
-          "audience": "<ords-app-registration-client-id>"
-        }
-      }
-    }
-    ```
+ ```json
+ {
+ "type": "Http",
+ "inputs": {
+ "method": "POST",
+ "uri": "https://<apim-name>.azure-api.net/ords/clinical_app/vectorsearch/search/",
+ "body": {
+ "p_query": "severe breathing complications",
+ "p_top_k": 5
+ },
+ "authentication": {
+ "type": "ManagedServiceIdentity",
+ "audience": "<ords-app-registration-client-id>"
+ }
+ }
+ }
+ ```
 
-    This enables Logic Apps to perform semantic search over Oracle data -- useful for intelligent routing, alert triage, or content matching workflows.
+ This enables Logic Apps to perform semantic search over Oracle data -- useful for intelligent routing, alert triage, or content matching workflows.
 
 --
 
@@ -394,45 +394,45 @@ Oracle Private Endpoint (port 1521)
 
 ```mermaid
 graph LR
-    R["Recurrence<br/>Every 15 min"] --> HTTP["HTTP: GET<br/>/ords/sh/sales/latest"]
-    HTTP --> PARSE["Parse JSON"]
-    PARSE --> COND{"New rows?"}
-    COND -->|Yes| DYN["Dynamics 365<br/>Create Records"]
-    COND -->|Yes| TEAMS["Teams<br/>Notify Sales Channel"]
-    COND -->|No| END["End"]
+ R["Recurrence<br/>Every 15 min"] --> HTTP["HTTP: GET<br/>/ords/sh/sales/latest"]
+ HTTP --> PARSE["Parse JSON"]
+ PARSE --> COND{"New rows?"}
+ COND -->|Yes| DYN["Dynamics 365<br/>Create Records"]
+ COND -->|Yes| TEAMS["Teams<br/>Notify Sales Channel"]
+ COND -->|No| END["End"]
 ```
 
 ### Pattern B: AI-Augmented Alert Pipeline
 
 ```mermaid
 graph LR
-    SB["Service Bus<br/>Oracle Audit Event"] --> HTTP["HTTP: GET<br/>/ords/audit/details"]
-    HTTP --> AOAI["Azure OpenAI<br/>Analyze & Classify"]
-    AOAI --> COND{"Severity?"}
-    COND -->|Critical| PD["PagerDuty<br/>Create Incident"]
-    COND -->|Warning| TEAMS["Teams<br/>Post Alert"]
-    COND -->|Info| LOG["Log Analytics<br/>Log Only"]
+ SB["Service Bus<br/>Oracle Audit Event"] --> HTTP["HTTP: GET<br/>/ords/audit/details"]
+ HTTP --> AOAI["Azure OpenAI<br/>Analyze & Classify"]
+ AOAI --> COND{"Severity?"}
+ COND -->|Critical| PD["PagerDuty<br/>Create Incident"]
+ COND -->|Warning| TEAMS["Teams<br/>Post Alert"]
+ COND -->|Info| LOG["Log Analytics<br/>Log Only"]
 ```
 
 ### Pattern C: Approval Workflow with Oracle Write-Back
 
 ```mermaid
 graph LR
-    HTTP_T["HTTP Trigger<br/>New Order"] --> ORDS_R["HTTP: GET<br/>/ords/inventory/check"]
-    ORDS_R --> COND{"In Stock?"}
-    COND -->|Yes| APPROVE["Teams<br/>Approval Request"]
-    COND -->|No| REJECT["Email<br/>Out of Stock"]
-    APPROVE -->|Approved| ORDS_W["HTTP: POST<br/>/ords/orders/approve"]
-    APPROVE -->|Rejected| NOTIFY["Email<br/>Rejection Notice"]
+ HTTP_T["HTTP Trigger<br/>New Order"] --> ORDS_R["HTTP: GET<br/>/ords/inventory/check"]
+ ORDS_R --> COND{"In Stock?"}
+ COND -->|Yes| APPROVE["Teams<br/>Approval Request"]
+ COND -->|No| REJECT["Email<br/>Out of Stock"]
+ APPROVE -->|Approved| ORDS_W["HTTP: POST<br/>/ords/orders/approve"]
+ APPROVE -->|Rejected| NOTIFY["Email<br/>Rejection Notice"]
 ```
 
 ### Pattern D: Vector Search Triage
 
 ```mermaid
 graph LR
-    EMAIL["Email Trigger<br/>Customer Complaint"] --> VSEARCH["HTTP: POST<br/>/ords/vectorsearch/search/"]
-    VSEARCH --> AOAI["Azure OpenAI<br/>Draft Response"]
-    AOAI --> TEAMS["Teams<br/>Review & Send"]
+ EMAIL["Email Trigger<br/>Customer Complaint"] --> VSEARCH["HTTP: POST<br/>/ords/vectorsearch/search/"]
+ VSEARCH --> AOAI["Azure OpenAI<br/>Draft Response"]
+ AOAI --> TEAMS["Teams<br/>Review & Send"]
 ```
 
 --
@@ -485,7 +485,7 @@ Logic Apps works best when combined with other patterns:
 | **Setup effort** | Medium -- requires gateway VM | Low -- uses existing ORDS + APIM |
 | **Infrastructure** | Gateway VM to manage and patch | No additional infrastructure |
 | **Operations** | `GET/INSERT/UPDATE/DELETE rows` | Any REST endpoint you define in ORDS |
-| **Vector search** | --ÂÅ Not supported | --... Same ORDS vector endpoints as Pattern 2 |
+| **Vector search** | Not supported | --... Same ORDS vector endpoints as Pattern 2 |
 | **AI integration** | Possible but separate from data path | --... Seamless -- ORDS response --' OpenAI in same flow |
 | **Security** | Gateway auth + Oracle credentials | Entra ID OAuth2 + APIM + Managed Identity |
 | **Private networking** | Gateway on VNET + Oracle PE | Logic App VNET integration + APIM internal + ORDS private |

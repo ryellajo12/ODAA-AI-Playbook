@@ -21,11 +21,11 @@ Oracle's MCP Server can also be using via **SQLcl VS code extension** that expos
 **Architecture:**
 ```mermaid
 graph TB
-    subgraph VSCode["VS Code"]
-        GHC["GitHub Copilot<br/>Agent Mode"] <--> SQLDEV["SQL Developer Extension<br/>SQLcl MCP Server<br/>Auto-registered"]
-    end
+ subgraph VSCode["VS Code"]
+ GHC["GitHub Copilot<br/>Agent Mode"] <--> SQLDEV["SQL Developer Extension<br/>SQLcl MCP Server<br/>Auto-registered"]
+ end
 
-    SQLDEV --> DB[("Oracle DB@Azure<br/>ADBS")]
+ SQLDEV --> DB[("Oracle DB@Azure<br/>ADBS")]
 ```
 
 **Setup Steps:**
@@ -37,17 +37,17 @@ graph TB
 **MCP Configuration (`settings.json`):**
 ```json
 {
-  "mcpServers": {
-    "oracle-adbs": {
-      "name": "Oracle Sales History Database",
-      "type": "sqlcl",
-      "connection": {
-        "connectionName": "Adbs Connection",
-        "schema": "SH"
-      },
-      "capabilities": ["sql-query", "schema-information", "data-analysis"]
-    }
-  }
+ "mcpServers": {
+ "oracle-adbs": {
+ "name": "Oracle Sales History Database",
+ "type": "sqlcl",
+ "connection": {
+ "connectionName": "Adbs Connection",
+ "schema": "SH"
+ },
+ "capabilities": ["sql-query", "schema-information", "data-analysis"]
+ }
+ }
 }
 ```
 
@@ -61,11 +61,11 @@ graph TB
 **Architecture:**
 ```mermaid
 graph TB
-    subgraph Azure["Azure"]
-        CLIENTS["Microsoft Foundry /<br/>Copilot Studio /<br/>Custom App"] --> FUNC["Azure Functions<br/>Hosted MCP Server<br/>SQLcl or Custom"]
-        APIM["API Management<br/>Rate limiting, Auth, Logging"] --> FUNC
-        FUNC --> DB[("Oracle DB@Azure<br/>ADBS<br/>Private Endpoint")]
-    end
+ subgraph Azure["Azure"]
+ CLIENTS["Microsoft Foundry /<br/>Copilot Studio /<br/>Custom App"] --> FUNC["Azure Functions<br/>Hosted MCP Server<br/>SQLcl or Custom"]
+ APIM["API Management<br/>Rate limiting, Auth, Logging"] --> FUNC
+ FUNC --> DB[("Oracle DB@Azure<br/>ADBS<br/>Private Endpoint")]
+ end
 ```
 
 **Why Azure Functions for MCP:**
@@ -96,50 +96,50 @@ Azure Container Apps provides a container-native hosting option for the Oracle D
 
 ```mermaid
 graph TB
-    subgraph "Clients"
-        FOUNDRY["Microsoft Foundry<br/>Agent Service"]
-        COPILOT["Copilot Studio"]
-        CUSTOM["Custom Apps"]
-    end
+ subgraph "Clients"
+ FOUNDRY["Microsoft Foundry<br/>Agent Service"]
+ COPILOT["Copilot Studio"]
+ CUSTOM["Custom Apps"]
+ end
 
-    subgraph "Azure VNET"
-        subgraph "APIM Subnet"
-            APIM["Azure API Mgmt<br/>OAuth2 + Rate Limit<br/>+ WAF"]
-        end
-        subgraph "Container Apps Subnet"
-            CAE["Container Apps Environment"]
-            MCP["dbtools-mcp-server<br/>Container App<br/>(FastMCP HTTP)"]
-        end
-        subgraph "Data Subnet"
-            OPE["Oracle PE<br/>port 1521"]
-        end
-        subgraph "Security Subnet"
-            KV["Key Vault PE"]
-            ACR["Azure Container<br/>Registry PE"]
-        end
-    end
+ subgraph "Azure VNET"
+ subgraph "APIM Subnet"
+ APIM["Azure API Mgmt<br/>OAuth2 + Rate Limit<br/>+ WAF"]
+ end
+ subgraph "Container Apps Subnet"
+ CAE["Container Apps Environment"]
+ MCP["dbtools-mcp-server<br/>Container App<br/>(FastMCP HTTP)"]
+ end
+ subgraph "Data Subnet"
+ OPE["Oracle PE<br/>port 1521"]
+ end
+ subgraph "Security Subnet"
+ KV["Key Vault PE"]
+ ACR["Azure Container<br/>Registry PE"]
+ end
+ end
 
-    subgraph "Oracle Database@Azure"
-        ODB["Oracle 26ai DB<br/>mcp_agent_user<br/>(read-only)"]
-    end
+ subgraph "Oracle Database@Azure"
+ ODB["Oracle 26ai DB<br/>mcp_agent_user<br/>(read-only)"]
+ end
 
-    subgraph "Observability"
-        LA["Log Analytics"]
-        AM["Azure Monitor Alerts"]
-    end
+ subgraph "Observability"
+ LA["Log Analytics"]
+ AM["Azure Monitor Alerts"]
+ end
 
-    FOUNDRY -->|"HTTP Streamable MCP"| APIM
-    COPILOT -->|"HTTP Streamable MCP"| APIM
-    CUSTOM -->|"HTTP Streamable MCP"| APIM
-    APIM -->|"OAuth2 validated"| MCP
-    MCP --> CAE
-    MCP -->|"Managed Identity"| KV
-    MCP -->|"PE (1521)"| OPE
-    OPE --> ODB
-    ACR -->|"Image Pull"| MCP
-    MCP -.->|"Diagnostics"| LA
-    ODB -.->|"Unified Audit"| LA
-    LA --> AM
+ FOUNDRY -->|"HTTP Streamable MCP"| APIM
+ COPILOT -->|"HTTP Streamable MCP"| APIM
+ CUSTOM -->|"HTTP Streamable MCP"| APIM
+ APIM -->|"OAuth2 validated"| MCP
+ MCP --> CAE
+ MCP -->|"Managed Identity"| KV
+ MCP -->|"PE (1521)"| OPE
+ OPE --> ODB
+ ACR -->|"Image Pull"| MCP
+ MCP -.->|"Diagnostics"| LA
+ ODB -.->|"Unified Audit"| LA
+ LA --> AM
 ```
 
 ### Why Container Apps for MCP
@@ -207,12 +207,12 @@ docker push <acr-name>.azurecr.io/dbtools-mcp-server:v1
 ```powershell
 # Create a Container Apps Environment inside your VNET
 az containerapp env create \
-  --name dbtools-mcp-env \
-  --resource-group <rg-name> \
-  --location <azure-region> \
-  --infrastructure-subnet-resource-id <container-apps-subnet-id> \
-  --internal-only true \
-  --logs-workspace-id <log-analytics-workspace-id>
+ --name dbtools-mcp-env \
+ --resource-group <rg-name> \
+ --location <azure-region> \
+ --infrastructure-subnet-resource-id <container-apps-subnet-id> \
+ --internal-only true \
+ --logs-workspace-id <log-analytics-workspace-id>
 ```
 
 Setting `--internal-only true` ensures no public endpoint--all traffic goes through APIM or Private Endpoints.
@@ -222,31 +222,31 @@ Setting `--internal-only true` ensures no public endpoint--all traffic goes thro
 ```powershell
 # Create the container app
 az containerapp create \
-  --name dbtools-mcp-server \
-  --resource-group <rg-name> \
-  --environment dbtools-mcp-env \
-  --image <acr-name>.azurecr.io/dbtools-mcp-server:v1 \
-  --target-port 8000 \
-  --ingress internal \
-  --min-replicas 1 \
-  --max-replicas 5 \
-  --cpu 1.0 \
-  --memory 2.0Gi \
-  --registry-server <acr-name>.azurecr.io \
-  --registry-identity system \
-  --env-vars \
-    MCP_TRANSPORT=streamable-http \
-    OCI_REGION=<your-oci-region> \
-  --secrets \
-    oci-tenancy=keyvaultref:<keyvault-uri>/secrets/oci-tenancy,identityref:system \
-    oci-user=keyvaultref:<keyvault-uri>/secrets/oci-user,identityref:system \
-    oci-fingerprint=keyvaultref:<keyvault-uri>/secrets/oci-fingerprint,identityref:system \
-    oci-key-content=keyvaultref:<keyvault-uri>/secrets/oci-key-content,identityref:system \
-  --secret-env-vars \
-    OCI_TENANCY=oci-tenancy \
-    OCI_USER=oci-user \
-    OCI_FINGERPRINT=oci-fingerprint \
-    OCI_KEY_CONTENT=oci-key-content
+ --name dbtools-mcp-server \
+ --resource-group <rg-name> \
+ --environment dbtools-mcp-env \
+ --image <acr-name>.azurecr.io/dbtools-mcp-server:v1 \
+ --target-port 8000 \
+ --ingress internal \
+ --min-replicas 1 \
+ --max-replicas 5 \
+ --cpu 1.0 \
+ --memory 2.0Gi \
+ --registry-server <acr-name>.azurecr.io \
+ --registry-identity system \
+ --env-vars \
+ MCP_TRANSPORT=streamable-http \
+ OCI_REGION=<your-oci-region> \
+ --secrets \
+ oci-tenancy=keyvaultref:<keyvault-uri>/secrets/oci-tenancy,identityref:system \
+ oci-user=keyvaultref:<keyvault-uri>/secrets/oci-user,identityref:system \
+ oci-fingerprint=keyvaultref:<keyvault-uri>/secrets/oci-fingerprint,identityref:system \
+ oci-key-content=keyvaultref:<keyvault-uri>/secrets/oci-key-content,identityref:system \
+ --secret-env-vars \
+ OCI_TENANCY=oci-tenancy \
+ OCI_USER=oci-user \
+ OCI_FINGERPRINT=oci-fingerprint \
+ OCI_KEY_CONTENT=oci-key-content
 ```
 
 Key configuration choices:
@@ -260,11 +260,11 @@ Key configuration choices:
 ```powershell
 # Scale based on HTTP concurrency (default KEDA HTTP scaler)
 az containerapp update \
-  --name dbtools-mcp-server \
-  --resource-group <rg-name> \
-  --scale-rule-name mcp-http-scaler \
-  --scale-rule-type http \
-  --scale-rule-http-concurrency 10
+ --name dbtools-mcp-server \
+ --resource-group <rg-name> \
+ --scale-rule-name mcp-http-scaler \
+ --scale-rule-type http \
+ --scale-rule-http-concurrency 10
 ```
 
 This scales up a new replica for every 10 concurrent MCP requests, up to `max-replicas`.
@@ -280,15 +280,15 @@ APIM policy example for the MCP endpoint:
 
 ```xml
 <inbound>
-    <validate-jwt header-name="Authorization" failed-validation-httpcode="401">
-        <openid-config url="https://login.microsoftonline.com/<tenant-id>/v2.0/.well-known/openid-configuration" />
-        <required-claims>
-            <claim name="aud" match="any">
-                <value><mcp-app-registration-client-id></value>
-            </claim>
-        </required-claims>
-    </validate-jwt>
-    <rate-limit calls="100" renewal-period="60" />
+ <validate-jwt header-name="Authorization" failed-validation-httpcode="401">
+ <openid-config url="https://login.microsoftonline.com/<tenant-id>/v2.0/.well-known/openid-configuration" />
+ <required-claims>
+ <claim name="aud" match="any">
+ <value><mcp-app-registration-client-id></value>
+ </claim>
+ </required-claims>
+ </validate-jwt>
+ <rate-limit calls="100" renewal-period="60" />
 </inbound>
 ```
 
@@ -299,34 +299,34 @@ from azure.ai.projects import AIProjectClient
 from azure.identity import DefaultAzureCredential
 
 client = AIProjectClient(
-    credential=DefaultAzureCredential(),
-    endpoint="https://<your-foundry-endpoint>",
+ credential=DefaultAzureCredential(),
+ endpoint="https://<your-foundry-endpoint>",
 )
 
 # Container Apps MCP server URL (internal, routed via APIM)
 mcp_server_url = "https://<apim-name>.azure-api.net/mcp"
 
 agent = client.agents.create_agent(
-    model="gpt-4.1",
-    name="Oracle Database Agent",
-    instructions="You are a helpful assistant that manages Oracle databases "
-                 "using the available MCP tools. Always use read-only queries. "
-                 "Never execute DDL or DML.",
-    tools=[
-        {
-            "type": "mcp",
-            "server_label": "dbtools",
-            "server_url": mcp_server_url,
-            "allowed_tools": [
-                "list_all_compartments",
-                "list_all_databases",
-                "list_all_connections",
-                "execute_sql_tool",
-                "list_tables",
-                "get_table_info"
-            ]
-        }
-    ]
+ model="gpt-4.1",
+ name="Oracle Database Agent",
+ instructions="You are a helpful assistant that manages Oracle databases "
+ "using the available MCP tools. Always use read-only queries. "
+ "Never execute DDL or DML.",
+ tools=[
+ {
+ "type": "mcp",
+ "server_label": "dbtools",
+ "server_url": mcp_server_url,
+ "allowed_tools": [
+ "list_all_compartments",
+ "list_all_databases",
+ "list_all_connections",
+ "execute_sql_tool",
+ "list_tables",
+ "get_table_info"
+ ]
+ }
+ ]
 )
 print(f"Agent created: {agent.id}")
 ```
@@ -342,7 +342,7 @@ print(f"Agent created: {agent.id}")
 | 3 | Key Vault Private Endpoint | Secrets retrieved via PE using Managed Identity |
 | 4 | ACR Private Endpoint | Image pulls stay private (ACR Premium required) |
 | 5 | APIM with VNET integration | Fronts MCP--OAuth2 validation + rate limiting + WAF |
-| 6 | NSGs -- ingress | Container Apps subnet --Â APIM (8000); deny all else |
+| 6 | NSGs -- ingress | Container Apps subnet -- <- APIM (8000); deny all else |
 | 7 | NSGs -- egress | Container Apps subnet --' Oracle PE (1521), KV PE (443); block internet |
 
 ### Security

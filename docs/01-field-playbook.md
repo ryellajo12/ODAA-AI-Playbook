@@ -87,13 +87,13 @@ Agents query Oracle Database@Azure directly at runtime. No data leaves Oracle.
 
 | Pattern | AI Platform | How It Connects | Surfaces | Value Proposition |
 |--|--|--|--|--|
-| **1** | **Copilot Studio** | Gateway / Oracle as Knowledge / Oracle as Tool | Teams, Web, M365 | --¢ Fastest time-to-value (hours)<br/>--¢ No-code builder<br/>--¢ Business users self-serve answers<br/>--¢ Zero data movement |
-| **2** | **MS Foundry + MCP** | Oracle MCP Server on Functions / Container Apps (VNET-integrated) | API, M365 Copilot, Agent Store | --¢ NL --' SQL via MCP<br/>--¢ Entra ID SSO/MFA + RBAC<br/>--¢ Private Endpoints end-to-end<br/>--¢ Simplest Foundry pattern |
-| **3** | **MS Foundry + ORDS** | ORDS REST endpoints + Oracle 26ai vector search (RAG); APIM for OAuth2 | API, M365 Copilot, Agent Store | --¢ Governed REST APIs, no raw SQL<br/>--¢ Oracle 26ai RAG / vector search<br/>--¢ APIM enforces Entra ID OAuth2<br/>--¢ All traffic private |
-| **4** | **MS Foundry + MCP + ORDS + Foundry IQ** | MCP + ORDS + 26ai vectors + Foundry IQ (Blob, SharePoint, Fabric Files) | API, M365 Copilot, Agent Store | --¢ Complete: structured + unstructured + RAG<br/>--¢ RBAC at every layer<br/>--¢ Separate DB users per tool<br/>--¢ Maximum AI value |
-| **5** | **Oracle MCP** (developer) | SQLcl MCP in VS Code or hosted | VS Code, Foundry, Copilot Studio | --¢ Natural language --' SQL in minutes<br/>--¢ Zero infrastructure to start<br/>--¢ Schema discovery on demand<br/>--¢ DBA task automation |
-| **6** | **Power Apps** | Gateway / Oracle Connector | Power Platform | --¢ Modernize workflows without rebuilding<br/>--¢ AI Builder for forms & predictions<br/>--¢ Citizen developer friendly<br/>--¢ Incremental AI adoption |
-| **7** | **Logic Apps** | Oracle DB Connector / ORDS REST calls | Workflow orchestration, enterprise integration | --¢ Event-driven automation<br/>--¢ 400+ enterprise connectors<br/>--¢ No custom code needed<br/>--¢ Orchestrate Oracle + SaaS + Azure |
+| **1** | **Copilot Studio** | Gateway / Oracle as Knowledge / Oracle as Tool | Teams, Web, M365 | - Fastest time-to-value (hours)<br/>- No-code builder<br/>- Business users self-serve answers<br/>- Zero data movement |
+| **2** | **MS Foundry + MCP** | Oracle MCP Server on Functions / Container Apps (VNET-integrated) | API, M365 Copilot, Agent Store | - NL --' SQL via MCP<br/>- Entra ID SSO/MFA + RBAC<br/>- Private Endpoints end-to-end<br/>- Simplest Foundry pattern |
+| **3** | **MS Foundry + ORDS** | ORDS REST endpoints + Oracle 26ai vector search (RAG); APIM for OAuth2 | API, M365 Copilot, Agent Store | - Governed REST APIs, no raw SQL<br/>- Oracle 26ai RAG / vector search<br/>- APIM enforces Entra ID OAuth2<br/>- All traffic private |
+| **4** | **MS Foundry + MCP + ORDS + Foundry IQ** | MCP + ORDS + 26ai vectors + Foundry IQ (Blob, SharePoint, Fabric Files) | API, M365 Copilot, Agent Store | - Complete: structured + unstructured + RAG<br/>- RBAC at every layer<br/>- Separate DB users per tool<br/>- Maximum AI value |
+| **5** | **Oracle MCP** (developer) | SQLcl MCP in VS Code or hosted | VS Code, Foundry, Copilot Studio | - Natural language --' SQL in minutes<br/>- Zero infrastructure to start<br/>- Schema discovery on demand<br/>- DBA task automation |
+| **6** | **Power Apps** | Gateway / Oracle Connector | Power Platform | - Modernize workflows without rebuilding<br/>- AI Builder for forms & predictions<br/>- Citizen developer friendly<br/>- Incremental AI adoption |
+| **7** | **Logic Apps** | Oracle DB Connector / ORDS REST calls | Workflow orchestration, enterprise integration | - Event-driven automation<br/>- 400+ enterprise connectors<br/>- No custom code needed<br/>- Orchestrate Oracle + SaaS + Azure |
 
 ### Managed Replication -- Mirrored Analytics Data
 
@@ -101,8 +101,8 @@ Oracle data is replicated into Fabric Mirrored Database via managed private endp
 
 | Pattern | AI Platform | How It Connects | Surfaces | Value Proposition |
 |--|--|--|--|--|
-| **Pattern 8** | **Mirrored Database + Data Agents** | Oracle --' Fabric Mirroring (private PE) --' Mirrored Database --' Data Agents --' Published as MCP Server / Teams / Copilot Studio / Foundry | Teams, Copilot Studio, Foundry, MCP clients | --¢ NL analytics on mirrored Oracle data<br/>--¢ Data Agent as MCP server for any client<br/>--¢ Publish direct to Teams<br/>--¢ Native connectors to Copilot Studio + Foundry<br/>--¢ Entra ID + private networking end-to-end |
-| **Pattern 9** | **Fabric Mirroring + Data Agents + Foundry** | Mirrored Database --' Data Agent --' Foundry agent (native connector as tool) | API, M365 Copilot, Agent Store | --¢ Foundry agent uses Data Agent as a tool<br/>--¢ Combine mirrored analytics with live MCP/ORDS<br/>--¢ Best of Fabric + Foundry<br/>--¢ Entra ID RBAC at every layer |
+| **Pattern 8** | **Mirrored Database + Data Agents** | Oracle --' Fabric Mirroring (private PE) --' Mirrored Database --' Data Agents --' Published as MCP Server / Teams / Copilot Studio / Foundry | Teams, Copilot Studio, Foundry, MCP clients | - NL analytics on mirrored Oracle data<br/>- Data Agent as MCP server for any client<br/>- Publish direct to Teams<br/>- Native connectors to Copilot Studio + Foundry<br/>- Entra ID + private networking end-to-end |
+| **Pattern 9** | **Fabric Mirroring + Data Agents + Foundry** | Mirrored Database --' Data Agent --' Foundry agent (native connector as tool) | API, M365 Copilot, Agent Store | - Foundry agent uses Data Agent as a tool<br/>- Combine mirrored analytics with live MCP/ORDS<br/>- Best of Fabric + Foundry<br/>- Entra ID RBAC at every layer |
 
 ### AI Enrichment: IQ -- Intelligent Data Processing
 
@@ -110,10 +110,10 @@ AI-powered intelligence layers that process, enrich, and surface insights from s
 
 | Pattern | AI Platform | What It Does | Surfaces | Value Proposition |
 |--|--|--|--|--|
-| **Pattern 10** | **Fabric IQ** | AI-powered analytics and insights over data in OneLake (mirrored Oracle + other sources) | Fabric, Data Agents | --¢ Automated insight discovery<br/>--¢ AI finds patterns humans miss<br/>--¢ Multi-source data intelligence<br/>--¢ Scales with Fabric capacity |
-| **Pattern 11** | **Foundry IQ** | Unstructured data processing -- ingests docs from Blob, SharePoint, Fabric Files to ground Foundry agents | Foundry, M365 Copilot | --¢ Unlock PDFs, docs, emails<br/>--¢ Combine unstructured + structured Oracle data<br/>--¢ Single agent, full context<br/>--¢ Enterprise-grade grounding |
-| **Pattern 12** | **Work IQ** | AI-driven productivity insights across M365 work patterns connected to Oracle business data | M365, Copilot | --¢ Bridge work signals + business data<br/>--¢ Meeting, email, doc intelligence<br/>--¢ Organizational productivity insights<br/>--¢ Connected to Oracle context |
-| **Pattern 13** | **Unified IQ** | All IQ layers combined -- Fabric IQ + Foundry IQ + Work IQ feeding a single intelligent agent | Fabric, Foundry, M365 Copilot | --¢ Complete organizational intelligence<br/>--¢ Structured + unstructured + work signals<br/>--¢ One agent, all context<br/>--¢ Maximum AI value from Oracle investment |
+| **Pattern 10** | **Fabric IQ** | AI-powered analytics and insights over data in OneLake (mirrored Oracle + other sources) | Fabric, Data Agents | - Automated insight discovery<br/>- AI finds patterns humans miss<br/>- Multi-source data intelligence<br/>- Scales with Fabric capacity |
+| **Pattern 11** | **Foundry IQ** | Unstructured data processing -- ingests docs from Blob, SharePoint, Fabric Files to ground Foundry agents | Foundry, M365 Copilot | - Unlock PDFs, docs, emails<br/>- Combine unstructured + structured Oracle data<br/>- Single agent, full context<br/>- Enterprise-grade grounding |
+| **Pattern 12** | **Work IQ** | AI-driven productivity insights across M365 work patterns connected to Oracle business data | M365, Copilot | - Bridge work signals + business data<br/>- Meeting, email, doc intelligence<br/>- Organizational productivity insights<br/>- Connected to Oracle context |
+| **Pattern 13** | **Unified IQ** | All IQ layers combined -- Fabric IQ + Foundry IQ + Work IQ feeding a single intelligent agent | Fabric, Foundry, M365 Copilot | - Complete organizational intelligence<br/>- Structured + unstructured + work signals<br/>- One agent, all context<br/>- Maximum AI value from Oracle investment |
 
 > **See [Reference Architecture Patterns](02-reference-architectures.md) for detailed Mermaid diagrams of each pattern.**
 
@@ -145,11 +145,11 @@ AI-powered intelligence layers that process, enrich, and surface insights from s
 |--|--|--|--|--|--|--|--|--|--|
 | **Skill level** | Low-code | Pro-dev | Pro-dev | Pro-dev | DBA/Dev | Low-code | Low-code | Data eng | Pro-dev |
 | **Data movement** | None | None | None | None | None | None | None | Mirror | Mirror + IQ |
-| **Real-time data** | --... Yes | --... Yes | --... Yes | --... Yes | --... Yes | --... Yes | --... Yes | --Å¡Â Ã¯Â¸Â Near-RT | --Å¡Â Ã¯Â¸Â Near-RT |
-| **Knowledge grounding** | --... Oracle as Knowledge | --Å¡Â Ã¯Â¸Â Schema context | --... Via ORDS + 26ai vectors | --... Foundry IQ + ORDS + 26ai | --Å¡Â Ã¯Â¸Â Schema context | --ÂÅ No | --ÂÅ No | --... Semantic model | --... All IQ layers |
-| **Tool calling** | --... Connector | --... MCP | --... ORDS OpenAPI | --... MCP + ORDS | --... Native | --ÂÅ No | --... Connectors | --Å¡Â Ã¯Â¸Â Via Foundry | --... Via Foundry |
-| **Vector search** | --ÂÅ No | --ÂÅ No | --... Oracle 26ai | --... Oracle 26ai | --... Via SQL | --ÂÅ No | --ÂÅ No | --ÂÅ No | --... Via Foundry |
-| **Unstructured data** | --ÂÅ No | --ÂÅ No | --ÂÅ No | --... Foundry IQ | --ÂÅ No | --ÂÅ No | --ÂÅ No | --ÂÅ No | --... All IQ |
+| **Real-time data** | --... Yes | --... Yes | --... Yes | --... Yes | --... Yes | --... Yes | --... Yes | Yes Near-RT | Yes Near-RT |
+| **Knowledge grounding** | --... Oracle as Knowledge | Yes Schema context | --... Via ORDS + 26ai vectors | --... Foundry IQ + ORDS + 26ai | Yes Schema context | No | No | --... Semantic model | --... All IQ layers |
+| **Tool calling** | --... Connector | --... MCP | --... ORDS OpenAPI | --... MCP + ORDS | --... Native | No | --... Connectors | Yes Via Foundry | --... Via Foundry |
+| **Vector search** | No | No | --... Oracle 26ai | --... Oracle 26ai | --... Via SQL | No | No | No | --... Via Foundry |
+| **Unstructured data** | No | No | No | --... Foundry IQ | No | No | No | No | --... All IQ |
 | **RBAC** | Entra ID + DLP | Entra ID + Azure RBAC | Entra ID + APIM OAuth2 | All layers | DB users | Entra ID | Entra ID | Entra ID | Entra ID |
 | **Private networking** | Gateway + PE | VNET + PE | VNET + PE + APIM | VNET + PE + APIM | PE | Gateway + PE | Connectors | Fabric | Fabric + VNET |
 | **Cost model** | Per-message | Per-compute | Per-compute + APIM | Per-compute + APIM | Free (local) | Per-user | Per-execution | Fabric CU | Combined |
@@ -188,12 +188,12 @@ AI-powered intelligence layers that process, enrich, and surface insights from s
 ### 7.1 Engagement Lifecycle
 
 ```
---"Å--"--¢"--¢"--¢"--¢"--¢"--¢"--¢"--¢"--¢"--¢"Â    --"Å--"--¢"--¢"--¢"--¢"--¢"--¢"--¢"--¢"--¢"--¢"Â    --"Å--"--¢"--¢"--¢"--¢"--¢"--¢"--¢"--¢"--¢"--¢"Â    --"Å--"--¢"--¢"--¢"--¢"--¢"--¢"--¢"--¢"--¢"--¢"Â    --"Å--"--¢"--¢"--¢"--¢"--¢"--¢"--¢"--¢"--¢"--¢"Â
---"--  Discover --"--¢"--¢"--¢"--¢--Âº--"--   Map    --"--¢"--¢"--¢"--¢--Âº--"--  Pilot   --"--¢"--¢"--¢"--¢--Âº--"--  Prove   --"--¢"--¢"--¢"--¢--Âº--"--  Scale   --"--
---"--           --"--    --"-- to Path  --"--    --"--          --"--    --"--          --"--    --"--          --"--
---"-- Discovery --"--    --"-- Decision --"--    --"-- 2-4 week --"--    --"-- Metrics  --"--    --"-- Prod     --"--
---"-- questions --"--    --"-- matrix   --"--    --"-- POC      --"--    --"-- & ROI    --"--    --"-- rollout  --"--
---""--"--¢"--¢"--¢"--¢"--¢"--¢"--¢"--¢"--¢"--¢"Ë    --""--"--¢"--¢"--¢"--¢"--¢"--¢"--¢"--¢"--¢"--¢"Ë    --""--"--¢"--¢"--¢"--¢"--¢"--¢"--¢"--¢"--¢"--¢"Ë    --""--"--¢"--¢"--¢"--¢"--¢"--¢"--¢"--¢"--¢"--¢"Ë    --""--"--¢"--¢"--¢"--¢"--¢"--¢"--¢"--¢"--¢"--¢"Ë
+--"--"- - - - - - - - - - <- --"--"- - - - - - - - - - <- --"--"- - - - - - - - - - <- --"--"- - - - - - - - - - <- --"--"- - - - - - - - - - <- 
+--"-- Discover --"- - - - ----"-- Map --"- - - - ----"-- Pilot --"- - - - ----"-- Prove --"- - - - ----"-- Scale --"--
+--"-- --"-- --"-- to Path --"-- --"-- --"-- --"-- --"-- --"-- --"--
+--"-- Discovery --"-- --"-- Decision --"-- --"-- 2-4 week --"-- --"-- Metrics --"-- --"-- Prod --"--
+--"-- questions --"-- --"-- matrix --"-- --"-- POC --"-- --"-- & ROI --"-- --"-- rollout --"--
+--""--"- - - - - - - - - - " --""--"- - - - - - - - - - " --""--"- - - - - - - - - - " --""--"- - - - - - - - - - " --""--"- - - - - - - - - - "
 ```
 
 ### 7.2 Pilot Playbook

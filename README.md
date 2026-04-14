@@ -1,6 +1,6 @@
 # Oracle Database@Azure -- AI Adoption Playbook
 
-**Version:** 2.1· **Date:** April 14th 2026
+**Version:** 2.1- **Date:** April 14th 2026
 
 **Audience:** Field sellers, CSA/SSP, Solution architects
 
@@ -23,8 +23,8 @@ This playbook is organized into modular documents under the [`docs/`](docs/) fol
 | 4 | Decision Matrix | [docs/01-field-playbook.md](docs/01-field-playbook.md) | All |
 | 5 | Objection Handling | [docs/01-field-playbook.md](docs/01-field-playbook.md) | Field / Sales |
 | 6| Field Motion & Engagement Model | [docs/01-field-playbook.md](docs/01-field-playbook.md) | Field / Sales |
-|  |  |  | |
-|  |  |  | |
+| | | | |
+| | | | |
 | **PART II** | **ARCHITECTURE & IMPLEMENTATION** | | |
 | 1 | Reference Architecture Patterns | [docs/02-reference-architectures.md](docs/02-reference-architectures.md) | Architects |
 | 2 | Security & Governance Guardrails | [docs/10-security-governance.md](docs/10-security-governance.md) | All |
