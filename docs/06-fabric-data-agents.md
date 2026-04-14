@@ -161,6 +161,167 @@ graph TB
 
 ---
 
+## Pattern 8B: GoldenGate as a Service -- Real-Time CDC to Fabric
+
+### What is OCI GoldenGate
+
+OCI GoldenGate is Oracle's fully managed, cloud-native real-time data replication service. It captures changes from Oracle redo logs (CDC) and delivers them to targets with sub-second latency. For Oracle Database@Azure customers, GoldenGate provides an alternative to Fabric native mirroring when you need real-time CDC, data transformations during replication, or multi-target fan-out.
+
+### Architecture
+
+```mermaid
+graph TB
+    subgraph ODA["Oracle Database@Azure"]
+        DB[("Oracle 26ai DB<br/>Source Tables")]
+        REDO["Redo Logs<br/>(CDC Source)"]
+    end
+
+    subgraph GG["OCI GoldenGate as a Service"]
+        EXT["Extract Process<br/>Captures CDC from<br/>redo logs"]
+        TRAIL["Trail Files<br/>(Change Records)"]
+        REP["Replicat Process<br/>Applies changes +<br/>transformations"]
+    end
+
+    subgraph FabricTargets["Microsoft Fabric Targets"]
+        LH["Fabric Lakehouse<br/>(Delta tables via ADLS)"]
+        FM["Fabric Mirror<br/>(direct mirror target)"]
+    end
+
+    subgraph Downstream["Downstream AI"]
+        SC["OneLake Shortcut"]
+        ONT["Fabric IQ Ontology"]
+        DA["Data Agent"]
+        FA["Foundry Agent"]
+    end
+
+    DB --> REDO
+    REDO --> EXT
+    EXT --> TRAIL
+    TRAIL --> REP
+    REP --> LH
+    REP --> FM
+    LH --> SC
+    SC --> ONT
+    ONT --> DA
+    FM --> DA
+    DA --> FA
+```
+
+### Supported Fabric Targets
+
+| Target | How It Works | Best For |
+|--|--|--|
+| **Fabric Lakehouse** | GoldenGate replicates to Azure Data Lake Storage (ADLS Gen2) in Delta format; Fabric Lakehouse reads via shortcut or direct mount | Full control over Delta tables; combine with Fabric IQ ontology; cross-source joins in Spark |
+| **Fabric Mirror** | GoldenGate writes directly to a Fabric Mirror target | Simpler setup; Data Agent can query immediately; mirrors appear as Fabric tables |
+
+### Setup Steps
+
+#### Step 1 -- Provision OCI GoldenGate Deployment
+
+1. **Create an OCI GoldenGate deployment** in the OCI console:
+   - Select deployment type: **Oracle** (for relational source) or **Big Data** (for Lakehouse/ADLS target)
+   - Choose a compartment and configure networking
+   - For Fabric Lakehouse target, use a Big Data deployment type
+   - For Fabric Mirror target, use an Oracle deployment type
+
+2. **Configure networking** between GoldenGate and Oracle Database@Azure:
+   - GoldenGate deployment must reach Oracle via private networking
+   - Use OCI-Azure interconnect or FastConnect/ExpressRoute peering
+
+#### Step 2 -- Create Source Connection (Oracle Database@Azure)
+
+3. **Create a source connection** in GoldenGate:
+   - Connection type: Oracle Database
+   - Provide Oracle Database@Azure connection details (host, port, service name)
+   - Use a dedicated GoldenGate user with required privileges:
+     ```sql
+     -- Grant privileges for GoldenGate Extract
+     GRANT CREATE SESSION TO gg_extract_user;
+     GRANT SELECT ANY TABLE TO gg_extract_user;
+     GRANT FLASHBACK ANY TABLE TO gg_extract_user;
+     GRANT SELECT ON DBA_CLUSTERS TO gg_extract_user;
+     EXEC DBMS_GOLDENGATE_AUTH.GRANT_ADMIN_PRIVILEGE('gg_extract_user');
+     ```
+
+#### Step 3 -- Create Target Connection (Fabric)
+
+4. **For Fabric Lakehouse target** -- create an ADLS Gen2 connection:
+   - Connection type: Azure Data Lake Storage
+   - Provide storage account name, container, and access key or SAS token
+   - Configure output format: Delta (recommended) or Parquet
+
+5. **For Fabric Mirror target** -- create a Fabric Mirror connection:
+   - Follow the Oracle-to-Fabric-Mirror quickstart
+
+#### Step 4 -- Configure Extract (CDC Capture)
+
+6. **Create an Extract process** on the Oracle source:
+   - Extract captures changes from Oracle redo logs in real time
+   - Configure which schemas/tables to capture:
+     ```
+     EXTRACT ext_fabric
+     USERIDALIAS gg_extract_user
+     EXTTRAIL ./dirdat/ea
+     TABLE SH.SALES;
+     TABLE SH.CUSTOMERS;
+     TABLE SH.PRODUCTS;
+     TABLE SH.PROMOTIONS;
+     ```
+
+#### Step 5 -- Configure Replicat (Apply to Fabric)
+
+7. **Create a Replicat process** to the Fabric target:
+   - Replicat applies captured changes to the Fabric Lakehouse or Mirror
+   - Configure transformations if needed:
+     ```
+     REPLICAT rep_fabric
+     TARGETDB LIBFILE libggjava.so SET property=dirprm/fabric.props
+     MAP SH.SALES, TARGET sales;
+     MAP SH.CUSTOMERS, TARGET customers;
+     MAP SH.PRODUCTS, TARGET products;
+     -- Example transformation: mask email column
+     MAP SH.CUSTOMERS, TARGET customers,
+       COLMAP (USEDEFAULTS, EMAIL = @STREXT(EMAIL, 1, @STRFIND(EMAIL, '@')));
+     ```
+
+#### Step 6 -- Build AI on Replicated Data
+
+8. **Once data lands in Fabric**, build downstream AI using the same approaches as Patterns 8-10:
+   - **Fabric Lakehouse path**: Create OneLake shortcut --> Fabric IQ ontology --> Data Agent
+   - **Fabric Mirror path**: Create Data Agent directly on the mirrored data
+   - **Foundry path**: Connect Data Agent as a tool in a Foundry agent
+
+### Data Transformation Examples
+
+GoldenGate can transform data during replication -- something Fabric native mirroring cannot do:
+
+| Transformation | Example | Use Case |
+|--|--|--|
+| **Column filtering** | Exclude PII columns from replication | GDPR compliance -- sensitive columns never leave Oracle |
+| **Column mapping** | Rename `CUST_NM` to `customer_name` | Business-friendly names for Fabric IQ ontology |
+| **Data masking** | Mask email: `john@acme.com` --> `j***@acme.com` | Analytics on masked data; PII stays in Oracle |
+| **Row filtering** | `WHERE REGION = 'APAC'` | Replicate only relevant subsets |
+| **Column derivation** | Add a `replicated_at` timestamp column | Track data freshness in Fabric |
+| **Table merging** | Merge `SALES_2024` + `SALES_2025` into a single `SALES` target | Consolidate partitioned Oracle tables |
+
+### Monitoring
+
+| Metric | Where to Monitor | Alert On |
+|--|--|--|
+| **Extract lag** | GoldenGate admin console | Lag > 60 seconds |
+| **Replicat lag** | GoldenGate admin console | Lag > 120 seconds |
+| **Throughput** | GoldenGate metrics | Drop below expected records/sec |
+| **Errors** | GoldenGate logs + OCI monitoring | Any abend or discard |
+| **Data freshness in Fabric** | Fabric workspace monitoring | Stale data (no updates in > 5 min) |
+
+### References
+
+- [Replicate data from Oracle to Microsoft Fabric Lakehouse](https://docs.oracle.com/en/cloud/paas/goldengate-service/raipm/)
+- [Replicate data from Oracle to Microsoft Fabric Mirror](https://docs.oracle.com/en/cloud/paas/goldengate-service/rarpm/)
+- [OCI GoldenGate documentation](https://docs.oracle.com/en/cloud/paas/goldengate-service/)
+
+---
+
 ## Pattern 10: Fabric IQ on Oracle Mirrored Database
 
 ### What is Fabric IQ

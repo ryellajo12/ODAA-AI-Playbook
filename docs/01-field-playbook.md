@@ -94,12 +94,32 @@ Agents query Oracle Database@Azure directly at runtime. No data leaves Oracle.
 
 ### Managed Replication -- Mirrored Analytics Data
 
-Oracle data is replicated into Fabric Mirrored Database via managed private endpoints. Data Agents on Mirrored Database can be published as MCP servers, to Teams, or connected to Copilot Studio and MS Foundry via native connectors.
+Oracle data is replicated into Microsoft Fabric via two paths: Fabric native mirroring (managed private endpoints) or OCI GoldenGate as a Service (real-time CDC). Data Agents on mirrored/replicated data can be published as MCP servers, to Teams, or connected to Copilot Studio and MS Foundry via native connectors.
 
 | Pattern | AI Platform | How It Connects | Surfaces | Value Proposition |
 |--|--|--|--|--|
 | **Pattern 8** | **Mirrored Database + Data Agents** | Oracle --> Fabric Mirroring (private PE) --> Mirrored Database --> Data Agents --> Published as MCP Server / Teams / Copilot Studio / Foundry | Teams, Copilot Studio, Foundry, MCP clients | - NL analytics on mirrored Oracle data<br/>- Data Agent as MCP server for any client<br/>- Publish direct to Teams<br/>- Native connectors to Copilot Studio + Foundry<br/>- Entra ID + private networking end-to-end |
+| **Pattern 8B** | **GoldenGate as a Service + Fabric** | Oracle Database@Azure --> OCI GoldenGate (CDC) --> Fabric Lakehouse or Fabric Mirror --> Data Agents / Fabric IQ | Fabric, Teams, Copilot Studio, Foundry, MCP clients | - Real-time CDC replication (sub-second latency)<br/>- Supports Fabric Lakehouse AND Fabric Mirror as targets<br/>- Data transformations during replication<br/>- 30+ source/target combinations<br/>- Enterprise-grade with conflict detection |
 | **Pattern 9** | **Fabric Mirroring + Data Agents + Foundry** | Mirrored Database --> Data Agent --> Foundry agent (native connector as tool) | API, M365 Copilot, Agent Store | - Foundry agent uses Data Agent as a tool<br/>- Combine mirrored analytics with live MCP/ORDS<br/>- Best of Fabric + Foundry<br/>- Entra ID RBAC at every layer |
+
+#### When to Use Fabric Native Mirroring vs GoldenGate as a Service
+
+| Dimension | Pattern 8: Fabric Native Mirroring | Pattern 8B: GoldenGate as a Service |
+|--|--|--|
+| **Setup complexity** | Low -- configure in Fabric UI | Medium -- provision GoldenGate deployment, configure Extract + Replicat |
+| **Latency** | Near-real-time (minutes) | Real-time CDC (sub-second to seconds) |
+| **Transformation** | No transformation during replication | Yes -- filter, map, merge, transform columns during replication |
+| **Target types** | Fabric Mirrored Database only | Fabric Lakehouse OR Fabric Mirror + 30 other targets |
+| **Multi-target fan-out** | One target per mirroring config | One source to multiple targets simultaneously |
+| **Conflict detection** | N/A (one-way) | Built-in conflict detection and resolution |
+| **Schema evolution** | Automatic | Configurable DDL replication |
+| **Monitoring** | Fabric workspace monitoring | GoldenGate admin console + OCI monitoring |
+| **Cost** | Included in Fabric capacity | OCI GoldenGate service pricing (OCPU-based) |
+| **Best for** | Simple analytics mirroring | High-volume CDC, transformations, multi-target, low-latency requirements |
+
+> **References:**
+> - [Replicate data from Oracle to Microsoft Fabric Lakehouse](https://docs.oracle.com/en/cloud/paas/goldengate-service/raipm/)
+> - [Replicate data from Oracle to Microsoft Fabric Mirror](https://docs.oracle.com/en/cloud/paas/goldengate-service/rarpm/)
 
 ### AI Enrichment: IQ -- Intelligent Data Processing
 
@@ -130,6 +150,7 @@ AI-powered intelligence layers that process, enrich, and surface insights from s
 | Business workflow modernization | **Pattern 6:** Power Apps | Low-code, incremental AI |
 | Enterprise integration / event-driven | **Pattern 7:** Logic Apps | 400+ connectors, no custom code |
 | Cross-source analytics | **Pattern 8:** Mirrored DB + Data Agents | Managed mirroring, NL queries, publish as MCP/Teams/Copilot Studio/Foundry |
+| Real-time CDC to Fabric | **Pattern 8B:** GoldenGate as a Service + Fabric | Sub-second CDC, transformations, Fabric Lakehouse or Mirror target |
 | AI agents on analytics data | **Pattern 9:** Fabric + Data Agents + Foundry | Data Agent as Foundry tool + live Oracle tools |
 | Automated data insights | **Pattern 10:** Fabric IQ | AI-powered pattern discovery |
 | Unstructured + structured grounding | **Pattern 11:** Foundry IQ | PDFs, docs, emails + Oracle data |
