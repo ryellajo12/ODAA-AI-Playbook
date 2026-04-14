@@ -307,9 +307,16 @@ graph TB
 1. **Follow steps 1-6 outlined [here](https://github.com/ryellajo12/ODAA-AI-Agent-Playbook/blob/editsv2/docs/04-path2-foundry-agents.md#setup-steps-1)** for setting up your ORDS Endpoints and RAG.
 2. **Create a Copilot Studio Agent** — go [here](https://copilotstudio.microsoft.com/), and make sure to select the right environment from the top right and then select "Create an agent".
 3. **Connect your ORDS Endpoints through a custom connector**
--- Once your agent has the basic configurations, select "Tools" → "Add a tool" → "Add new custom connector".
+    - Once your agent has the basic configurations, select "Tools" → "Add a tool" → "Add new custom connector".
+    - You will be redirected to a PowerApps page where you will click on "New Custom Connector" at the top right.
+    - Choose a method of your choice, for this playbook we will focus on importing an OpenAPI file.
+    - Give your connector a name and import the OpenAPI file.
+    - Go through the "General", "Security", "Definition", "Code" and "Test" tabs to make sure your OpenAPI file was imported correctly. Make any necessary changes in the setup in case there were mistakes.
+    - Once all sections are validated, you will click on "Create connector". For more guidance on setting up your connector find information [here.](https://learn.microsoft.com/en-us/connectors/custom-connectors/)
+    - Go back to your Copilot Studio agent,  select "Tools" → "Add a tool" → search for your connector name. The different actions defined in the OpenAPI file should surface now.
+    - Once you add and configure your tool, make sure to add a strong description of what the tool does, this allows the orchestrator to know when to call your tool
+    - You can now test your tool by using the test chat window in the Copilot Studio platform.
    
-
 
 ## Entra ID Authentication
 
