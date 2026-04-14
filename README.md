@@ -6,8 +6,6 @@
 
 **Purpose:** A concrete, end-to-end guide to building AI agents,RAG solutions and agentic AI solutions on Oracle Database@Azure using every available integration path in the Microsoft AI ecosystem.
 
---
-
 ## Repository Structure
 
 This playbook is organized into modular documents under the [`docs/`](docs/) folder for easier navigation and maintenance.
