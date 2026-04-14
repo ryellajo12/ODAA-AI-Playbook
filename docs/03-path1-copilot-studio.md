@@ -131,7 +131,7 @@ graph TB
 
 | # | Control | Required | Details |
 |---|---------|----------|----------|
-| 1 | OD@A Private Endpoint | ✅ Yes | No public IP on Oracle database; all access through Private Endpoint |
+| 1 | Oracle Database@Azure Private Endpoint | ✅ Yes | No public IP on Oracle database; all access through Private Endpoint |
 | 2 | Gateway VM in same VNET or peered VNET | ✅ Yes | Gateway must have network line-of-sight to Oracle Private Endpoint |
 | 3 | NSG on Gateway subnet | ✅ Yes | Allow outbound to Oracle PE subnet on port 1521; deny all other outbound |
 | 4 | NSG on Oracle PE subnet | ✅ Yes | Allow inbound from Gateway subnet on port 1521 only |
@@ -378,23 +378,6 @@ graph TB
     - Once you add and configure your tool, make sure to add a strong description of what the tool does, this allows the orchestrator to know when to call your tool
     - You can now test your tool by using the test chat window in the Copilot Studio platform.
    
-
-## Design Considerations
-
-| Consideration | Guidance |
-|--------------|----------|
-| **Knowledge vs Tool** | Use Knowledge for open-ended Q&A ("tell me about product X"); use Tools for specific actions ("look up order #123") |
-| **Query complexity** | Pre-build Oracle views for complex joins; keep connector queries simple |
-| **Data scoping** | For Knowledge sources, expose only the tables/columns relevant to the copilot's purpose; don't expose entire schemas |
-| **Performance** | Gateway adds ~100-300ms latency; connector is the simplest path with no additional REST layer |
-| **Security** | Use a dedicated read-only Oracle user; never expose DBA credentials; scope Knowledge to non-sensitive data |
-| **Identity** | Enforce Entra ID SSO + MFA for all Copilot Studio users; use Conditional Access policies for compliance |
-| **Networking** | All Oracle traffic flows through Private Endpoints; no public IP on OD@A; gateway communicates via Azure Relay |
-| **Credential management** | Store Oracle DB credentials in Azure Key Vault; gateway VM uses Managed Identity to access Key Vault |
-| **Freshness** | Knowledge sources reflect live Oracle data; no caching delay |
-| **Scaling** | Gateway supports clustering for high availability |
-| **Data types** | Gateway handles standard Oracle types; LOBs and custom types may need views |
-
 ## Observability for Oracle-Connected Copilot Studio Agents
 
 When Copilot Studio agents interact with enterprise Oracle data (via Native Connector, MCP Tooling, or ORDS APIs), runtime execution becomes a multi‑layered orchestration across:
@@ -477,16 +460,16 @@ must be analyzed as a full execution chain rather than as an isolated conversati
 
 ---
 
-### 3. Inference-Level Telemetry (Azure Application Insights)
+### 3. Inference-Level Telemetry (Azure Application Insights in Azure Monitor)
 
-Enterprise deployments typically require deeper visibility into:
+Enterprise deployments typically require **deeper visibility** into:
 
 - Prompt execution  
 - Generative answer formation  
 - Moderation outcomes  
 - Topic-to-tool execution planning  
 
-Copilot Studio agents can optionally emit enriched runtime telemetry into **Azure Application Insights**, allowing organizations to track:
+Copilot Studio agents can **optionally** emit enriched runtime telemetry into **Azure Application Insights in Azure Monitor**, allowing organizations to track:
 
 - Logged messages sent to and from the agent  
 - Topics triggered during user conversations  
@@ -564,8 +547,8 @@ Publishing an agent enables runtime access to:
 
 This introduces enterprise risk in environments governed by:
 
-- SOX (Sarbanes-Oxley)
-- HIPAA (Health Insurance Portability and Accountability Act)
+- SOX
+- HIPAA
 - PCI-DSS
 - Internal ITGC and audit controls
 
@@ -584,7 +567,7 @@ Connector Invocation | Power Platform DLP | Which APIs/tools may be invoked |
 These governance layers apply at different stages of the publishing lifecycle.
 
 
-## 1. Agent365 – Agent Lifecycle Governance
+### 1. Agent365 – Agent Lifecycle Governance
 
 Agent365 serves as Microsoft's enterprise control plane for managing AI agents across Microsoft 365 and third‑party systems.
 
@@ -630,7 +613,7 @@ Without Agent365:
 - Lifecycle auditability cannot be enforced  
 
 
-## 2. Microsoft Purview – Runtime Data Governance
+### 2. Microsoft Purview – Runtime Data Governance
 
 Agent365 governs whether an agent may exist.
 
@@ -692,7 +675,7 @@ Purview policies may also prevent:
 until enterprise data protection policies are satisfied.
 
 
-## 3. Teams Admin Center – Runtime Surface Governance
+### 3. Teams Admin Center – Runtime Surface Governance
 
 Agent365 governs agent lifecycle.
 
@@ -722,7 +705,7 @@ Teams Admin Center therefore governs:
 - Runtime interaction surfaces  
 
 
-## 4. Enterprise Publishing Workflow
+### 4. Enterprise Publishing Workflow
 
 Recommended enterprise rollout sequence:
 
@@ -734,7 +717,7 @@ Recommended enterprise rollout sequence:
 6. Approve runtime channel exposure via Teams Admin Center  
 
 
-## Governance Summary
+### Governance Summary
 
 | Platform | Governs | Applies To |
 |----------|---------|------------|
