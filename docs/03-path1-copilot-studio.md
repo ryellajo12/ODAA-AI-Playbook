@@ -452,7 +452,161 @@ graph TB
 | **Scaling** | Gateway supports clustering for high availability |
 | **Data types** | Gateway handles standard Oracle types; LOBs and custom types may need views |
 
-## Observability for Copilot Studio Agents
+## Observability for Oracle-Connected Copilot Studio Agents
+
+When Copilot Studio agents interact with enterprise Oracle data (via Native Connector, MCP Tooling, or ORDS APIs), runtime execution becomes a multi‑layered orchestration across:
+
+- LLM reasoning  
+- Topic execution  
+- Tool invocation  
+- External API retrieval  
+- Vector search / embedding pipelines  
+
+Observability in these deployments must therefore capture both:
+
+| Observability Layer | Runtime Scope |
+|---------------------|--------------|
+| Agent Runtime | Conversation and orchestration execution |
+| Tool Runtime | External Oracle interaction behavior |
+| Inference Runtime | Generative reasoning and response formation |
+
+---
+
+### 1. Agent Runtime Telemetry (Copilot Studio Analytics)
+
+Copilot Studio provides native service‑layer telemetry through the Analytics tab which captures runtime usage and behavioral metrics for agent interactions.
+
+Usage telemetry available through this layer includes:
+
+- Run outcomes  
+- Knowledge source utilization  
+- Session execution data  
+- Topic invocation frequency  
+- User satisfaction score  
+
+These metrics help enterprise teams understand:
+
+- Which Oracle-connected tools are being invoked most frequently  
+- Where agent flows are abandoning execution  
+- Whether retrieval‑based answers are resolving successfully  
+
+However, this telemetry is generated at the **conversation layer**, and therefore does not capture:
+
+- Downstream Oracle API latency  
+- MCP execution chains  
+- Tool reasoning decisions  
+- Generative orchestration planning  
+
+---
+
+### 2. Interaction-Level Telemetry (Dataverse Conversation Logs)
+
+During runtime execution, Copilot Studio automatically generates structured logs of each user interaction and stores them within the **ConversationTranscript** table in Dataverse.
+
+These transcripts contain:
+
+- Agent‑user interaction content  
+- Triggered topic metadata  
+- Conversation start and end timestamps  
+- Topic selection events  
+
+The backend Copilot Studio service automatically generates these transcripts during execution and stores them in JSON/text format in Dataverse.
+
+These logs allow enterprises to:
+
+- Correlate agent responses with MCP or ORDS tool execution  
+- Identify tool invocation patterns across Oracle integrations  
+- Analyze retrieval‑augmented generation behavior  
+- Detect escalation indicators or response failures  
+
+Conversation transcript data can also be programmatically processed using Power Automate and AI Builder to:
+
+- Analyze sentiment  
+- Detect personal data  
+- Extract failure patterns  
+- Identify runtime escalation indicators  
+
+This becomes critical in Oracle MCP scenarios where:
+
+Agent → MCP Tool → Oracle REST → Vector Engine → Embeddings → Response
+
+must be analyzed as a full execution chain rather than as an isolated conversational response.
+
+---
+
+### 3. Inference-Level Telemetry (Azure Application Insights)
+
+Enterprise deployments typically require deeper visibility into:
+
+- Prompt execution  
+- Generative answer formation  
+- Moderation outcomes  
+- Topic-to-tool execution planning  
+
+Copilot Studio agents can optionally emit enriched runtime telemetry into **Azure Application Insights**, allowing organizations to track:
+
+- Logged messages sent to and from the agent  
+- Topics triggered during user conversations  
+- Custom telemetry events emitted from agent topics  
+
+Telemetry stored within Application Insights enables runtime diagnostics across:
+
+- Conversation metrics  
+- Tool execution behavior  
+- Latency across Oracle API calls  
+- Failure patterns in MCP execution  
+- User behavior patterns  
+
+Telemetry from generative responses is emitted into the `customEvents` table where event types such as:
+
+- GenerativeAnswers  
+- Bot Message Send  
+
+can be queried to determine:
+
+- Why a response was generated or not generated  
+- Which topic or reasoning path was selected  
+- Execution metadata tied to Oracle retrieval  
+
+For example, telemetry related to generative responses can be queried using custom dimensions such as:
+
+- conversationId  
+- TopicName  
+- Result  
+- SerializedData  
+
+This allows enterprise operators to:
+
+- Inspect LLM reasoning tied to Oracle query results  
+- Monitor latency introduced by vector search execution  
+- Identify inference failures in MCP‑based tool chains  
+- Troubleshoot runtime planning across multi‑tool orchestration  
+
+Without this telemetry, downstream Oracle integrations effectively operate as a runtime “black box”, making production‑level debugging dependent on vendor escalation rather than tenant‑level diagnostics. **For guidance on setting up Application Insights on your Copilot Studio agent refer to [this link.](https://learn.microsoft.com/en-us/microsoft-copilot-studio/advanced-bot-framework-composer-capture-telemetry)**
+
+---
+
+### 4. Enterprise Observability Strategy
+
+Oracle‑connected Copilot Studio agents should therefore implement a layered observability strategy across:
+
+| Runtime Layer | Observability Source |
+|--------------|----------------------|
+Conversation Behavior | Copilot Studio Analytics |
+Interaction Metadata | Dataverse Transcript Tables |
+Tool Invocation & Planning | Azure Application Insights |
+Oracle API Diagnostics | External Logging Platform |
+
+This enables:
+
+- End‑to‑end execution tracing  
+- LLM‑to‑tool interaction monitoring  
+- Runtime performance diagnostics  
+- Failure pattern detection across Oracle integrations  
+
+which are required for enterprise production deployment of MCP‑ or ORDS‑enabled agent architectures.
+
+
 
 ## Publishing and Governance
 
