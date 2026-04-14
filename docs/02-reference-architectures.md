@@ -19,36 +19,48 @@ Agents query Oracle data directly running on Oracle Database@Azure at runtime. N
 
 --
 
-### Pattern 1: Copilot Studio + Oracle Connector (On-Prem Data Gateway)
+### Pattern 1A: Copilot Studio + Oracle Connector (On-Prem Data Gateway)
 
 ```mermaid
 graph TB
-    subgraph Users["End Users"]
-        BU["Business Users<br/>Teams / Web / M365"]
+    subgraph Users[End Users]
+        BU[Business Users<br/>Teams / Web / M365]
     end
 
-    subgraph EntraID["Microsoft Entra ID"]
-        AUTH["SSO / MFA<br/>Conditional Access"]
+    subgraph EntraID[Microsoft Entra ID / OAuth2]
+        AUTH[SSO / MFA<br/>Conditional Access]
     end
 
-    subgraph CS["Microsoft Copilot Studio"]
-        COP["Custom Copilot"]
-        C["Oracle Connector"]
-        K["Oracle as Knowledge<br/>Grounds on tables,<br/>views, data"]
-        T["Oracle as Tool<br/>Connector actions<br/>called during chat"]
-    end
-
-    subgraph VNET["Azure VNET"]
-        subgraph GWSub["Gateway Subnet"]
-            GATEWAY["On-Premises<br/>Data Gateway<br/>(Azure VM)"]
-        end
-        subgraph PESub["Private Endpoint Subnet"]
-            PE["Private Endpoint"]
+    subgraph CS[Microsoft Copilot Studio]
+        COP[Custom Copilot]
+        C[Oracle Connector]
+        K[Oracle as Knowledge<br/>Grounds on tables,<br/>views, data]
+        T[Oracle as Tool<br/>Connector actions<br/>called during chat]
+        subgraph OBS[Native Observability]
+            AN[Analytics Tab<br/>DAU, Total sessions, Total Reactions, Engagement etc.]
+            DV[Dataverse<br/>ConversationTranscript + related tables]
         end
     end
 
-    subgraph ODA["Oracle Database@Azure"]
-        DB[("ADBS / Exadata etc<br/>No Public IP")]
+    subgraph PURV[Data Governance / Compliance Plane]
+        PURVIEW[Microsoft Purview<br/>Data Map + Catalog]
+    end
+
+    subgraph GOV[Governance / Publishing Plane]
+        A365[Agent 365 / Copilot Control System<br/>Approve / Publish / Deploy / Assign]
+    end
+
+    subgraph VNET[Azure VNET]
+        subgraph GWSub[Gateway Subnet]
+            GATEWAY[On-Premises Data Gateway<br/>Azure VM]
+        end
+        subgraph PESub[Private Endpoint Subnet]
+            PE[Private Endpoint]
+        end
+    end
+
+    subgraph ODA[Oracle Database@Azure]
+        DB[(ADBS / Exadata etc<br/>No Public IP)]
     end
 
     BU -->|SSO| AUTH
@@ -60,16 +72,154 @@ graph TB
     T -->|Azure Relay<br/>HTTPS 443| GATEWAY
     GATEWAY -->|Port 1521<br/>Private Endpoint| PE
     PE --> DB
+
+    COP -.->|Submit / Publish request| A365
+    A365 -.->|Approval / Assignment / Deployment| BU
+    PURVIEW -.-> DB
 ```
-Azure Relay is the service that the On-Premises Data Gateway uses to communicate with cloud services like Copilot Studio. This is already how the On-Premises Data Gateway works by default -- you don't configure Azure Relay separately. It's built into the gateway installer.
+Azure Relay is the service that the On-Premises Data Gateway uses to communicate with cloud services like Copilot Studio. This is already how the On-Premises Data Gateway works by default — you don't configure Azure Relay separately. It's built into the gateway installer.
 
 Here's how it works:
 
-How the Gateway Communicates:
 The gateway VM makes an outbound HTTPS connection (port 443) to Azure Relay when it starts up.
-This creates a persistent, secure tunnel -- no inbound ports need to be opened on the gateway VM.
+This creates a persistent, secure tunnel — no inbound ports need to be opened on the gateway VM.
 When Copilot Studio needs Oracle data, the request flows through this tunnel to the gateway, which then queries Oracle over port 1521 via the Private Endpoint.
 
+--
+### Pattern 1B: Copilot Studio + Oracle MCP Server
+
+```mermaid
+graph TB
+    subgraph Users[End Users]
+        BU[Business Users<br/>Teams / Web / M365]
+    end
+
+    subgraph EntraID[Microsoft Entra ID / OAuth2]
+        AUTH[SSO / MFA<br/>Conditional Access]
+    end
+
+    subgraph CS[Microsoft Copilot Studio]
+        COP[Custom Copilot]
+        CC[Copilot Studio MCP Tool]
+        subgraph OBS[Native Observability]
+            AN[Analytics Tab<br/>DAU, Total sessions, Total Reactions, Engagement etc.]
+            DV[Dataverse<br/>ConversationTranscript + related tables]
+        end
+    end
+
+    subgraph GOV[Governance / Publishing Plane]
+        A365[Agent 365 / Copilot Control System<br/>Approve / Publish / Deploy / Assign]
+    end
+
+    subgraph PURV[Data Governance / Compliance Plane]
+        PURVIEW[Microsoft Purview<br/>Data Map + Catalog]
+    end
+
+    subgraph AZ[Azure Integration Layer]
+        MCP[Oracle MCP Server<br/>Azure Functions or Azure Container Apps]
+        TOOLS[Purpose-built Oracle tools<br/>Search / Lookup / Summarize / Actions]
+    end
+
+    subgraph VNET[Azure VNET]
+        subgraph PESub[Private Endpoint Subnet]
+            PE[Private Endpoint]
+        end
+    end
+
+    subgraph ODA[Oracle Database@Azure]
+        DB[(ADBS / Exadata / EBS-backed Oracle DB<br/>No Public IP)]
+    end
+
+    BU -->|SSO| AUTH
+    AUTH --> COP
+    COP --> CC
+    CC --> MCP
+    MCP --> TOOLS
+    TOOLS -->|Port 1521<br/>Private connectivity| PE
+    PE --> DB
+
+    COP -.->|Submit / Publish request| A365
+    A365 -.->|Approval / Assignment / Deployment| BU
+    PURVIEW -.-> DB
+```
+--
+### Pattern 1C: Copilot Studio + ORDS API Endpoints (Pre-built Analytics / Vector Search)
+
+```mermaid
+graph TB
+    subgraph Users[End Users]
+        EU[Business Users / Analysts<br/>Teams / Web / M365]
+    end
+
+    subgraph EntraID[Microsoft Entra ID / OAuth2]
+        AUTH[SSO / MFA<br/>Conditional Access]
+    end
+
+    subgraph CS[Microsoft Copilot Studio]
+        COP[Custom Copilot]
+
+        subgraph Actions[Connector Actions]
+            CC1[Custom Connector's:<br/>ORDS REST APIs<br/>1. Vector Search 26ai RAG<br/>2. Pre-built Analytics]
+        end
+        subgraph OBS[Native Observability]
+            AN[Analytics Tab<br/>DAU, Total sessions, Total Reactions, Engagement etc.]
+            DV[Dataverse<br/>ConversationTranscript + related tables]
+        end
+    end
+
+    subgraph GOV[Governance / Publishing Plane]
+        A365[Agent 365 / Copilot Control System<br/>Approve / Publish / Deploy / Assign]
+    end
+
+    subgraph PURV[Data Governance / Compliance Plane]
+        PURVIEW[Microsoft Purview<br/>Data Map + Catalog]
+    end
+
+    subgraph AOAI[Azure OpenAI]
+        EMB[Embedding API]
+    end
+
+    subgraph VNET[Azure VNET]
+        subgraph ORDSSub[ORDS Subnet]
+            ORDS[ORDS<br/>VNET-integrated<br/>App Service / Container Apps]
+        end
+        subgraph PESub[Private Endpoint Subnet]
+            PE[Private Endpoint]
+        end
+        KV[Azure Key Vault]
+        APIM[API Management<br/>OAuth2 validation<br/>Rate limiting]
+    end
+
+    subgraph ODA[Oracle Database@Azure]
+        ORDS_EP[ORDS REST Endpoints]
+        VEC[26ai Vector Engine<br/>Vector Search]
+        DATA[("Oracle Data<br/>No Public IP")]
+    end
+
+
+    EU -->|SSO| AUTH
+    AUTH --> COP
+
+    COP --> CC1
+
+    CC1 --> APIM
+
+    APIM -->|OAuth2 token validation| ORDS
+
+    ORDS -->|Port 1521<br/>Private Endpoint| PE
+    PE --> ORDS_EP
+    PE --> VEC
+
+    ORDS_EP --> DATA
+    VEC --> DATA
+    VEC -.->|Embeddings| EMB
+
+    COP -.->|Submit / Publish request| A365
+    A365 -.->|Approval / Assignment / Deployment| EU
+
+    PURVIEW -.-> DATA
+
+```
 --
 
 ### Pattern 2: MS Foundry + Oracle MCP Server
