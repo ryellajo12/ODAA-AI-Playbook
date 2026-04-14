@@ -13,7 +13,7 @@ Copilot Studio  provides a low-code/no-code platform for building AI agents on O
 
 ### Architecture
 
-Copilot Studio connects to Oracle Database@Azure through the **On-Premises Data Gateway connector**. All integration modes use the connector — no ORDS required.
+Copilot Studio connects to Oracle Database@Azure through an **On-Premises Data Gateway**. All integration modes use the connector — no ORDS required.
 
 1. **Oracle as Knowledge** — Ground your copilot on specific Oracle tables/views via the connector so the agent uses Oracle data as context
 2. **Oracle as a Tool** — Register Oracle connector actions as tools that the agent calls during conversations
