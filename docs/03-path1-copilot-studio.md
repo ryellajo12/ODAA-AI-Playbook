@@ -9,7 +9,7 @@ Copilot Studio  provides a low-code/no-code platform for building AI agents on O
 | **3** | ORDS + Oracle 26ai Vector Search | REST API-first agents — governed endpoints + RAG |
 
 ---
-## Pattern 1 — Copilot Studio + Oracle (Connector-Only)
+## Pattern 1 — Copilot Studio + Native Oracle Connectors
 
 ### Architecture
 
