@@ -1,43 +1,65 @@
-# 9. Pattern 1A — Copilot Studio + Oracle (Connector-Only)
+# Patterns for Copilot Studio Agents + Oracle
 
-## 9.1 Architecture
+Copilot Studio  provides a low-code/no-code platform for building AI agents on Oracle Database@Azure. Three sub-patterns cover different levels of complexity.
 
-Copilot Studio connects to Oracle Database@Azure through the **On-Premises Data Gateway connector**. All three integration modes use the connector — no ORDS required.
+| Sub-Pattern | Tools | Best For |
+|-------------|-------|----------|
+| **1** | Oracle native connectors | Fast time to value + Least effort |
+| **2** | Oracle MCP | SQL-first agents — natural language to SQL |
+| **3** | ORDS + Oracle 26ai Vector Search | REST API-first agents — governed endpoints + RAG |
 
-1. **Oracle as a Connector** — Direct read/write access to Oracle tables through the On-Premises Data Gateway
-2. **Oracle as Knowledge** — Ground your copilot on specific Oracle tables/views via the connector so the LLM uses Oracle data as context
-3. **Oracle as a Tool** — Register Oracle connector actions as tools that the copilot calls during conversations
+---
+## Pattern 1 — Copilot Studio + Oracle (Connector-Only)
 
-All modes flow through: **Copilot Studio → On-Prem Data Gateway → Oracle DB@Azure (Private Endpoint)**
+### Architecture
+
+Copilot Studio connects to Oracle Database@Azure through the **On-Premises Data Gateway connector**. All integration modes use the connector — no ORDS required.
+
+1. **Oracle as Knowledge** — Ground your copilot on specific Oracle tables/views via the connector so the agent uses Oracle data as context
+2. **Oracle as a Tool** — Register Oracle connector actions as tools that the agent calls during conversations
+
+All modes flow through: **Copilot Studio → Oracle Connector → On-Prem Data Gateway → Oracle DB@Azure (Private Endpoint)**
 
 ```mermaid
 graph TB
-    subgraph Users["End Users"]
-        BU["Business Users<br/>Teams / Web / M365"]
+    subgraph Users[End Users]
+        BU[Business Users<br/>Teams / Web / M365]
     end
 
-    subgraph EntraID["Microsoft Entra ID"]
-        AUTH["SSO / MFA<br/>Conditional Access"]
+    subgraph EntraID[Microsoft Entra ID / OAuth2]
+        AUTH[SSO / MFA<br/>Conditional Access]
     end
 
-    subgraph CS["Microsoft Copilot Studio"]
-        COP["Custom Copilot"]
-        C["Oracle Connector"]
-        K["Oracle as Knowledge<br/>Grounds on tables,<br/>views, data"]
-        T["Oracle as Tool<br/>Connector actions<br/>called during chat"]
-    end
-
-    subgraph VNET["Azure VNET"]
-        subgraph GWSub["Gateway Subnet"]
-            GATEWAY["On-Premises<br/>Data Gateway<br/>(Azure VM)"]
-        end
-        subgraph PESub["Private Endpoint Subnet"]
-            PE["Private Endpoint"]
+    subgraph CS[Microsoft Copilot Studio]
+        COP[Custom Copilot]
+        C[Oracle Connector]
+        K[Oracle as Knowledge<br/>Grounds on tables,<br/>views, data]
+        T[Oracle as Tool<br/>Connector actions<br/>called during chat]
+        subgraph OBS[Native Observability]
+            AN[Analytics Tab<br/>DAU, Total sessions, Total Reactions, Engagement etc.]
+            DV[Dataverse<br/>ConversationTranscript + related tables]
         end
     end
 
-    subgraph ODA["Oracle Database@Azure"]
-        DB[("ADBS / Exadata<br/>No Public IP")]
+    subgraph PURV[Data Governance / Compliance Plane]
+        PURVIEW[Microsoft Purview<br/>Data Map + Catalog]
+    end
+
+    subgraph GOV[Governance / Publishing Plane]
+        A365[Agent 365 / Copilot Control System<br/>Approve / Publish / Deploy / Assign]
+    end
+
+    subgraph VNET[Azure VNET]
+        subgraph GWSub[Gateway Subnet]
+            GATEWAY[On-Premises Data Gateway<br/>Azure VM]
+        end
+        subgraph PESub[Private Endpoint Subnet]
+            PE[Private Endpoint]
+        end
+    end
+
+    subgraph ODA[Oracle Database@Azure]
+        DB[(ADBS / Exadata etc<br/>No Public IP)]
     end
 
     BU -->|SSO| AUTH
@@ -49,53 +71,20 @@ graph TB
     T -->|Azure Relay<br/>HTTPS 443| GATEWAY
     GATEWAY -->|Port 1521<br/>Private Endpoint| PE
     PE --> DB
+
+    COP -.->|Submit / Publish request| A365
+    A365 -.->|Approval / Assignment / Deployment| BU
+    PURVIEW -.-> DB
 ```
 
-## 9.2 Three Integration Modes (Detailed)
+### Integration Modes (Detailed)
 
-### Mode A: Oracle via Gateway Connector (Direct Data Access)
+#### Prerequisite - Installing On-Prem Data Gateway
 
-The On-Premises Data Gateway provides a direct, secure channel to Oracle data. The copilot executes actions that read/write Oracle tables.
+In order to use Oracle connectors, the On-Premises Data Gateway needs to be setup first. The On-Premises Data Gateway provides a direct, secure channel to Oracle data that the agent can then use to execute actions that read/write Oracle tables.
+[More information Oracle Connectors + Gateway Setup.](https://learn.microsoft.com/en-us/connectors/oracle/)
 
-**Use when:** You need the copilot to fetch specific rows, run parameterized queries, or update records.
-
-### Mode B: Oracle as Knowledge Source (Grounding)
-
-Copilot Studio allows you to add **Knowledge sources** that ground the copilot's responses. You point Knowledge at Oracle tables or views via the connector so the copilot uses that data as context when answering questions.
-
-**Use when:** You want the copilot to "know" about Oracle data (e.g., product catalogs, policies, FAQs stored in Oracle) and answer questions conversationally without the user needing to specify exact queries.
-
-**How it works:**
-1. Create Oracle views that expose the data you want to ground on (e.g., `V_PRODUCT_FAQ`, `V_POLICY_DOCS`)
-2. In Copilot Studio → **Knowledge** → Add the Oracle connector as data source
-3. Select the specific tables, views, or data you want the copilot to use
-4. The copilot automatically retrieves relevant rows when answering questions
-
-### Mode C: Oracle as a Tool (Action-Based)
-
-Register Oracle connector actions as **Tools** in Copilot Studio. The copilot decides when to call these tools based on the conversation.
-
-**Use when:** You want the copilot to perform specific Oracle operations (lookup a customer, check order status, run a report) as part of a conversation flow.
-
-**How it works:**
-1. In Copilot Studio → **Tools** → Add a **Connector** tool
-2. Select the Oracle Database connector and choose the action (e.g., Get rows, Get row by ID, Insert row)
-3. Configure parameters and trigger conditions
-4. The copilot calls the connector action during conversations when relevant
-
-## 9.3 Prerequisites
-
-- Microsoft 365 license with Copilot Studio entitlement
-- Microsoft Entra ID tenant (for authentication and identity management)
-- On-Premises Data Gateway installed on an Azure VM or hybrid machine with network access to OD@A (for Gateway mode)
-- Oracle Database@Azure instance (ADBS or Exadata) with Private Endpoints configured
-- Oracle client libraries (Oracle Instant Client) on the gateway machine
-- Azure VNET with appropriate subnets for gateway VM and OD@A connectivity
-- Network Security Groups (NSGs) configured to restrict traffic to required ports only
-
-## 9.4 Setup Steps
-
-**For Gateway Connector:**
+**Setup steps:**
 1. **Install the On-Premises Data Gateway** on an Azure VM within the same VNET (or peered VNET) as OD@A
 2. **Install Oracle Instant Client** on the gateway VM
 3. **Configure Entra ID authentication** for the gateway:
@@ -107,20 +96,101 @@ Register Oracle connector actions as **Tools** in Copilot Studio. The copilot de
    - Server: `<OD@A private endpoint hostname>:<port>/<service_name>`
    - Authentication: Basic (Oracle DB user) with credentials stored in Azure Key Vault, or Entra ID pass-through
 
-**For Oracle as Knowledge:**
-5. **Create curated Oracle views** for the data you want to ground on
-6. In Copilot Studio → **Knowledge** → **+ Add data source** → Select the Oracle connector
-7. Select specific tables, views, or columns to include (don't expose entire schemas)
+#### Mode A: Oracle as Knowledge Source (Grounding)
 
-**For Oracle as Tool:**
-8. In Copilot Studio → **Tools** → **+ Add tool** → Select the Oracle Database connector
-9. Choose the connector action (Get rows, Get row by ID, Insert row, etc.)
-10. Configure parameters and tool descriptions (the LLM uses these to decide when to call the tool)
+Copilot Studio allows you to add **Knowledge sources** that ground the agent's responses. You point Knowledge at Oracle tables or views via the connector so the copilot uses that data as context when answering questions.
 
-**Deploy:**
-11. **Test in the embedded chat** → Deploy to Teams / Web / Mobile
+**Use when:** You want the copilot to "know" about Oracle data (e.g., product catalogs, policies, FAQs stored in Oracle) and answer questions conversationally without the user needing to specify exact queries.
 
-## 9.5 Entra ID Authentication
+**How to use it:**
+1. Create Oracle views that expose the data you want to ground on (e.g., `V_PRODUCT_FAQ`, `V_POLICY_DOCS`)
+2. In Copilot Studio → **Knowledge** → Add the Oracle connector as data source (Here you will connect to your On-prem Data Gateway)
+3. Select the specific tables, views, or data you want the agent to use
+4. The agent automatically retrieves relevant rows when answering questions
+
+#### Mode B: Oracle as a Tool (Action-Based)
+
+Register Oracle connector actions as **Tools** in Copilot Studio. The agent decides when to call these tools based on the conversation.
+
+**Use when:** You want the agent to perform specific Oracle operations (lookup a customer, check order status, run a report) as part of a conversation flow.
+
+**How to use it:**
+1. In Copilot Studio → **Tools** → Add a **Connector** tool
+2. Select the Oracle Database connector and choose the action (e.g., Get rows, Get row by ID, Insert row)
+3. Configure parameters and trigger conditions
+4. The agent calls the connector action during conversations when relevant
+
+## Pattern 2 — Copilot Studio + Oracle MCP (Through Azure Functions/Container Apps)
+
+### Architecture
+
+```mermaid
+graph TB
+    subgraph Users[End Users]
+        BU[Business Users<br/>Teams / Web / M365]
+    end
+
+    subgraph EntraID[Microsoft Entra ID / OAuth2]
+        AUTH[SSO / MFA<br/>Conditional Access]
+    end
+
+    subgraph CS[Microsoft Copilot Studio]
+        COP[Custom Copilot]
+        CC[Copilot Studio MCP Tool]
+        subgraph OBS[Native Observability]
+            AN[Analytics Tab<br/>DAU, Total sessions, Total Reactions, Engagement etc.]
+            DV[Dataverse<br/>ConversationTranscript + related tables]
+        end
+    end
+
+    subgraph GOV[Governance / Publishing Plane]
+        A365[Agent 365 / Copilot Control System<br/>Approve / Publish / Deploy / Assign]
+    end
+
+    subgraph PURV[Data Governance / Compliance Plane]
+        PURVIEW[Microsoft Purview<br/>Data Map + Catalog]
+    end
+
+    subgraph AZ[Azure Integration Layer]
+        MCP[Oracle MCP Server<br/>Azure Functions or Azure Container Apps]
+        TOOLS[Purpose-built Oracle tools<br/>Search / Lookup / Summarize / Actions]
+    end
+
+    subgraph VNET[Azure VNET]
+        subgraph PESub[Private Endpoint Subnet]
+            PE[Private Endpoint]
+        end
+    end
+
+    subgraph ODA[Oracle Database@Azure]
+        DB[(ADBS / Exadata / EBS-backed Oracle DB<br/>No Public IP)]
+    end
+
+    BU -->|SSO| AUTH
+    AUTH --> COP
+    COP --> CC
+    CC --> MCP
+    MCP --> TOOLS
+    TOOLS -->|Port 1521<br/>Private connectivity| PE
+    PE --> DB
+
+    COP -.->|Submit / Publish request| A365
+    A365 -.->|Approval / Assignment / Deployment| BU
+    PURVIEW -.-> DB
+```
+
+## Prerequisites
+
+- Microsoft 365 license with Copilot Studio entitlement
+- Microsoft Entra ID tenant (for authentication and identity management)
+- On-Premises Data Gateway installed on an Azure VM or hybrid machine with network access to OD@A (for Gateway mode)
+- Oracle Database@Azure instance (ADBS or Exadata) with Private Endpoints configured
+- Oracle client libraries (Oracle Instant Client) on the gateway machine
+- Azure VNET with appropriate subnets for gateway VM and OD@A connectivity
+- Network Security Groups (NSGs) configured to restrict traffic to required ports only
+
+
+## Entra ID Authentication
 
 Entra ID provides centralized identity management across the Copilot Studio + Oracle integration stack.
 
