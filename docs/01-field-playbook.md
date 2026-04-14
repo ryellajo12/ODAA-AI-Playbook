@@ -89,7 +89,7 @@ Agents query Oracle Database@Azure directly at runtime. No data leaves Oracle.
 | **3** | **MS Foundry + ORDS** | ORDS REST endpoints + Oracle 26ai vector search (RAG); APIM for OAuth2 | API, M365 Copilot, Agent Store | - Governed REST APIs, no raw SQL<br/>- Oracle 26ai RAG / vector search<br/>- APIM enforces Entra ID OAuth2<br/>- All traffic private |
 | **4** | **MS Foundry + MCP + ORDS + Foundry IQ** | MCP + ORDS + 26ai vectors + Foundry IQ (Blob, SharePoint, Fabric Files) | API, M365 Copilot, Agent Store | - Complete: structured + unstructured + RAG<br/>- RBAC at every layer<br/>- Separate DB users per tool<br/>- Maximum AI value |
 | **5** | **Oracle MCP** (developer) | SQLcl MCP in VS Code or hosted | VS Code, Foundry, Copilot Studio | - Natural language --> SQL in minutes<br/>- Zero infrastructure to start<br/>- Schema discovery on demand<br/>- DBA task automation |
-| **6** | **Power Apps** | Gateway / Oracle Connector | Power Platform | - Modernize workflows without rebuilding<br/>- AI Builder for forms & predictions<br/>- Citizen developer friendly<br/>- Incremental AI adoption |
+| **6** | **Power Apps** | Oracle Data Gateway / Oracle Connector | Power Platform | - Modernize workflows without rebuilding<br/>- AI Builder for forms & predictions<br/>- Citizen developer friendly<br/>- Incremental AI adoption |
 | **7** | **Logic Apps** | Oracle DB Connector / ORDS REST calls | Workflow orchestration, enterprise integration | - Event-driven automation<br/>- 400+ enterprise connectors<br/>- No custom code needed<br/>- Orchestrate Oracle + SaaS + Azure |
 
 ### Managed Replication -- Mirrored Analytics Data
