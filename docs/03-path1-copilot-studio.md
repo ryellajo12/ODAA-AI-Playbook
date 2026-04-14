@@ -104,7 +104,7 @@ graph TB
         end
 
         subgraph PESub["Private Endpoint Subnet"]
-            PE["Private Endpoint<br/>Oracle DB@Azure"]
+            PE["Private Endpoint<br/>Oracle Database@Azure"]
         end
 
         subgraph ORDSSub["ORDS Subnet (optional)"]
