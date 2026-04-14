@@ -76,10 +76,19 @@ graph TB
     A365 -.->|Approval / Assignment / Deployment| BU
     PURVIEW -.-> DB
 ```
+### Prerequisites
 
-### Integration Modes (Detailed)
+- Microsoft 365 license with Copilot Studio entitlement
+- Microsoft Entra ID tenant (for authentication and identity management)
+- On-Premises Data Gateway installed on an Azure VM or hybrid machine with network access to OD@A (for Gateway mode)
+- Oracle Database@Azure instance (ADBS or Exadata) with Private Endpoints configured
+- Oracle client libraries (Oracle Instant Client) on the gateway machine
+- Azure VNET with appropriate subnets for gateway VM and OD@A connectivity
+- Network Security Groups (NSGs) configured to restrict traffic to required ports only
 
-#### Prerequisite - Installing On-Prem Data Gateway
+### Integration Modes Setup Steps
+
+#### Installing On-Prem Data Gateway
 
 In order to use Oracle connectors, the On-Premises Data Gateway needs to be setup first. The On-Premises Data Gateway provides a direct, secure channel to Oracle data that the agent can then use to execute actions that read/write Oracle tables.
 [More information Oracle Connectors + Gateway Setup.](https://learn.microsoft.com/en-us/connectors/oracle/)
@@ -102,7 +111,7 @@ Copilot Studio allows you to add **Knowledge sources** that ground the agent's r
 
 **Use when:** You want the copilot to "know" about Oracle data (e.g., product catalogs, policies, FAQs stored in Oracle) and answer questions conversationally without the user needing to specify exact queries.
 
-**How to use it:**
+**How to set it up:**
 1. Create Oracle views that expose the data you want to ground on (e.g., `V_PRODUCT_FAQ`, `V_POLICY_DOCS`)
 2. In Copilot Studio → **Knowledge** → Add the Oracle connector as data source (Here you will connect to your On-prem Data Gateway)
 3. Select the specific tables, views, or data you want the agent to use
@@ -114,12 +123,13 @@ Register Oracle connector actions as **Tools** in Copilot Studio. The agent deci
 
 **Use when:** You want the agent to perform specific Oracle operations (lookup a customer, check order status, run a report) as part of a conversation flow.
 
-**How to use it:**
+**How to set it up:**
 1. In Copilot Studio → **Tools** → Add a **Connector** tool
 2. Select the Oracle Database connector and choose the action (e.g., Get rows, Get row by ID, Insert row)
 3. Configure parameters and trigger conditions
 4. The agent calls the connector action during conversations when relevant
 
+---
 ## Pattern 2 — Copilot Studio + Oracle MCP (Through Azure Functions/Container Apps)
 
 ### Architecture
