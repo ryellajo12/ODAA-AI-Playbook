@@ -304,7 +304,7 @@ graph TB
 - Microsoft Purview for data classification and DLP
 
 ### Setup Steps
-
+- Follow steps 1-7 outlined [here](https://github.com/ryellajo12/ODAA-AI-Agent-Playbook/blob/editsv2/docs/04-path2-foundry-agents.md#setup-steps-1) for setting up your ORDS Endpoints and RAG
 
 ## Entra ID Authentication
 
