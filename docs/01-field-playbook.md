@@ -21,7 +21,7 @@
 |---------|-----|
 | Pattern 1: Copilot Studio | [03-copilot-studio.md](03-copilot-studio.md) |
 | Patterns 2-4: Foundry Agents + Pattern 11: Foundry IQ | [04-foundry-agents.md](04-foundry-agents.md) |
-| Pattern 5: Oracle MCP | [05-oracle-mcp.md](05-oracle-mcp.md) |
+| Pattern 5: Oracle MCP for everything you need to know about Oracle's MCP server | [05-oracle-mcp.md](05-oracle-mcp.md) |
 | Patterns 8-10 + 8B: Fabric, GoldenGate, Fabric IQ | [06-fabric-data-agents.md](06-fabric-data-agents.md) |
 | Pattern 6: Power Apps | [07-power-apps.md](07-power-apps.md) |
 | Pattern 7: Logic Apps | [08-logic-apps.md](08-logic-apps.md) |
