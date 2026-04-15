@@ -1,4 +1,4 @@
-# Pattern 7 -- Azure Logic Apps + Oracle Database@Azure
+# Build workflow automation using Azure Logic Apps + Oracle Database@Azure
 
 ## Overview
 
