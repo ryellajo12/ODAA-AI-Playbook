@@ -24,7 +24,7 @@ This playbook is organized into modular documents under the [`docs/`](docs/) fol
 | | | | |
 | | | | |
 | **PART II** | **ARCHITECTURE & IMPLEMENTATION** | | |
-| 1 | Reference Architecture Patterns | [docs/02-reference-architectures.md](docs/02-reference-architectures.md) | Architects |
+| 1 | Reference Architecture Blueprints | [docs/02-reference-architectures.md](docs/02-reference-architectures.md) | Architects |
 | 2 | Security & Governance Guardrails | [docs/10-security-governance.md](docs/10-security-governance.md) | All |
 | 3 | Step-by-Step Implementation Guides | [docs/11-implementation-guides.md](docs/11-implementation-guides.md) | Devs / Partners |
 

@@ -69,7 +69,7 @@ Work IQ analyzes M365 Graph signals and correlates them with Oracle business dat
 | Email volume with customer contacts | Oracle CRM: deal stage, revenue | "Accounts with >50 emails/month are 2x more likely to close" |
 | Meeting frequency per project | Oracle: project timeline, budget | "Projects with weekly Oracle data review meetings deliver 30% faster" |
 | Teams channel activity | Oracle: support ticket data | "Teams channels linked to high-priority tickets get 40% faster resolution" |
-| Document collaboration patterns | Oracle: product development timeline | "Products with cross-team doc collaboration launch 3 weeks earlier" |
+| Document collaboration blueprints | Oracle: product development timeline | "Products with cross-team doc collaboration launch 3 weeks earlier" |
 | Calendar blocked time | Oracle: quarterly sales targets | "Reps with >60% calendar utilization miss target by 15%" |
 
 ### Setup Steps (End-to-End)
@@ -301,10 +301,10 @@ graph TB
 
 | Question Type | IQ Layer Used | Example |
 |---|---|---|
-| Live Oracle data | MCP/ORDS (Pattern 2/3) | "What were Q1 sales by product category?" |
-| Mirrored analytics + ontology | Fabric IQ (Pattern 11) | "How do Customer segments correlate with Promotion effectiveness?" |
-| Document knowledge | Foundry IQ (Pattern 12) | "What does our compliance policy say about data retention?" |
-| Work signals + business data | Work IQ (Pattern 13) | "Which sales reps have the most customer meetings but lowest close rates?" |
+| Live Oracle data | MCP/ORDS (Blueprint 2/3) | "What were Q1 sales by product category?" |
+| Mirrored analytics + ontology | Fabric IQ (Blueprint 11) | "How do Customer segments correlate with Promotion effectiveness?" |
+| Document knowledge | Foundry IQ (Blueprint 12) | "What does our compliance policy say about data retention?" |
+| Work signals + business data | Work IQ (Blueprint 13) | "Which sales reps have the most customer meetings but lowest close rates?" |
 | Cross-layer reasoning | All layers | "Our APAC team's meeting frequency dropped 30% last month -- how did that affect Q1 sales in that region, and does our SOP require escalation when sales dip beyond 20%?" |
 
 ---
@@ -315,13 +315,13 @@ Microsoft 365 Admin Center (A365) provides a unified control plane for managing 
 
 ### A365 Management Capabilities
 
-| Capability | What It Controls | Applicable Patterns |
+| Capability | What It Controls | Applicable Blueprints |
 |---|---|---|
 | **Agent Management** | Enable/disable agents for the tenant; set who can create and publish agents | All (1-13) |
 | **Copilot Controls** | Manage Copilot features, data access, grounding sources; control Copilot availability | 1, 8, 10, 11, 12, 13 |
 | **Foundry Administration** | Manage Foundry projects, model deployments, tool registrations | 2, 3, 4, 9, 11, 13 |
 | **IQ Administration** | Enable Fabric IQ / Foundry IQ / Work IQ; set processing budgets; monitor pipeline health | 10, 11, 12, 13 |
-| **DLP Policies** | Prevent sensitive data from appearing in agent responses; block PII/PHI patterns | All (1-13) |
+| **DLP Policies** | Prevent sensitive data from appearing in agent responses; block PII/PHI blueprints | All (1-13) |
 | **Sensitivity Labels** | Apply and enforce MIP labels on agent responses and knowledge bases | All (1-13) |
 | **Audit Logs** | Centralized audit of agent usage, queries, tool calls, and data access | All (1-13) |
 | **Conditional Access** | MFA, device compliance, location restrictions for agent access | All (1-13) |

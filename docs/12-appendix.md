@@ -50,7 +50,7 @@ Selected Path(s): [1-6]
 Rationale: [Why this path fits]
 
 ## Architecture
-[Reference pattern from Section 8]
+[Reference blueprint from Section 8]
 
 ## Security Controls
 [Checklist from Section 16.2]

@@ -1,15 +1,15 @@
-# Patterns for Copilot Studio Agents + Oracle
+# Blueprints for Copilot Studio Agents + Oracle
 
-Copilot Studio  provides a low-code/no-code platform for building AI agents on Oracle Database@Azure. Three sub-patterns cover different levels of complexity.
+Copilot Studio  provides a low-code/no-code platform for building AI agents on Oracle Database@Azure. Three sub-blueprints cover different levels of complexity.
 
-| Sub-Pattern | Tools | Best For |
+| Sub-Blueprint | Tools | Best For |
 |-------------|-------|----------|
 | **1** | Oracle native connectors | Fast time to value + Least effort |
 | **2** | Oracle MCP | SQL-first agents — natural language to SQL |
 | **3** | ORDS + Oracle 26ai Vector Search | REST API-first agents — governed endpoints + RAG |
 
 ---
-## Pattern 1 — Copilot Studio + Native Oracle Connectors
+## Blueprint 1 — Copilot Studio + Native Oracle Connectors
 
 ### Architecture
 
@@ -195,7 +195,7 @@ Register Oracle connector actions as **Tools** in Copilot Studio. The agent deci
 4. The agent calls the connector action during conversations when relevant
 
 ---
-## Pattern 2 — Copilot Studio + Oracle MCP (Through Azure Functions/Container Apps)
+## Blueprint 2 — Copilot Studio + Oracle MCP (Through Azure Functions/Container Apps)
 
 ### Architecture
 
@@ -277,7 +277,7 @@ graph TB
 7. **Connect your MCP through "Tools"** — Once your agent has the basic configurations, select "Tools" → "Add a tool" → "Add new MCP". Fill in the required information. For more guidance on setting this up click [here](https://learn.microsoft.com/en-us/microsoft-copilot-studio/agent-extend-action-mcp)
 
 ---
-## Pattern 3 — Copilot Studio + Oracle ORDS API Endpoints + Custom Connector
+## Blueprint 3 — Copilot Studio + Oracle ORDS API Endpoints + Custom Connector
 
 ### Architecture
 ```mermaid
@@ -443,7 +443,7 @@ The backend Copilot Studio service automatically generates these transcripts dur
 These logs allow enterprises to:
 
 - Correlate agent responses with MCP or ORDS tool execution  
-- Identify tool invocation patterns across Oracle integrations  
+- Identify tool invocation blueprints across Oracle integrations  
 - Analyze retrieval‑augmented generation behavior  
 - Detect escalation indicators or response failures  
 
@@ -451,7 +451,7 @@ Conversation transcript data can also be programmatically processed using Power 
 
 - Analyze sentiment  
 - Detect personal data  
-- Extract failure patterns  
+- Extract failure blueprints  
 - Identify runtime escalation indicators  
 
 This becomes critical in Oracle MCP scenarios where:
@@ -480,8 +480,8 @@ Telemetry stored within Application Insights enables runtime diagnostics across:
 - Conversation metrics  
 - Tool execution behavior  
 - Latency across Oracle API calls  
-- Failure patterns in MCP execution  
-- User behavior patterns  
+- Failure blueprints in MCP execution  
+- User behavior blueprints  
 
 Telemetry from generative responses is emitted into the `customEvents` table where event types such as:
 
@@ -526,7 +526,7 @@ This enables:
 - End‑to‑end execution tracing  
 - LLM‑to‑tool interaction monitoring  
 - Runtime performance diagnostics  
-- Failure pattern detection across Oracle integrations  
+- Failure blueprint detection across Oracle integrations  
 
 which are required for enterprise production deployment of MCP‑ or ORDS‑enabled agent architectures.
 

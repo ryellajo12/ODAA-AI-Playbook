@@ -1,4 +1,4 @@
-# Patterns for building AI agents on Fabric Mirrored Database 
+# Blueprints for building AI agents on Fabric Mirrored Database 
 
 ## Architecture
 
@@ -59,12 +59,12 @@ Once published, a Data Agent can be consumed as:
    **Option C -- To Copilot Studio:**
    - In Copilot Studio --' **Tools** --' Add **Fabric Data Agent** via native connector
    - Build copilots grounded on mirrored Oracle analytics data
-   - Combine with Oracle connector (Pattern 1) for live + mirrored data in one copilot
+   - Combine with Oracle connector (Blueprint 1) for live + mirrored data in one copilot
 
    **Option D -- To MS Foundry:**
    - In Foundry --' Agent --' **+ Add Tool** --' select Fabric Data Agent via native connector
    - Foundry agent uses Data Agent as one of its tools
-   - Combine with MCP (Pattern 2) and ORDS (Pattern 3) tools for live + mirrored in one agent
+   - Combine with MCP (Blueprint 2) and ORDS (Blueprint 3) tools for live + mirrored in one agent
 
 ## Entra ID Authentication
 
@@ -161,7 +161,7 @@ graph TB
 
 ---
 
-## Pattern 8B: GoldenGate as a Service -- Real-Time CDC to Fabric
+## Blueprint 8B: GoldenGate as a Service -- Real-Time CDC to Fabric
 
 ### What is OCI GoldenGate
 
@@ -286,7 +286,7 @@ graph TB
 
 #### Step 6 -- Build AI on Replicated Data
 
-8. **Once data lands in Fabric**, build downstream AI using the same approaches as Patterns 8-10:
+8. **Once data lands in Fabric**, build downstream AI using the same approaches as Blueprints 8-10:
    - **Fabric Lakehouse path**: Create OneLake shortcut --> Fabric IQ ontology --> Data Agent
    - **Fabric Mirror path**: Create Data Agent directly on the mirrored data
    - **Foundry path**: Connect Data Agent as a tool in a Foundry agent
@@ -322,7 +322,7 @@ GoldenGate can transform data during replication -- something Fabric native mirr
 
 ---
 
-## Pattern 11: Fabric IQ on Oracle Mirrored Database
+## Blueprint 11: Fabric IQ on Oracle Mirrored Database
 
 ### What is Fabric IQ
 
@@ -389,7 +389,7 @@ graph TB
 
 #### Step 1 -- Mirror Oracle Data into Fabric
 
-1. **Configure Fabric Managed Private Endpoint** to Oracle Database@Azure (same as Pattern 8)
+1. **Configure Fabric Managed Private Endpoint** to Oracle Database@Azure (same as Blueprint 8)
 2. **Set up Fabric Mirroring** -- select Oracle tables/schemas to mirror into a Mirrored Database
 3. **Configure refresh schedule** -- near-real-time or scheduled sync
 
@@ -464,12 +464,12 @@ graph TB
 
 #### Step 6 -- Publish and Govern via A365
 
-15. **Publish the Data Agent** to Teams, M365 Copilot, MCP Server, or MS Foundry (same options as Pattern 8)
+15. **Publish the Data Agent** to Teams, M365 Copilot, MCP Server, or MS Foundry (same options as Blueprint 8)
 16. **Manage via A365 Admin Center**:
     - Enable/disable agents for the tenant
     - Set publishing policies (who can publish, where agents appear)
     - Configure DLP policies on agent responses
-    - Monitor agent usage and query patterns in audit logs
+    - Monitor agent usage and query blueprints in audit logs
 
 ### Ontology Design Considerations
 

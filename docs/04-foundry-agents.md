@@ -1,8 +1,8 @@
-# Patterns for Microsoft Foundry Agents + Oracle
+# Blueprints for Microsoft Foundry Agents + Oracle
 
-Microsoft Foundry provides a full-featured platform for building AI agents on Oracle Database@Azure. Three sub-patterns cover different levels of complexity.
+Microsoft Foundry provides a full-featured platform for building AI agents on Oracle Database@Azure. Three sub-blueprints cover different levels of complexity.
 
-| Sub-Pattern | Tools | Best For |
+| Sub-Blueprint | Tools | Best For |
 |--|--|--|
 | **1** | Oracle MCP only | SQL-first agents -- natural language to SQL |
 | **2** | ORDS + Oracle 26ai Vector Search | REST API-first agents -- governed endpoints + RAG |
@@ -10,7 +10,7 @@ Microsoft Foundry provides a full-featured platform for building AI agents on Or
 
 --
 
-## Pattern 1: MS Foundry + Oracle DB tools MCP Server
+## Blueprint 1: MS Foundry + Oracle DB tools MCP Server
 
 ### Architecture
 
@@ -129,7 +129,7 @@ graph LR
 
 ### Oracle Vector Search + RAG -- How It Works
 
-Oracle Database 26ai introduces the native **VECTOR** data type and **VECTOR_DISTANCE** function, enabling semantic similarity search directly inside the database. Combined with **Azure OpenAI embeddings**, this creates a powerful RAG (Retrieval-Augmented Generation) pattern without requiring a separate vector database.
+Oracle Database 26ai introduces the native **VECTOR** data type and **VECTOR_DISTANCE** function, enabling semantic similarity search directly inside the database. Combined with **Azure OpenAI embeddings**, this creates a powerful RAG (Retrieval-Augmented Generation) blueprint without requiring a separate vector database.
 
 ```mermaid
 graph TB
@@ -379,12 +379,12 @@ ORDS is already running on your Oracle 26ai instance. You just need to define ne
 
  ORDS.DEFINE_TEMPLATE(
  p_module_name => 'vectorsearch',
- p_pattern => 'search/'
+ p_blueprint => 'search/'
  );
 
  ORDS.DEFINE_HANDLER(
  p_module_name => 'vectorsearch',
- p_pattern => 'search/',
+ p_blueprint => 'search/',
  p_method => 'POST',
  p_source_type => ORDS.source_type_plsql,
  p_source => '
@@ -411,7 +411,7 @@ ORDS is already running on your Oracle 26ai instance. You just need to define ne
  -- Hybrid endpoint: vector search + severity + date filters
  ORDS.DEFINE_HANDLER(
  p_module_name => 'vectorsearch',
- p_pattern => 'hybrid_search/',
+ p_blueprint => 'hybrid_search/',
  p_method => 'POST',
  p_source_type => ORDS.source_type_plsql,
  p_source => '
@@ -676,7 +676,7 @@ graph TB
 
 ### Prerequisites
 
-All prerequisites from Patterns #1 and #2, plus:
+All prerequisites from Blueprints #1 and #2, plus:
 - Foundry IQ configured in Microsoft Foundry project
 - Azure Blob Storage / SharePoint / Fabric Files with documents for grounding
 - Managed Identity permissions for Foundry IQ to access Blob and SharePoint
@@ -687,8 +687,8 @@ All prerequisites from Patterns #1 and #2, plus:
 
 ### Setup Steps
 
-1. **Deploy Oracle DB tools MCP Server** on VNET-integrated Azure Functions / Container Apps (same as Pattern #1)
-2. **Enable ORDS for vector search** (same as Pattern #2)
+1. **Deploy Oracle DB tools MCP Server** on VNET-integrated Azure Functions / Container Apps (same as Blueprint #1)
+2. **Enable ORDS for vector search** (same as Blueprint #2)
 3. **Configure APIM** with OAuth2 + WAF for ORDS endpoints
 4. **Configure Foundry IQ**:
  - Connect Azure Blob Storage (documents, PDFs)
@@ -783,7 +783,7 @@ semantic search, and unstructured documents.
 
 --
 
-## 10.4 Multi-Agent Pattern
+## 10.4 Multi-Agent Blueprint
 
 For complex scenarios, use multiple specialized agents across sub-patterns:
 
@@ -794,10 +794,10 @@ graph TB
  end
 
  subgraph "Specialist Agents"
- SALES["Sales Agent (Pattern 3)<br/>ORDS analytics tools"]
- CLINICAL["Clinical Agent (Pattern 3)<br/>Vector search RAG"]
- DBA["DBA Assistant (Pattern 2)<br/>MCP SQL tools"]
- DOCS["Doc Analyst (Pattern 4)<br/>Foundry IQ + ORDS"]
+ SALES["Sales Agent (Blueprint 3)<br/>ORDS analytics tools"]
+ CLINICAL["Clinical Agent (Blueprint 3)<br/>Vector search RAG"]
+ DBA["DBA Assistant (Blueprint 2)<br/>MCP SQL tools"]
+ DOCS["Doc Analyst (Blueprint 4)<br/>Foundry IQ + ORDS"]
  end
 
  subgraph "Shared Services"
@@ -893,7 +893,7 @@ Prompt injection is a critical risk for AI agents with database access. Apply th
 | **Database** | Oracle Database Vault | Even if injection succeeds, DB Vault realms block unauthorized schema access |
 | **Database** | Read-only DB user | `mcp_agent_user` has only `SELECT` grants -- DDL/DML fails at DB level |
 | **Output** | Content Safety output filter | Screens agent responses for leaked PII or harmful content |
-| **Output** | Purview DLP | Blocks responses containing classified data patterns (SSN, credit card) |
+| **Output** | Purview DLP | Blocks responses containing classified data blueprints (SSN, credit card) |
 
 ### 10.5.3 Secret & Certificate Management
 
@@ -974,18 +974,18 @@ graph TB
 
 ### 10.6.2 Purview Setup Checklist
 
-| # | Step | Details | Sub-Pattern |
+| # | Step | Details | Sub-Blueprint |
 |--|--|--|--|
 | 1 | **Register Oracle in Purview Data Map** | Add Oracle Database@Azure as a managed data source; provide connection via PE | All |
 | 2 | **Run classification scan** | Use built-in classifiers (SSN, Credit Card, Email, Name, DOB) + custom classifiers for domain-specific PII/PHI | All |
 | 3 | **Apply sensitivity labels** | Map classifications to MIP labels: `Public`, `Internal`, `Confidential`, `Highly Confidential` | All |
-| 4 | **Register Blob Storage in Data Map** | Scan documents in Blob containers used by Foundry IQ; classify before grounding | Pattern 4 |
-| 5 | **Register SharePoint in Data Map** | Scan SharePoint sites connected to Foundry IQ; apply labels | Pattern 4 |
-| 6 | **Configure DLP policies** | Create policies that block agent responses containing patterns matching `Confidential` or `Highly Confidential` data | All |
+| 4 | **Register Blob Storage in Data Map** | Scan documents in Blob containers used by Foundry IQ; classify before grounding | Blueprint 4 |
+| 5 | **Register SharePoint in Data Map** | Scan SharePoint sites connected to Foundry IQ; apply labels | Blueprint 4 |
+| 6 | **Configure DLP policies** | Create policies that block agent responses containing blueprints matching `Confidential` or `Highly Confidential` data | All |
 | 7 | **Enable data lineage** | Track data flow: Oracle table --> ORDS/MCP --> Agent --> User response | All |
 | 8 | **Configure Purview access policies** | Use Purview-managed access grants for Oracle datasets -- acts as governance overlay on top of Oracle DB grants | All |
 | 9 | **Enable Purview audit** | Log all classification scans, label changes, access policy evaluations, and DLP triggers | All |
-| 10 | **Label propagation to Foundry IQ** | Ensure documents ingested by Foundry IQ carry their Purview sensitivity labels into RAG responses | Pattern 4 |
+| 10 | **Label propagation to Foundry IQ** | Ensure documents ingested by Foundry IQ carry their Purview sensitivity labels into RAG responses | Blueprint 4 |
 
 ### 10.6.3 Data Classification Taxonomy
 
@@ -1222,7 +1222,7 @@ graph TB
 
 ---
 
-## Pattern 12: Foundry IQ -- Unified Knowledge Base for Unstructured Data
+## Blueprint 12: Foundry IQ -- Unified Knowledge Base for Unstructured Data
 
 ### What is Foundry IQ
 
@@ -1351,8 +1351,8 @@ graph TB
  - Set refresh schedule for document re-indexing
 5. **Create a Foundry Agent** with IQ + Oracle tools:
  - Add Foundry IQ as a knowledge source
- - Add Oracle MCP Server as an external tool (Pattern 2)
- - Add ORDS vector search endpoints as OpenAPI tools (Pattern 3)
+ - Add Oracle MCP Server as an external tool (Blueprint 2)
+ - Add ORDS vector search endpoints as OpenAPI tools (Blueprint 3)
  - Enable Azure AI Content Safety
 6. **Configure agent system prompt** -- instruct the agent to cite sources:
  ```

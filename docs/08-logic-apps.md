@@ -110,7 +110,7 @@ graph LR
 - No gateway infrastructure to manage
 - ORDS runs natively on Oracle 26ai -- no separate compute
 - APIM enforces OAuth2, rate limiting, and WAF
-- Supports vector search endpoints (same as Pattern 2)
+- Supports vector search endpoints (same as Blueprint 2)
 - Logic App Standard supports VNET integration for private connectivity
 
 --
@@ -364,7 +364,7 @@ Oracle Private Endpoint (port 1521)
 
 ### Step 5 -- Oracle Vector Search from Logic Apps
 
-10. **Call the vector search ORDS endpoint** (same endpoint used by Foundry agents in Pattern 2):
+10. **Call the vector search ORDS endpoint** (same endpoint used by Foundry agents in Blueprint 2):
 
  ```json
  {
@@ -390,7 +390,7 @@ Oracle Private Endpoint (port 1521)
 
 ## Common Workflow Patterns
 
-### Pattern A: Scheduled Oracle Data Sync
+### Blueprint A: Scheduled Oracle Data Sync
 
 ```mermaid
 graph LR
@@ -402,7 +402,7 @@ graph LR
  COND -->|No| END["End"]
 ```
 
-### Pattern B: AI-Augmented Alert Pipeline
+### Blueprint B: AI-Augmented Alert Pipeline
 
 ```mermaid
 graph LR
@@ -414,7 +414,7 @@ graph LR
  COND -->|Info| LOG["Log Analytics<br/>Log Only"]
 ```
 
-### Pattern C: Approval Workflow with Oracle Write-Back
+### Blueprint C: Approval Workflow with Oracle Write-Back
 
 ```mermaid
 graph LR
@@ -426,7 +426,7 @@ graph LR
  APPROVE -->|Rejected| NOTIFY["Email<br/>Rejection Notice"]
 ```
 
-### Pattern D: Vector Search Triage
+### Blueprint D: Vector Search Triage
 
 ```mermaid
 graph LR
@@ -443,13 +443,13 @@ graph LR
 |--|--|--|
 | **Entra ID** | App Registration: `LogicApp-Oracle-Integration` | OAuth2 client credentials for ORDS access via APIM |
 | **Entra ID** | Managed Identity (preferred) | Logic App Standard system-assigned identity -- no secrets stored |
-| **APIM** | OAuth2 validation | Same APIM policies as Pattern 2; validates Logic App token before forwarding to ORDS |
+| **APIM** | OAuth2 validation | Same APIM policies as Blueprint 2; validates Logic App token before forwarding to ORDS |
 | **APIM** | Rate limiting | Per-client throttling; prevents Logic App from overwhelming ORDS |
 | **Oracle DB** | Dedicated Logic App user | `logic_app_user` with specific `SELECT`/`INSERT`/`UPDATE` grants per workflow |
 | **Oracle DB** | VPD row-level security | Restrict which rows the Logic App user can access |
 | **Oracle DB** | Data Redaction | Mask PII columns in ORDS responses consumed by Logic Apps |
 | **Logic App** | Parameters & Key Vault | Store secrets (client secrets, API keys) in Key Vault; reference via `@parameters()` |
-| **Purview** | DLP + Classification | Same Purview governance as Pattern 2 applies to ORDS endpoints consumed by Logic Apps |
+| **Purview** | DLP + Classification | Same Purview governance as Blueprint 2 applies to ORDS endpoints consumed by Logic Apps |
 
 --
 
@@ -459,10 +459,10 @@ Logic Apps works best when combined with other patterns:
 
 | Combination | How It Works |
 |--|--|
-| **Pattern 7 + Pattern 2 (Foundry)** | Logic App triggers a Foundry agent run via API when an Oracle event occurs; agent performs complex reasoning and writes results back via ORDS |
-| **Pattern 7 + Pattern 1 (MCP)** | Logic App orchestrates multi-step workflows that include MCP tool calls for ad-hoc Oracle queries |
-| **Pattern 7 + Pattern 1 (Copilot Studio)** | Logic App performs backend Oracle operations; Copilot Studio handles the user-facing conversational interface |
-| **Pattern 7 + Pattern 6 (Power Apps)** | Power App triggers a Logic App flow for complex Oracle operations that exceed Power Automate capabilities |
+| **Blueprint 7 + Blueprint 2 (Foundry)** | Logic App triggers a Foundry agent run via API when an Oracle event occurs; agent performs complex reasoning and writes results back via ORDS |
+| **Blueprint 7 + Blueprint 1 (MCP)** | Logic App orchestrates multi-step workflows that include MCP tool calls for ad-hoc Oracle queries |
+| **Blueprint 7 + Blueprint 1 (Copilot Studio)** | Logic App performs backend Oracle operations; Copilot Studio handles the user-facing conversational interface |
+| **Blueprint 7 + Blueprint 6 (Power Apps)** | Power App triggers a Logic App flow for complex Oracle operations that exceed Power Automate capabilities |
 
 --
 
@@ -485,7 +485,7 @@ Logic Apps works best when combined with other patterns:
 | **Setup effort** | Medium -- requires gateway VM | Low -- uses existing ORDS + APIM |
 | **Infrastructure** | Gateway VM to manage and patch | No additional infrastructure |
 | **Operations** | `GET/INSERT/UPDATE/DELETE rows` | Any REST endpoint you define in ORDS |
-| **Vector search** | Not supported | --... Same ORDS vector endpoints as Pattern 2 |
+| **Vector search** | Not supported | --... Same ORDS vector endpoints as Blueprint 2 |
 | **AI integration** | Possible but separate from data path | --... Seamless -- ORDS response --' OpenAI in same flow |
 | **Security** | Gateway auth + Oracle credentials | Entra ID OAuth2 + APIM + Managed Identity |
 | **Private networking** | Gateway on VNET + Oracle PE | Logic App VNET integration + APIM internal + ORDS private |

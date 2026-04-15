@@ -1,6 +1,6 @@
 # 8. Reference Architecture Patterns
 
-Patterns are organized into three categories based on how Oracle data flows into the Microsoft AI ecosystem.
+Blueprints are organized into three categories based on how Oracle data flows into the Microsoft AI ecosystem.
 Platforms used are **Microsoft Foundry, Copilot Studio, Power Apps, Logic apps** for workflows 
 
 --
@@ -9,7 +9,7 @@ Platforms used are **Microsoft Foundry, Copilot Studio, Power Apps, Logic apps**
 
 Agents query Oracle data directly running on Oracle Database@Azure at runtime. No data leaves Oracle.
 
-| Pattern | AI Platform | How It Connects | Surfaces | Value Proposition |
+| Blueprint | AI Platform | How It Connects | Surfaces | Value Proposition |
 |--|--|--|--|--|
 | **1** | **Copilot Studio** | Gateway / Oracle as Knowledge / Oracle as Tool | Teams, Web, M365 | - Fastest time-to-value (hours)<br/>- No-code builder<br/>- Business users self-serve answers<br/>- Zero data movement |
 | **2** | **MS Foundry** | Agent Framework: Oracle MCP server (hosted on Azure Functions / Azure Container Apps) + ORDS APIs; Knowledge Base (Blob, SharePoint, Fabric Files); Oracle 26ai vectors | API, M365 Copilot, Agent Store | - Full model & tool control<br/>- Multi-agent orchestration<br/>- Production-grade custom AI apps<br/>- Live Oracle data, no migration<br/>- Publish to M365 + Agent Store |
@@ -19,7 +19,7 @@ Agents query Oracle data directly running on Oracle Database@Azure at runtime. N
 
 --
 
-### Pattern 1: Copilot Studio + Oracle Connector (On-Prem Data Gateway)
+### Blueprint 1: Copilot Studio + Oracle Connector (On-Prem Data Gateway)
 
 ```mermaid
 graph TB
@@ -72,7 +72,7 @@ When Copilot Studio needs Oracle data, the request flows through this tunnel to 
 
 --
 
-### Pattern 1B: Copilot Studio + Oracle MCP (via Azure Functions / Container Apps)
+### Blueprint 1B: Copilot Studio + Oracle MCP (via Azure Functions / Container Apps)
 
 ```mermaid
 graph TB
@@ -120,11 +120,11 @@ graph TB
     PURVIEW -.->|Classify| DB
 ```
 
-> Copilot Studio connects to Oracle via MCP Server hosted on Azure Functions or Container Apps. The MCP tool is added in Copilot Studio --> Tools --> Add new MCP. See [03-copilot-studio.md Pattern 2](03-copilot-studio.md#pattern-2--copilot-studio--oracle-mcp-through-azure-functionscontainer-apps) for setup steps.
+> Copilot Studio connects to Oracle via MCP Server hosted on Azure Functions or Container Apps. The MCP tool is added in Copilot Studio --> Tools --> Add new MCP. See [03-copilot-studio.md Blueprint 2](03-copilot-studio.md#pattern-2--copilot-studio--oracle-mcp-through-azure-functionscontainer-apps) for setup steps.
 
 --
 
-### Pattern 1C: Copilot Studio + Oracle ORDS + Custom Connector
+### Blueprint 1C: Copilot Studio + Oracle ORDS + Custom Connector
 
 ```mermaid
 graph TB
@@ -177,11 +177,11 @@ graph TB
     PURVIEW -.->|Classify| DATA
 ```
 
-> Copilot Studio connects to Oracle ORDS endpoints via a Custom Connector (imported OpenAPI spec). APIM validates OAuth2 tokens and rate-limits. Supports Oracle 26ai vector search for RAG. See [03-copilot-studio.md Pattern 3](03-copilot-studio.md#pattern-3--copilot-studio--oracle-ords-api-endpoints--custom-connector) for setup steps.
+> Copilot Studio connects to Oracle ORDS endpoints via a Custom Connector (imported OpenAPI spec). APIM validates OAuth2 tokens and rate-limits. Supports Oracle 26ai vector search for RAG. See [03-copilot-studio.md Blueprint 3](03-copilot-studio.md#pattern-3--copilot-studio--oracle-ords-api-endpoints--custom-connector) for setup steps.
 
 --
 
-### Pattern 2: MS Foundry + Oracle MCP Server
+### Blueprint 2: MS Foundry + Oracle MCP Server
 
 ```mermaid
 graph TB
@@ -251,7 +251,7 @@ graph TB
 
 --
 
-### Pattern Pattern 3: MS Foundry + Oracle ORDS API Endpoints (RAG / Vector Search)
+### Blueprint Blueprint 3: MS Foundry + Oracle ORDS API Endpoints (RAG / Vector Search)
 
 ```mermaid
 graph TB
@@ -329,7 +329,7 @@ graph TB
 
 --
 
-### Pattern Pattern 4: MS Foundry + Oracle MCP + Oracle ORDS APIs + Foundry IQ (Full Stack)
+### Blueprint Blueprint 4: MS Foundry + Oracle MCP + Oracle ORDS APIs + Foundry IQ (Full Stack)
 
 ```mermaid
 graph TB
@@ -443,7 +443,7 @@ graph TB
 
 --
 
-### Pattern 5: Oracle MCP Server (Developer + Hosted)
+### Blueprint 5: Oracle MCP Server (Developer + Hosted)
 
 ```mermaid
 graph TB
@@ -501,7 +501,7 @@ graph TB
 
 --
 
-### Pattern 6: Power Apps + Oracle Database@Azure
+### Blueprint 6: Power Apps + Oracle Database@Azure
 
 ```mermaid
 graph TB
@@ -549,11 +549,11 @@ graph TB
  DB -.->|"Unified Audit"| LA
 ```
 
-> Power Apps connects to Oracle Database@Azure via the Oracle DB Connector and the On-Premises Data Gateway -- same gateway infrastructure as Copilot Studio (Pattern 1). AI Builder adds OCR, form processing, and predictions on top of Oracle data. See [Path 5 -- Power Apps](07-power-apps.md) for details.
+> Power Apps connects to Oracle Database@Azure via the Oracle DB Connector and the On-Premises Data Gateway -- same gateway infrastructure as Copilot Studio (Blueprint 1). AI Builder adds OCR, form processing, and predictions on top of Oracle data. See [Path 5 -- Power Apps](07-power-apps.md) for details.
 
 --
 
-### Pattern 7: Logic Apps + Oracle Database@Azure
+### Blueprint 7: Logic Apps + Oracle Database@Azure
 
 #### Option A: Oracle DB Connector (via Gateway)
 
@@ -640,7 +640,7 @@ graph LR
  DB -.->|"Unified Audit"| LANA
 ```
 
-> **Option B is recommended** -- ORDS runs natively on Oracle 26ai (no gateway infrastructure), APIM enforces OAuth2 + rate limiting, Logic App Standard provides VNET integration for fully private connectivity; supports vector search endpoints. See [Pattern 7 -- Logic Apps](08-logic-apps.md) for detailed setup, NSG rules, and workflow patterns.
+> **Option B is recommended** -- ORDS runs natively on Oracle 26ai (no gateway infrastructure), APIM enforces OAuth2 + rate limiting, Logic App Standard provides VNET integration for fully private connectivity; supports vector search endpoints. See [Blueprint 7 -- Logic Apps](08-logic-apps.md) for detailed setup, NSG rules, and workflow patterns.
 
 --
 
@@ -649,16 +649,16 @@ graph LR
 
 Oracle data is replicated into Microsoft Fabric via Mirrored Database for analytics, cross-source joins, and AI grounding. Data Agents built on Mirrored Database can be published as MCP servers, deployed to Teams, or connected to Copilot Studio and MS Foundry via native connectors.
 
-| Pattern | AI Platform | How It Connects | Surfaces | Value Proposition |
+| Blueprint | AI Platform | How It Connects | Surfaces | Value Proposition |
 |--|--|--|--|--|
-| **Pattern 8** | **Mirrored Database + Data Agents** | Oracle --> Fabric Mirroring --> Mirrored Database --> Data Agents --> Published as MCP Server / Teams / Copilot Studio / Foundry | Teams, Copilot Studio, Foundry, MCP clients | - Natural language analytics on mirrored Oracle data<br/>- Data Agent as MCP server for any MCP client<br/>- Publish directly to Teams<br/>- Connect to Copilot Studio or Foundry via native connectors<br/>- Cross-source joins<br/>- Entra ID + private networking |
-| **Pattern 8B** | **GoldenGate as a Service + Fabric** | Oracle Database@Azure --> OCI GoldenGate (CDC) --> Fabric Lakehouse or Fabric Mirror --> Data Agents / Fabric IQ | Fabric, Teams, Copilot Studio, Foundry, MCP clients | - Real-time CDC replication (sub-second latency)<br/>- Supports Fabric Lakehouse AND Fabric Mirror as targets<br/>- Data transformations during replication<br/>- 30+ source/target combinations<br/>- Enterprise-grade with conflict detection |
-| **Pattern 9** | **Fabric Mirroring + Foundry** | Mirrored Database --> Data Agents --> Foundry agents (via native connector) | API, M365 Copilot, Agent Store | - AI agents grounded in curated analytics<br/>- Data Agent feeds Foundry as a tool<br/>- Best of Fabric + Foundry<br/>- Governed data layer<br/>- Publish insights to M365 Copilot |
-| **Pattern 10: Fabric Mirroring + Data Agents + Copilot Studio** | **Fabric Mirroring + Copilot Studio** | Mirrored Database --> Data Agents --> Copilot Studio custom copilots (via native connector) | Teams, Web, M365 Copilot | - Copilots grounded on mirrored Oracle analytics<br/>- Data Agent feeds Copilot Studio as a connector<br/>- Best of Fabric + Copilot Studio<br/>- No-code copilot builder<br/>- Publish to Teams and M365 Copilot |
+| **Blueprint 8** | **Mirrored Database + Data Agents** | Oracle --> Fabric Mirroring --> Mirrored Database --> Data Agents --> Published as MCP Server / Teams / Copilot Studio / Foundry | Teams, Copilot Studio, Foundry, MCP clients | - Natural language analytics on mirrored Oracle data<br/>- Data Agent as MCP server for any MCP client<br/>- Publish directly to Teams<br/>- Connect to Copilot Studio or Foundry via native connectors<br/>- Cross-source joins<br/>- Entra ID + private networking |
+| **Blueprint 8B** | **GoldenGate as a Service + Fabric** | Oracle Database@Azure --> OCI GoldenGate (CDC) --> Fabric Lakehouse or Fabric Mirror --> Data Agents / Fabric IQ | Fabric, Teams, Copilot Studio, Foundry, MCP clients | - Real-time CDC replication (sub-second latency)<br/>- Supports Fabric Lakehouse AND Fabric Mirror as targets<br/>- Data transformations during replication<br/>- 30+ source/target combinations<br/>- Enterprise-grade with conflict detection |
+| **Blueprint 9** | **Fabric Mirroring + Foundry** | Mirrored Database --> Data Agents --> Foundry agents (via native connector) | API, M365 Copilot, Agent Store | - AI agents grounded in curated analytics<br/>- Data Agent feeds Foundry as a tool<br/>- Best of Fabric + Foundry<br/>- Governed data layer<br/>- Publish insights to M365 Copilot |
+| **Blueprint 10: Fabric Mirroring + Data Agents + Copilot Studio** | **Fabric Mirroring + Copilot Studio** | Mirrored Database --> Data Agents --> Copilot Studio custom copilots (via native connector) | Teams, Web, M365 Copilot | - Copilots grounded on mirrored Oracle analytics<br/>- Data Agent feeds Copilot Studio as a connector<br/>- Best of Fabric + Copilot Studio<br/>- No-code copilot builder<br/>- Publish to Teams and M365 Copilot |
 
 --
 
-### Pattern 8: Mirrored Database + Data Agents
+### Blueprint 8: Mirrored Database + Data Agents
 
 ```mermaid
 graph TB
@@ -751,7 +751,7 @@ graph TB
 
 --
 
-### Pattern 8B: GoldenGate as a Service + Fabric
+### Blueprint 8B: GoldenGate as a Service + Fabric
 
 ```mermaid
 graph TB
@@ -791,11 +791,11 @@ graph TB
     DA --> FA
 ```
 
-> OCI GoldenGate captures changes from Oracle redo logs (CDC) and delivers them to Fabric Lakehouse (Delta format via ADLS) or Fabric Mirror with sub-second latency. Supports data transformations (filtering, masking, column mapping) during replication. See [06-fabric-data-agents.md Pattern 8B](06-fabric-data-agents.md#pattern-8b-goldengate-as-a-service----real-time-cdc-to-fabric) for detailed setup, GoldenGate Extract/Replicat configuration, and transformation examples.
+> OCI GoldenGate captures changes from Oracle redo logs (CDC) and delivers them to Fabric Lakehouse (Delta format via ADLS) or Fabric Mirror with sub-second latency. Supports data transformations (filtering, masking, column mapping) during replication. See [06-fabric-data-agents.md Blueprint 8B](06-fabric-data-agents.md#pattern-8b-goldengate-as-a-service----real-time-cdc-to-fabric) for detailed setup, GoldenGate Extract/Replicat configuration, and transformation examples.
 
 --
 
-### Pattern 9: Fabric Mirroring + Data Agents + Foundry
+### Blueprint 9: Fabric Mirroring + Data Agents + Foundry
 
 ```mermaid
 graph TB
@@ -866,12 +866,12 @@ graph TB
 | 1 | Oracle Private Endpoint | No public IP; Fabric mirroring via managed PE |
 | 2 | Fabric Managed VNET | Mirroring over private path |
 | 3 | Data Agent --> Foundry (native connector) | Internal Azure service-to-service connection -- no public exposure |
-| 4 | Other Foundry tools (MCP/ORDS) | VNET-integrated as per Zero Data Movement patterns |
+| 4 | Other Foundry tools (MCP/ORDS) | VNET-integrated as per Zero Data Movement blueprints |
 | 5 | Entra ID everywhere | SSO/MFA for Fabric, Foundry, and published surfaces |
 
 --
 
-### Pattern 10: Fabric Mirroring + Data Agents + Copilot Studio: Fabric Mirroring + Copilot Studio
+### Blueprint 10: Fabric Mirroring + Data Agents + Copilot Studio: Fabric Mirroring + Copilot Studio
 
 ```mermaid
 graph TB
@@ -926,7 +926,7 @@ graph TB
     PURVIEW -.->|Classify| DB
 ```
 
-> Copilot Studio connects to Fabric Data Agents via the native connector -- no custom code needed. Business users build no-code copilots grounded on mirrored Oracle analytics data. The Data Agent can be added as a Knowledge source (for grounding) or as a Tool (for action-based queries). Combine with live Oracle data via the Oracle connector (Pattern 1) for hybrid live + mirrored copilots.
+> Copilot Studio connects to Fabric Data Agents via the native connector -- no custom code needed. Business users build no-code copilots grounded on mirrored Oracle analytics data. The Data Agent can be added as a Knowledge source (for grounding) or as a Tool (for action-based queries). Combine with live Oracle data via the Oracle connector (Blueprint 1) for hybrid live + mirrored copilots.
 
 #### RBAC Model
 
@@ -953,16 +953,16 @@ graph TB
 
 AI-powered intelligence layers that process, enrich, and surface insights from structured, unstructured, and work data.
 
-| Pattern | AI Platform | What It Does | Surfaces | Value Proposition |
+| Blueprint | AI Platform | What It Does | Surfaces | Value Proposition |
 |--|--|--|--|--|
-| **Pattern 11** | **Fabric IQ** | AI-powered analytics and insights over data in OneLake (mirrored Oracle + other sources) | Fabric, Data Agents | - Automated insight discovery<br/>- AI finds patterns humans miss<br/>- Multi-source data intelligence<br/>- Scales with Fabric capacity |
-| **Pattern 12** | **Foundry IQ** | Unstructured data processing -- ingests docs from Blob, SharePoint, Fabric Files to ground Foundry agents | Foundry, M365 Copilot | - Unlock PDFs, docs, emails<br/>- Combine unstructured + structured Oracle data<br/>- Single agent, full context<br/>- Enterprise-grade grounding |
-| **Pattern 13** | **Work IQ** | AI-driven productivity insights across M365 work patterns connected to Oracle business data | M365, Copilot | - Bridge work signals + business data<br/>- Meeting, email, doc intelligence<br/>- Organizational productivity insights<br/>- Connected to Oracle context |
-| **Pattern 14** | **Unified IQ** | All IQ layers combined -- Fabric IQ + Foundry IQ + Work IQ feeding a single intelligent agent | Fabric, Foundry, M365 Copilot | - Complete organizational intelligence<br/>- Structured + unstructured + work signals<br/>- One agent, all context<br/>- Maximum AI value from Oracle investment |
+| **Blueprint 11** | **Fabric IQ** | AI-powered analytics and insights over data in OneLake (mirrored Oracle + other sources) | Fabric, Data Agents | - Automated insight discovery<br/>- AI finds blueprints humans miss<br/>- Multi-source data intelligence<br/>- Scales with Fabric capacity |
+| **Blueprint 12** | **Foundry IQ** | Unstructured data processing -- ingests docs from Blob, SharePoint, Fabric Files to ground Foundry agents | Foundry, M365 Copilot | - Unlock PDFs, docs, emails<br/>- Combine unstructured + structured Oracle data<br/>- Single agent, full context<br/>- Enterprise-grade grounding |
+| **Blueprint 13** | **Work IQ** | AI-driven productivity insights across M365 work blueprints connected to Oracle business data | M365, Copilot | - Bridge work signals + business data<br/>- Meeting, email, doc intelligence<br/>- Organizational productivity insights<br/>- Connected to Oracle context |
+| **Blueprint 14** | **Unified IQ** | All IQ layers combined -- Fabric IQ + Foundry IQ + Work IQ feeding a single intelligent agent | Fabric, Foundry, M365 Copilot | - Complete organizational intelligence<br/>- Structured + unstructured + work signals<br/>- One agent, all context<br/>- Maximum AI value from Oracle investment |
 
 --
 
-### Pattern 14: Unified IQ -- All Layers Combined
+### Blueprint 14: Unified IQ -- All Layers Combined
 
 ```mermaid
 graph TB

@@ -152,7 +152,7 @@ graph TB
 | **Auto-scaling with KEDA** | Scale on HTTP concurrency, queue depth, or custom metrics |
 | **Built-in revision management** | Blue/green deployments, traffic splitting between revisions |
 | **Secrets management** | Native integration with Key Vault for OCI credentials |
-| **Cost-efficient at scale** | Per vCPU-second billing; more predictable than Functions for steady traffic patterns |
+| **Cost-efficient at scale** | Per vCPU-second billing; more predictable than Functions for steady traffic blueprints |
 
 ### Prerequisites
 
