@@ -74,66 +74,153 @@ Work IQ analyzes M365 Graph signals and correlates them with Oracle business dat
 
 ### Setup Steps (End-to-End)
 
-#### Step 1 -- Enable Work IQ
+#### Step 1 -- Prerequisites
 
-1. **Enable Work IQ** in Microsoft 365 Admin Center:
-   - M365 Admin --> Settings --> Org settings --> Work IQ
-   - Consent to Microsoft Graph data access for insights
-   - Set privacy controls: minimum group size (default 5), exclude specific departments if needed
+Work IQ uses the Microsoft 365 Copilot Chat API as its backend. Before enabling:
 
-#### Step 2 -- Configure M365 Graph Data Access
+- **Required licenses**: Microsoft 365 Copilot license for each user + M365 base license (E3, E5, Business Premium)
+- **Required admin role**: Global Administrator, Privileged Role Administrator, Cloud Application Administrator, or Application Administrator
+- **Required access**: Microsoft Entra admin center (https://entra.microsoft.com) + Microsoft 365 admin center (https://admin.microsoft.com)
 
-2. **Define which M365 signals are analyzed**:
-   - Email metadata (NOT content): sender, recipient, timestamp, response time
-   - Meeting metadata: organizer, attendees, duration, recurrence
-   - Document metadata: author, editors, sharing scope, last modified
-   - Teams: channel activity, message counts (NOT message content)
+#### Step 2 -- Verify and Assign Copilot Licenses
 
-3. **Set privacy boundaries**:
-   - Individual-level data aggregated to team/department level
-   - No email/message content -- only metadata patterns
-   - Opt-out available for specific users or departments
+1. Sign in to M365 admin center --> **Billing** --> **Licenses**
+2. Verify **Microsoft 365 Copilot** is available with sufficient licenses
+3. Navigate to **Users** --> **Active users** --> select users --> **Manage product licenses** --> assign Copilot license
+4. Wait up to 24 hours for Copilot features to propagate
 
-#### Step 3 -- Connect Oracle Business Data Context
+#### Step 3 -- Configure Copilot in Your Tenant
 
-4. **Create a Foundry Agent** that bridges Work IQ + Oracle:
-   - Add Oracle MCP Server as a tool (for structured Oracle queries)
-   - Add ORDS endpoints as OpenAPI tools (for governed analytics)
-   - Enable Work IQ as a signal source
+5. **Enable MFA**:
+   - Microsoft Entra admin center --> **Protection** --> **Conditional Access**
+   - Ensure MFA is enabled for all users
 
-5. **Map business entities** between M365 and Oracle:
+6. **Enable audit logging**:
+   - Microsoft Purview portal (https://purview.microsoft.com)
+   - Enable unified audit logging with appropriate retention policies
 
-   | M365 Entity | Oracle Entity | Mapping Key |
-   |---|---|---|
-   | M365 Contacts (email addresses) | Oracle `CUSTOMERS` table | Email address match |
-   | M365 Projects (Planner/Teams) | Oracle `PROJECTS` table | Project code tag in Teams channel name |
-   | M365 Users (department) | Oracle `EMPLOYEES` table | Employee ID or UPN |
-   | M365 Teams channels | Oracle `SUPPORT_CASES` | Channel naming convention (e.g., `case-12345`) |
+7. **Configure update channels**:
+   - M365 admin center --> **Settings** --> **Org settings** --> **Office installation options**
+   - Use **Current Channel** (recommended) or **Monthly Enterprise Channel**
+   - Note: Semi-Annual Enterprise Channel is NOT supported for Copilot
 
-#### Step 4 -- Configure Insights and Govern via A365
+8. **Configure Copilot settings**:
+   - M365 admin center --> **Copilot**
+   - Review data security and compliance controls
+   - Configure plugin and extension permissions
 
-6. **Define insight categories**:
-   - Sales effectiveness: email/meeting patterns vs Oracle revenue data
-   - Operational efficiency: collaboration patterns vs Oracle operational metrics
-   - Customer engagement: contact frequency vs Oracle CRM stages
+#### Step 4 -- Grant Admin Consent for Work IQ
 
-7. **Manage via A365 Admin Center**:
-   - Control which M365 signals are analyzed (email, meetings, docs, Teams)
-   - Set privacy boundaries per department/region
-   - Monitor Work IQ data access in audit logs
-   - Enable/disable Work IQ insights for specific agent deployments
-   - Set DLP policies on combined work + business insights
+**Quick method (recommended):**
 
-### Privacy and Compliance Considerations
+9. Open this URL in your browser (replace `{your-tenant-id}` with your tenant ID or domain):
+   ```
+   https://login.microsoftonline.com/{your-tenant-id}/adminconsent?client_id=ba081686-5d24-4bc6-a0d6-d034ecffed87
+   ```
+10. Sign in with your admin account and click **Accept**
+
+**If the Quick Start URL fails** (AADSTS650052 / Access Denied):
+
+11. Run the enablement script to provision missing service principals:
+    ```powershell
+    # Prerequisites: Install-Module Microsoft.Graph -Scope CurrentUser
+    .\scripts\Enable-WorkIQToolsForTenant.ps1
+    ```
+    This script provisions all MCP Server service principals (Work IQ Tools, Mail, Calendar, Teams, OneDrive, SharePoint, Word, Admin, Me, M365 Copilot) and grants admin consent.
+
+**Alternative -- via Entra Admin Center:**
+
+12. Go to Microsoft Entra admin center --> **Identity** --> **Applications** --> **Enterprise applications**
+13. Find **Work IQ CLI** in the list
+14. Select **Permissions** under Security
+15. Click **Grant admin consent for [Your Organization]** --> **Accept**
+
+**Alternative -- via PowerShell:**
+
+```powershell
+Install-Module Microsoft.Graph -Scope CurrentUser
+Connect-MgGraph -Scopes "Application.ReadWrite.All", "DelegatedPermissionGrant.ReadWrite.All"
+
+$workIqApp = Get-MgServicePrincipal -Filter "displayName eq 'Work IQ CLI'"
+$graphSp = Get-MgServicePrincipal -Filter "displayName eq 'Microsoft Graph'"
+
+$requiredScopes = "Sites.Read.All Mail.Read People.Read.All OnlineMeetingTranscript.Read.All Chat.Read ChannelMessage.Read.All ExternalItem.Read.All"
+
+$params = @{
+    ClientId    = $workIqApp.Id
+    ConsentType = "AllPrincipals"
+    ResourceId  = $graphSp.Id
+    Scope       = $requiredScopes
+}
+New-MgOauth2PermissionGrant -BodyParameter $params
+```
+
+#### Step 5 -- Required API Permissions (Reference)
+
+Work IQ requires these delegated permissions (all must be admin-consented):
+
+| Permission | What It Accesses |
+|---|---|
+| Sites.Read.All | Read items in all site collections |
+| Mail.Read | Read user mail |
+| People.Read.All | Read all users' relevant people lists |
+| OnlineMeetingTranscript.Read.All | Read all transcripts of online meetings |
+| Chat.Read | Read user chat messages |
+| ChannelMessage.Read.All | Read all channel messages |
+| ExternalItem.Read.All | Read external items |
+
+#### Step 6 -- Configure User Access
+
+16. **Verify application access**: Entra admin center --> **Enterprise applications** --> **Work IQ CLI** --> **Users and groups** (all users with Copilot licenses have access by default)
+
+17. **Restrict access (optional)**: In the Work IQ CLI enterprise app --> **Properties** --> set **Assignment required?** to **Yes** --> then add specific users/groups under **Users and groups**
+
+18. **Configure Conditional Access (recommended)**:
+    - Entra admin center --> **Protection** --> **Conditional Access** --> new policy
+    - Target: Work IQ application
+    - Grant: Require MFA, compliant device, or other controls
+
+#### Step 7 -- Connect Oracle Business Data Context
+
+19. **Create a Foundry Agent** that bridges Work IQ + Oracle:
+    - Add Oracle MCP Server as a tool (for structured Oracle queries)
+    - Add ORDS endpoints as OpenAPI tools (for governed analytics)
+    - Enable Work IQ as a signal source
+
+20. **Map business entities** between M365 and Oracle:
+
+    | M365 Entity | Oracle Entity | Mapping Key |
+    |---|---|---|
+    | M365 Contacts (email addresses) | Oracle `CUSTOMERS` table | Email address match |
+    | M365 Projects (Planner/Teams) | Oracle `PROJECTS` table | Project code tag in Teams channel name |
+    | M365 Users (department) | Oracle `EMPLOYEES` table | Employee ID or UPN |
+    | M365 Teams channels | Oracle `SUPPORT_CASES` | Channel naming convention (e.g., `case-12345`) |
+
+### Troubleshooting
+
+| Issue | Cause | Fix |
+|---|---|---|
+| "Access denied" / AADSTS error on consent URL | Work IQ Tools service principal not provisioned | Run `Enable-WorkIQToolsForTenant.ps1` |
+| Work IQ not visible in Enterprise Applications | Service principal not yet provisioned | Run `Enable-WorkIQToolsForTenant.ps1` |
+| "Admin approval required" prompt | Admin consent not granted | Use the Quick Start URL or Entra admin center method |
+| "Insufficient permissions" error | Missing API permissions | Verify all 7 required permissions are consented |
+| Users can't sign in | Conditional Access blocking | Review Conditional Access policies |
+| "License required" error | User lacks Copilot license | Assign Microsoft 365 Copilot license |
+| Features not appearing | License propagation delay | Wait up to 24 hours after license assignment |
+
+### Privacy and Security Considerations
 
 | Control | Details |
 |---|---|
-| **No content access** | Work IQ analyzes metadata patterns only -- never reads email body, message content, or document text |
-| **Minimum aggregation** | Insights are aggregated at team level (minimum group size: 5) to prevent individual identification |
-| **Opt-out** | Individual users or departments can opt out via M365 Admin Center |
-| **GDPR compliance** | Data stays within the tenant's M365 region; subject to M365 DPA |
-| **Purview integration** | Combined insights inherit Purview sensitivity labels from both M365 and Oracle data |
-| **Audit trail** | All Work IQ signal access logged in A365 audit logs |
+| **Data accessed** | Work IQ accesses email content, meeting transcripts, Teams messages, SharePoint/OneDrive documents, and contact information via delegated Graph API permissions |
+| **Delegated permissions** | All access runs under the signed-in user's identity -- Work IQ can only see what the user can already see |
+| **Assignment control** | Restrict access by setting **Assignment required = Yes** on the Work IQ CLI enterprise app and adding specific users/groups |
+| **Conditional Access** | Apply MFA, compliant device, and location-based policies specifically to the Work IQ application |
+| **DLP enforcement** | Ensure M365 DLP policies are in place; configure sensitivity labels for classified content |
+| **Audit logging** | Enable unified audit logging in Microsoft Purview; monitor Work IQ activity via Entra sign-in logs |
+| **Compliance** | Work IQ respects your organization's existing access controls; data is subject to existing compliance policies |
+| **Regular review** | Periodically audit who has access; review consent grants in Enterprise applications |
+| **Copilot Chat API** | Work IQ uses the M365 Copilot Chat API (currently in beta) -- review Microsoft's terms for production use |
 
 ---
 
@@ -244,22 +331,44 @@ Microsoft 365 Admin Center (A365) provides a unified control plane for managing 
 
 ### A365 Setup for Agent Governance
 
-1. **M365 Admin Center** --> **Settings** --> **Copilot & AI**:
+1. **M365 Admin Center** --> **Billing** --> **Licenses**:
+   - Verify Microsoft 365 Copilot licenses are available and assigned to users
+   - Copilot license is required for Work IQ access
+
+2. **M365 Admin Center** --> **Copilot**:
+   - Review data security and compliance controls
+   - Configure plugin and extension permissions
+   - Set update channel to Current Channel or Monthly Enterprise Channel (Semi-Annual NOT supported)
+
+3. **M365 Admin Center** --> **Settings** --> **Org settings**:
+   - Configure Copilot & AI settings
    - Enable Foundry agent publishing
    - Set default DLP policies for all agent responses
-   - Configure audit log retention
 
-2. **M365 Admin Center** --> **Settings** --> **Org settings** --> **Work IQ**:
-   - Enable/disable Work IQ signal analysis
-   - Set privacy boundaries
-   - Configure opt-out policies
+4. **Microsoft Entra Admin Center** --> **Identity** --> **Applications** --> **Enterprise applications**:
+   - Grant admin consent for Work IQ CLI (see Work IQ setup steps above)
+   - Configure user assignment and Conditional Access policies
+   - Review consented permissions periodically
 
-3. **Fabric Admin Portal** --> **Tenant settings**:
+5. **Microsoft Entra Admin Center** --> **Protection** --> **Conditional Access**:
+   - Create policies targeting Work IQ and Foundry agent applications
+   - Require MFA, compliant devices, and named locations
+
+6. **Fabric Admin Portal** --> **Tenant settings**:
    - Enable Fabric IQ workload
    - Enable Ontology (preview) and Graph (preview) settings
    - Set Fabric capacity budgets for IQ workloads
 
-4. **Purview Compliance Center**:
+7. **Microsoft Purview portal** (https://purview.microsoft.com):
+   - Enable unified audit logging with retention policies
    - Configure DLP policies that apply to all agent responses
    - Set auto-labeling policies for documents ingested by Foundry IQ
    - Enable audit log forwarding to Log Analytics
+
+### Additional Resources
+
+- [Work IQ Admin Instructions](https://github.com/microsoft/work-iq/blob/main/ADMIN-INSTRUCTIONS.md)
+- [Work IQ README and Installation Guide](https://github.com/microsoft/work-iq-mcp/blob/main/README.md)
+- [Microsoft 365 Copilot Documentation](https://learn.microsoft.com/microsoft-365-copilot/)
+- [Microsoft Entra Admin Consent Documentation](https://learn.microsoft.com/entra/identity/enterprise-apps/grant-admin-consent)
+- [Microsoft Graph Permissions Reference](https://learn.microsoft.com/graph/permissions-reference)
