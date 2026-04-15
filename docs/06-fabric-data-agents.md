@@ -1,6 +1,6 @@
-# 12. Patterns 8 / 9 -- Fabric Mirrored Database + Data Agents
+# Patterns for building AI agents on Fabric Mirrored Database 
 
-## 12.1 Architecture
+## Architecture
 
 Oracle data is mirrored into a **Fabric Mirrored Database** via managed private endpoints. **Data Agents** are built directly on the Mirrored Database as the source -- no additional lakehouse or semantic model required for basic scenarios.
 
@@ -10,7 +10,7 @@ Once published, a Data Agent can be consumed as:
 - **Copilot Studio connector** -- native connector to build no-code copilots
 - **MS Foundry tool** -- native connector to use Data Agent as a tool inside Foundry agents
 
-## 12.2 Prerequisites
+##  Prerequisites
 
 - Microsoft Fabric capacity (F2 or above)
 - Microsoft Entra ID tenant
@@ -18,7 +18,7 @@ Once published, a Data Agent can be consumed as:
 - Fabric workspace with Managed VNET enabled (for private mirroring)
 - Dedicated read-only Oracle user for mirroring
 
-## 12.3 Setup Steps
+## Setup Steps
 
 1. **Configure Fabric Managed Private Endpoint** to Oracle DB@Azure:
    - In Fabric workspace settings --' **Managed private endpoints**
@@ -66,7 +66,7 @@ Once published, a Data Agent can be consumed as:
    - Foundry agent uses Data Agent as one of its tools
    - Combine with MCP (Pattern 2) and ORDS (Pattern 3) tools for live + mirrored in one agent
 
-## 12.4 Entra ID Authentication
+## Entra ID Authentication
 
 | Component | Entra ID Integration | Details |
 |--|--|--|
@@ -78,7 +78,7 @@ Once published, a Data Agent can be consumed as:
 | **Foundry connector** | Entra ID service auth | Foundry agent's Managed Identity or delegated auth |
 | **Oracle mirroring** | Dedicated DB user | Read-only Oracle user; credentials stored in Fabric (not exposed to end users) |
 
-## 12.5 RBAC Model
+## RBAC Model
 
 | Layer | Role | Who Gets It | What It Controls |
 |--|--|--|--|
@@ -91,7 +91,7 @@ Once published, a Data Agent can be consumed as:
 | **MS Foundry** | Foundry User / Contributor | End users / Developers | Use vs create Foundry agents with Data Agent tool |
 | **Oracle DB** | Dedicated mirroring user | Fabric mirroring connection | `GRANT SELECT ON SH.* TO fabric_mirror_user` -- no DDL/DML |
 
-## 12.6 Private Networking
+## Private Networking
 
 ### Network Architecture
 
@@ -146,7 +146,7 @@ graph TB
 | 5 | Entra ID for all published surfaces | MCP, Teams, Copilot Studio, Foundry -- all require Entra ID auth |
 | 6 | Workspace-level security | Fabric workspace RBAC controls who can query Data Agent |
 
-## 12.7 Design Considerations
+## Design Considerations
 
 | Consideration | Guidance |
 |--|--|
