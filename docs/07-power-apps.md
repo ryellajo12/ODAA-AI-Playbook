@@ -1,4 +1,4 @@
-# Path 5 -- Power Apps + Power Automate AI
+# Building Business applications using Power Apps + Power Automate AI on Oracle data
 
 ## Architecture
 
