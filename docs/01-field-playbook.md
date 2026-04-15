@@ -27,7 +27,7 @@
 | Pattern 7: Logic Apps | [08-logic-apps.md](08-logic-apps.md) |
 | Patterns 12-13 + A365: Work IQ, Unified IQ, Control Plane | [09-iq-work-unified.md](09-iq-work-unified.md) |
 | Security and Governance | [10-security-governance.md](10-security-governance.md) |
-| Implementation Guides | [11-implementation-guides.md](11-implementation-guides.md) |
+| Monitoring and Cost | [11-monitoring-cost.md](11-monitoring-cost.md) |
 | Reference Architectures | [02-reference-architectures.md](02-reference-architectures.md) |
 
 --
@@ -50,7 +50,7 @@ This playbook has three layers:
 | Position AI on Oracle Database@Azure in 5 minutes | Section 3 + Section 4 |
 | Help a customer decide which path | Section 5 (Decision Matrix) |
 | Design an architecture | [Reference Patterns](02-reference-architectures.md) |
-| Build something today | [Step-by-Step Guides](11-implementation-guides.md) |
+| Build something today | Step-by-Step Guides (coming soon) |
 | Implement RAG on Oracle 26ai vectors | [Vector Search (Pattern 2 -- Foundry Agents)](04-foundry-agents.md#2-ms-foundry--ords-endpoints-rag--vector-search) |
 | Wire up MCP tools for agents | [Path 3 -- Oracle MCP](05-oracle-mcp.md) |
 
