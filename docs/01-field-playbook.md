@@ -100,7 +100,8 @@ Oracle data is replicated into Microsoft Fabric via two paths: Fabric native mir
 |--|--|--|--|--|
 | **Pattern 8** | **Mirrored Database + Data Agents** | Oracle --> Fabric Mirroring (private PE) --> Mirrored Database --> Data Agents --> Published as MCP Server / Teams / Copilot Studio / Foundry | Teams, Copilot Studio, Foundry, MCP clients | - NL analytics on mirrored Oracle data<br/>- Data Agent as MCP server for any client<br/>- Publish direct to Teams<br/>- Native connectors to Copilot Studio + Foundry<br/>- Entra ID + private networking end-to-end |
 | **Pattern 8B** | **GoldenGate as a Service + Fabric** | Oracle Database@Azure --> OCI GoldenGate (CDC) --> Fabric Lakehouse or Fabric Mirror --> Data Agents / Fabric IQ | Fabric, Teams, Copilot Studio, Foundry, MCP clients | - Real-time CDC replication (sub-second latency)<br/>- Supports Fabric Lakehouse AND Fabric Mirror as targets<br/>- Data transformations during replication<br/>- 30+ source/target combinations<br/>- Enterprise-grade with conflict detection |
-| **Pattern 9** | **Fabric Mirroring + Data Agents + Foundry** | Mirrored Database --> Data Agent --> Foundry agent (native connector as tool) | API, M365 Copilot, Agent Store | - Foundry agent uses Data Agent as a tool<br/>- Combine mirrored analytics with live MCP/ORDS<br/>- Best of Fabric + Foundry<br/>- Entra ID RBAC at every layer |
+| **Pattern 9** | **Fabric Mirroring + Data Agents + MS Foundry** | Mirrored Database --> Data Agent --> MS Foundry agent (native connector as tool) | API, M365 Copilot, Agent Store | - Foundry agent uses Data Agent as a tool<br/>- Combine mirrored analytics with live MCP/ORDS<br/>- Best of Fabric + Foundry<br/>- Entra ID RBAC at every layer |
+| **Pattern 10** | **Fabric Mirroring + Data Agents + Copilot Studio** | Mirrored Database --> Data Agent --> Copilot Studio (native connector as tool) | API, M365 Copilot, Agent Store | - Copilot studio Custom Copilot  uses Data Agent as a tool<br/>- Best of Fabric + Copilot Studio<br/>- Entra ID RBAC at every layer |
 
 #### When to Use Fabric Native Mirroring vs GoldenGate as a Service
 
@@ -222,4 +223,4 @@ Discover --> Map to Path --> Pilot --> Prove --> Scale
 | Pattern 6 -- Power Apps | 1 Oracle-connected workflow with AI Builder | 3 -- 5 days | Business process automated with AI assistance |
 | Pattern 7 -- Logic Apps | 1 event-driven Oracle integration flow | 2 -- 3 days | Automated Oracle workflow triggered by events |
 | Pattern 8 -- Mirrored DB | Mirror 1 Oracle schema into Fabric | 1 week | Cross-source dashboard with Data Agent queries |
-| Pattern 13 -- Unified IQ | Connect all IQ layers to a single agent | 2 weeks | Agent answers across structured, unstructured, and work data |
+| Pattern 14 -- Unified IQ | Connect all IQ layers to a single agent | 2 weeks | Agent answers across structured, unstructured, and work data |
