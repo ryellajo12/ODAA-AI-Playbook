@@ -1,6 +1,6 @@
-# 19. Monitoring, Observability & Cost
+# Monitoring, Observability & Cost
 
-## 19.1 Monitoring Stack
+## Monitoring Stack
 
 | Component | Monitoring Tool | Key Metrics |
 |--|--|--|
@@ -12,7 +12,7 @@
 | Azure OpenAI | Azure Monitor | Token consumption, throttling, latency |
 | Network | Azure Network Watcher | Traffic flows, NSG hits |
 
-## 19.2 Cost Estimation Guide
+## Cost Estimation Guide
 
 | Component | Pricing Model | Typical Pilot Cost |
 |--|--|--|
@@ -25,7 +25,7 @@
 | Azure Functions | Per execution + compute | ~$5-20/month |
 | API Management | Per unit | ~$50/month (Developer tier) |
 
-## 19.3 Cost Optimization Tips
+## Cost Optimization Tips
 
 1. **Start with Copilot Studio or MCP local** -- lowest-cost entry points
 2. **Use `o4-mini` for non-critical tasks** -- significantly cheaper than GPT-4.1 or o3
