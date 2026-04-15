@@ -1,6 +1,6 @@
-# 16. Security & Governance Guardrails
+# Security & Governance Guardrails
 
-## 16.1 Security Architecture
+## Security Architecture
 
 The security model is organized into five defense-in-depth layers. Each layer builds on the previous one -- all five must be in place for a production deployment.
 
@@ -62,7 +62,7 @@ graph TD
 | **4. AI Governance** | Agent behavior | Azure AI Content Safety, system prompt guardrails (no DDL/DML), APIM rate limiting, token budgets |
 | **5. Audit** | Visibility and compliance | Oracle Unified Audit, DBTOOLS$MCP_LOG, Azure Monitor + Log Analytics, Purview audit trail |
 
-## 16.2 Security Checklist
+## Security Checklist
 
 | # | Control | Required | Notes |
 |--|--|--|--|
@@ -78,6 +78,6 @@ graph TD
 | 10 | Network segmentation (NSGs) | Yes | Agent services in separate subnet |
 | 11 | Encryption at rest and in transit | Yes | TLS 1.2+ for all connections; Oracle TDE |
 
-## 16.3 Key Principle
+## Key Principle
 
 > **MCP does not bypass Oracle security -- it operates inside it.** Every SQL statement executed via MCP runs under the connected Oracle user's privileges, subject to Oracle's standard authentication, authorization, auditing, and VPD policies.
