@@ -128,10 +128,10 @@ AI-powered intelligence layers that process, enrich, and surface insights from s
 
 | Pattern | AI Platform | What It Does | Surfaces | Value Proposition |
 |--|--|--|--|--|
-| **Pattern 10** | **Fabric IQ** | AI-powered analytics and insights over data in OneLake (mirrored Oracle + other sources) | Fabric, Data Agents | - Automated insight discovery<br/>- AI finds patterns humans miss<br/>- Multi-source data intelligence<br/>- Scales with Fabric capacity |
-| **Pattern 11** | **Foundry IQ** | Unstructured data processing -- ingests docs from Blob, SharePoint, Fabric Files to ground Foundry agents | Foundry, M365 Copilot | - Unlock PDFs, docs, emails<br/>- Combine unstructured + structured Oracle data<br/>- Single agent, full context<br/>- Enterprise-grade grounding |
-| **Pattern 12** | **Work IQ** | AI-driven productivity insights across M365 work patterns connected to Oracle business data | M365, Copilot | - Bridge work signals + business data<br/>- Meeting, email, doc intelligence<br/>- Organizational productivity insights<br/>- Connected to Oracle context |
-| **Pattern 13** | **Unified IQ** | All IQ layers combined -- Fabric IQ + Foundry IQ + Work IQ feeding a single intelligent agent | Fabric, Foundry, M365 Copilot | - Complete organizational intelligence<br/>- Structured + unstructured + work signals<br/>- One agent, all context<br/>- Maximum AI value from Oracle investment |
+| **Pattern 11** | **Fabric IQ** | AI-powered analytics and insights over data in OneLake (mirrored Oracle + other sources) | Fabric, Data Agents | - Automated insight discovery<br/>- AI finds patterns humans miss<br/>- Multi-source data intelligence<br/>- Scales with Fabric capacity |
+| **Pattern 12** | **Foundry IQ** | Unstructured data processing -- ingests docs from Blob, SharePoint, Fabric Files to ground Foundry agents | Foundry, M365 Copilot | - Unlock PDFs, docs, emails<br/>- Combine unstructured + structured Oracle data<br/>- Single agent, full context<br/>- Enterprise-grade grounding |
+| **Pattern 13** | **Work IQ** | AI-driven productivity insights across M365 work patterns connected to Oracle business data | M365, Copilot | - Bridge work signals + business data<br/>- Meeting, email, doc intelligence<br/>- Organizational productivity insights<br/>- Connected to Oracle context |
+| **Pattern 14** | **Unified IQ** | All IQ layers combined -- Fabric IQ + Foundry IQ + Work IQ feeding a single intelligent agent | Fabric, Foundry, M365 Copilot | - Complete organizational intelligence<br/>- Structured + unstructured + work signals<br/>- One agent, all context<br/>- Maximum AI value from Oracle investment |
 
 > **See [Reference Architecture Patterns](02-reference-architectures.md) for detailed Mermaid diagrams of each pattern.**
 
