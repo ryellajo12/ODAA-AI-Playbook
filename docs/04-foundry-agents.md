@@ -14,7 +14,7 @@ Microsoft Foundry provides a full-featured platform for building AI agents on Or
 
 ### Architecture
 
-Agent uses Oracle DB tools MCP Server (hosted either on Azure Functions or Azure Container Apps) for natural language --' SQL, schema discovery, and query execution.
+Agent uses Oracle DB tools MCP Server (hosted either on Azure Functions or Azure Container Apps) for natural language --> SQL, schema discovery, and query execution.
 
 ```mermaid
 graph LR
@@ -89,7 +89,7 @@ graph LR
  - Add Oracle DB tools MCP server hosted on Azure Functions or Azure Container apps as an external tool
  - Enable Azure AI Content Safety filters
 7. **Configure Entra ID** -- register the agent; assign security group for user access; configure Conditional Access
-9. **Test in Playground** --' Deploy to M365 Copilot / Agent Store / API
+9. **Test in Playground** --> Deploy to M365 Copilot / Agent Store / API
 
 ### RBAC Model
 
@@ -115,7 +115,7 @@ graph LR
 | 2 | Oracle Private Endpoint | MCP connects via PE (port 1521) |
 | 3 | Key Vault Private Endpoint | Credentials accessed privately |
 | 4 | Azure Private DNS Zones | `privatelink.oraclecloud.com`, `privatelink.vaultcore.azure.net` linked to VNET |
-| 5 | NSG rules -- ingress | Allow Functions subnet --' Oracle PE subnet (1521); deny all else |
+| 5 | NSG rules -- ingress | Allow Functions subnet --> Oracle PE subnet (1521); deny all else |
 | 6 | NSG rules -- egress | Block internet egress from Functions subnet; allow only PE destinations |
 | 7 | No public IP on Oracle | All traffic stays within Azure backbone |
 | 8 | Hub-spoke topology (enterprise) | Azure Firewall in hub VNET for centralized egress and logging |
@@ -479,7 +479,7 @@ ORDS is already running on your Oracle 26ai instance. You just need to define ne
  ```
  - Enable Azure AI Content Safety filters
 16. **Configure Entra ID** -- assign security group; configure Conditional Access policies
-17. **Test in Playground** --' Deploy to M365 Copilot / Agent Store / API
+17. **Test in Playground** --> Deploy to M365 Copilot / Agent Store / API
 
 #### Vector Search Design Considerations
 
@@ -517,10 +517,10 @@ ORDS is already running on your Oracle 26ai instance. You just need to define ne
 | # | Control | Details |
 |--|--|--|
 | 1 | ORDS on Oracle 26ai instance | ORDS runs natively on the Oracle instance -- no separate Azure compute needed; disable ORDS public endpoint |
-| 2 | APIM --' ORDS via VNET Peering / PE | APIM connects to ORDS on Oracle 26ai via VNET Peering or Private Endpoint (port 8443); validates OAuth2 + WAF |
-| 3 | Oracle 26ai --' Azure OpenAI PE | Embedding calls from `DBMS_CLOUD` route via Private Endpoint -- no internet egress |
-| 4 | NSGs -- ingress to Oracle ORDS | Allow only APIM subnet --' Oracle ORDS (8443); deny all other ingress |
-| 5 | NSGs -- egress from Oracle | Allow Oracle --' Azure OpenAI PE (443); block all other internet egress |
+| 2 | APIM --> ORDS via VNET Peering / PE | APIM connects to ORDS on Oracle 26ai via VNET Peering or Private Endpoint (port 8443); validates OAuth2 + WAF |
+| 3 | Oracle 26ai --> Azure OpenAI PE | Embedding calls from `DBMS_CLOUD` route via Private Endpoint -- no internet egress |
+| 4 | NSGs -- ingress to Oracle ORDS | Allow only APIM subnet --> Oracle ORDS (8443); deny all other ingress |
+| 5 | NSGs -- egress from Oracle | Allow Oracle --> Azure OpenAI PE (443); block all other internet egress |
 | 6 | DDoS Protection Standard | Enabled on VNET |
 | 7 | Network Watcher + NSG Flow Logs | Traffic monitoring, anomaly detection |
 
@@ -618,7 +618,7 @@ graph TB
  PCL["Classification<br/>PII / PHI / Financial"]
  PSL["Sensitivity Labels<br/>MIP Integration"]
  PDLP["DLP Policies<br/>Block PII in Chat"]
- PLN["Data Lineage<br/>Oracle --' Agent --' User"]
+ PLN["Data Lineage<br/>Oracle --> Agent --> User"]
  PAP["Access Policies<br/>Purview-managed Grants"]
  end
 
@@ -645,11 +645,11 @@ graph TB
  MCP -->|"Managed Identity"| KVPE
  ORDS -->|"Managed Identity"| KVPE
  OPE --> ODB
- ODB -- VPD
- ODB -- DR
- ODB -- DBV
- ODB -- UA
- ODB -- TDE
+ ODB --- VPD
+ ODB --- DR
+ ODB --- DBV
+ ODB --- UA
+ ODB --- TDE
 
  PDM -.->|"Scan"| ODB
  PDM -.->|"Scan"| BLOB
@@ -705,7 +705,7 @@ All prerequisites from Patterns #1 and #2, plus:
 8. **Configure Purview end-to-end** (see Section 10.6)
 9. **Enable Defender for Cloud** -- threat detection across Functions, App Service, APIM, Storage
 10. **Configure centralized logging** (see Section 10.8)
-11. **Test in Playground** --' Deploy to M365 Copilot / Agent Store / API
+11. **Test in Playground** --> Deploy to M365 Copilot / Agent Store / API
 
 ### RBAC Model
 
@@ -743,7 +743,7 @@ All prerequisites from Patterns #1 and #2, plus:
 | 8 | Azure Private DNS Zones | All PE DNS zones linked to spoke VNET |
 | 9 | Hub-spoke with Azure Firewall | Centralized egress control, TLS inspection, FQDN filtering |
 | 10 | NSGs -- ingress | MCP -- <- Foundry; ORDS -- <- APIM (443); Oracle PE -- <- MCP/ORDS (1521); deny all else |
-| 11 | NSGs -- egress | Compute subnets --' only PE destinations; all internet egress via Azure Firewall |
+| 11 | NSGs -- egress | Compute subnets --> only PE destinations; all internet egress via Azure Firewall |
 | 12 | DDoS Protection Standard | Enabled on spoke VNET |
 | 13 | Network Watcher + NSG Flow Logs | Traffic audit, anomaly detection, connectivity diagnostics |
 | 14 | Separate Oracle DB users | MCP and ORDS use different DB users with different privilege grants |
@@ -899,9 +899,9 @@ Prompt injection is a critical risk for AI agents with database access. Apply th
 
 | Control | Details |
 |--|--|
-| **Key Vault rotation policy** | Auto-rotate Oracle credentials every 90 days; Key Vault triggers rotation via Event Grid --' Azure Function that updates Oracle password |
+| **Key Vault rotation policy** | Auto-rotate Oracle credentials every 90 days; Key Vault triggers rotation via Event Grid --> Azure Function that updates Oracle password |
 | **App Registration secret monitoring** | Alert when client secrets are within 30 days of expiry; prefer certificates over secrets |
-| **Managed Identity everywhere** | MCP --' Key Vault, ORDS --' Key Vault, Foundry IQ --' Blob/SharePoint all use Managed Identity (no stored secrets) |
+| **Managed Identity everywhere** | MCP --> Key Vault, ORDS --> Key Vault, Foundry IQ --> Blob/SharePoint all use Managed Identity (no stored secrets) |
 | **mTLS (optional)** | For MCP --" Oracle, configure Oracle wallet with mutual TLS certificates for service-to-service auth |
 | **Oracle 26ai Entra ID auth (preview)** | Use Entra ID tokens for Oracle authentication -- eliminates Oracle password storage entirely |
 
@@ -936,7 +936,7 @@ graph TB
  CL["Classification<br/>Built-in + Custom<br/>PII / PHI / Financial"]
  SL["Sensitivity Labels<br/>MIP Integration<br/>Confidential / HC"]
  DLP["DLP Policies<br/>Block PII in<br/>Agent Responses"]
- LN["Data Lineage<br/>Source --' Agent --'<br/>User Tracking"]
+ LN["Data Lineage<br/>Source --> Agent --><br/>User Tracking"]
  AP["Access Policies<br/>Purview-managed<br/>Data Access"]
  AR["Purview Audit<br/>Who accessed what<br/>+ when"]
  end
@@ -982,7 +982,7 @@ graph TB
 | 4 | **Register Blob Storage in Data Map** | Scan documents in Blob containers used by Foundry IQ; classify before grounding | Pattern 4 |
 | 5 | **Register SharePoint in Data Map** | Scan SharePoint sites connected to Foundry IQ; apply labels | Pattern 4 |
 | 6 | **Configure DLP policies** | Create policies that block agent responses containing patterns matching `Confidential` or `Highly Confidential` data | All |
-| 7 | **Enable data lineage** | Track data flow: Oracle table --' ORDS/MCP --' Agent --' User response | All |
+| 7 | **Enable data lineage** | Track data flow: Oracle table --> ORDS/MCP --> Agent --> User response | All |
 | 8 | **Configure Purview access policies** | Use Purview-managed access grants for Oracle datasets -- acts as governance overlay on top of Oracle DB grants | All |
 | 9 | **Enable Purview audit** | Log all classification scans, label changes, access policy evaluations, and DLP triggers | All |
 | 10 | **Label propagation to Foundry IQ** | Ensure documents ingested by Foundry IQ carry their Purview sensitivity labels into RAG responses | Pattern 4 |
@@ -1002,11 +1002,11 @@ Purview tracks the full data path across all sub-patterns:
 
 ```
 Oracle Table (SH.SALES)
- --' Oracle View (SH.V_SALES_SUMMARY) [Data Redaction applied]
- --' ORDS Endpoint (/ords/sh/sales/summary) [OAuth2 scoped]
- --' APIM (/api/sales/summary) [rate-limited]
- --' Foundry Agent (Sales Analyst)
- --' End User (jane.doe@contoso.com)
+ --> Oracle View (SH.V_SALES_SUMMARY) [Data Redaction applied]
+ --> ORDS Endpoint (/ords/sh/sales/summary) [OAuth2 scoped]
+ --> APIM (/api/sales/summary) [rate-limited]
+ --> Foundry Agent (Sales Analyst)
+ --> End User (jane.doe@contoso.com)
 ```
 
 This lineage is critical for:
@@ -1090,7 +1090,7 @@ graph LR
 | **Oracle password rotation** | Key Vault rotation policy | Every 90 days | Event Grid triggers Azure Function to rotate Oracle DB password |
 | **Break-glass accounts** | Manual + monitor | Continuous | 2 emergency accounts excluded from Conditional Access; usage triggers alert |
 | **Terms of Use** | Entra ID Terms of Use | On first access | Users must accept data access terms before using agents with Confidential data |
-| **SCIM provisioning** | Entra ID --' Security Groups | Continuous | Automated user provisioning for enterprise scale |
+| **SCIM provisioning** | Entra ID --> Security Groups | Continuous | Automated user provisioning for enterprise scale |
 
 ### 10.7.4 Oracle Authentication Options
 
