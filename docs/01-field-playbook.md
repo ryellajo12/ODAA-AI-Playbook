@@ -1,5 +1,37 @@
 # PART I - FIELD PLAYBOOK
 
+## Table of Contents
+
+| # | Section | Description |
+|---|---------|-------------|
+| 1 | [How to Use This Playbook](#1-how-to-use-this-playbook) | Quick-start guide, layered navigation |
+| 2 | [Customer Discovery Framework](#2-customer-discovery-framework) | Discovery questions, signal interpretation |
+| 3 | [Core Positioning Message](#3-core-positioning-message) | Key selling points, elevator pitch |
+| 4 | [AI Patterns Overview](#4-ai-patterns-on-oracle-databaseazure----overview) | All 13 patterns across 3 categories |
+| 4a | [-- Zero Data Movement (Patterns 1-7)](#zero-data-movement----live-oracle-data) | Live Oracle data, no migration |
+| 4b | [-- Managed Replication (Patterns 8-9)](#managed-replication----mirrored-analytics-data) | Fabric mirroring + GoldenGate CDC |
+| 4c | [-- AI Enrichment (Patterns 10-13)](#ai-enrichment-iq----intelligent-data-processing) | Fabric IQ, Foundry IQ, Work IQ, Unified IQ |
+| 5 | [Decision Matrix](#5-decision-matrix) | Quick decision guide, detailed comparison, combination patterns |
+| 6 | [Objection Handling](#6-objection-handling) | Common objections and responses |
+| 7 | [Field Motion & Engagement Model](#7-field-motion--engagement-model) | Engagement lifecycle, pilot playbook |
+
+**Detailed pattern docs:**
+
+| Pattern | Doc |
+|---------|-----|
+| Pattern 1: Copilot Studio | [03-copilot-studio.md](03-copilot-studio.md) |
+| Patterns 2-4: Foundry Agents + Pattern 11: Foundry IQ | [04-foundry-agents.md](04-foundry-agents.md) |
+| Pattern 5: Oracle MCP | [05-oracle-mcp.md](05-oracle-mcp.md) |
+| Patterns 8-10 + 8B: Fabric, GoldenGate, Fabric IQ | [06-fabric-data-agents.md](06-fabric-data-agents.md) |
+| Pattern 6: Power Apps | [07-power-apps.md](07-power-apps.md) |
+| Pattern 7: Logic Apps | [08-logic-apps.md](08-logic-apps.md) |
+| Patterns 12-13 + A365: Work IQ, Unified IQ, Control Plane | [09-iq-work-unified.md](09-iq-work-unified.md) |
+| Security and Governance | [10-security-governance.md](10-security-governance.md) |
+| Implementation Guides | [11-implementation-guides.md](11-implementation-guides.md) |
+| Reference Architectures | [02-reference-architectures.md](02-reference-architectures.md) |
+
+--
+
 ## 1. How to Use This Playbook
 
 This playbook has three layers:
