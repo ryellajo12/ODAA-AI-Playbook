@@ -7,7 +7,7 @@
 | 1 | [How to Use This Playbook](#1-how-to-use-this-playbook) | Quick-start guide, layered navigation |
 | 2 | [Customer Discovery Framework](#2-customer-discovery-framework) | Discovery questions, signal interpretation |
 | 3 | [Core Positioning Message](#3-core-positioning-message) | Key selling points, elevator pitch |
-| 4 | [AI Blueprints Overview](#4-ai-patterns-on-oracle-databaseazure----overview) | All 13 blueprints across 3 categories |
+| 4 | [AI Blueprints Overview](#4-ai-patterns-on-oracle-databaseazure----overview) | All 14 blueprints across 3 categories |
 |  | [-- Zero Data Movement (Blueprints 1-7)](#zero-data-movement----live-oracle-data) | Live Oracle data, no migration |
 |  | [-- Managed Replication (Blueprints 8-9)](#managed-replication----mirrored-analytics-data) | Fabric mirroring + GoldenGate CDC |
 |  | [-- AI Enrichment (Blueprints 10-13)](#ai-enrichment-iq----intelligent-data-processing) | Fabric IQ, Foundry IQ, Work IQ, Unified IQ |
