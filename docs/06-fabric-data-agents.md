@@ -322,7 +322,7 @@ GoldenGate can transform data during replication -- something Fabric native mirr
 
 ---
 
-## Pattern 10: Fabric IQ on Oracle Mirrored Database
+## Pattern 11: Fabric IQ on Oracle Mirrored Database
 
 ### What is Fabric IQ
 

@@ -20,7 +20,7 @@
 | Pattern | Doc |
 |---------|-----|
 | Pattern 1: Copilot Studio | [03-copilot-studio.md](03-copilot-studio.md) |
-| Patterns 2-4: Foundry Agents + Pattern 11: Foundry IQ | [04-foundry-agents.md](04-foundry-agents.md) |
+| Patterns 2-4: Foundry Agents + Pattern 12: Foundry IQ | [04-foundry-agents.md](04-foundry-agents.md) |
 | Pattern 5: Oracle MCP for everything you need to know about Oracle's MCP server | [05-oracle-mcp.md](05-oracle-mcp.md) |
 | Patterns 8-10 + 8B: Fabric, GoldenGate, Fabric IQ | [06-fabric-data-agents.md](06-fabric-data-agents.md) |
 | Pattern 6: Power Apps | [07-power-apps.md](07-power-apps.md) |
@@ -183,10 +183,11 @@ AI-powered intelligence layers that process, enrich, and surface insights from s
 | Cross-source analytics | **Pattern 8:** Mirrored DB + Data Agents | Managed mirroring, NL queries, publish as MCP/Teams/Copilot Studio/Foundry |
 | Real-time CDC to Fabric | **Pattern 8B:** GoldenGate as a Service + Fabric | Sub-second CDC, transformations, Fabric Lakehouse or Mirror target |
 | AI agents on analytics data | **Pattern 9:** Fabric + Data Agents + Foundry | Data Agent as Foundry tool + live Oracle tools |
-| Automated data insights | **Pattern 10:** Fabric IQ | AI-powered pattern discovery |
-| Unstructured + structured grounding | **Pattern 11:** Foundry IQ | PDFs, docs, emails + Oracle data |
-| Productivity + business data | **Pattern 12:** Work IQ | M365 signals + Oracle context |
-| Full organizational intelligence | **Pattern 13:** Unified IQ | All IQ layers in one agent |
+| No-code copilots on mirrored data | **Pattern 10:** Fabric + Data Agents + Copilot Studio | Data Agent as Copilot Studio connector |
+| Automated data insights | **Pattern 11:** Fabric IQ | AI-powered pattern discovery |
+| Unstructured + structured grounding | **Pattern 12:** Foundry IQ | PDFs, docs, emails + Oracle data |
+| Productivity + business data | **Pattern 13:** Work IQ | M365 signals + Oracle context |
+| Full organizational intelligence | **Pattern 14:** Unified IQ | All IQ layers in one agent |
 
 ### 5.2 Detailed Comparison
 

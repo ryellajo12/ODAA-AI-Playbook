@@ -1222,7 +1222,7 @@ graph TB
 
 ---
 
-## Pattern 11: Foundry IQ -- Unified Knowledge Base for Unstructured Data
+## Pattern 12: Foundry IQ -- Unified Knowledge Base for Unstructured Data
 
 ### What is Foundry IQ
 

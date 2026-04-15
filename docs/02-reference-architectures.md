@@ -654,7 +654,7 @@ Oracle data is replicated into Microsoft Fabric via Mirrored Database for analyt
 | **Pattern 8** | **Mirrored Database + Data Agents** | Oracle --> Fabric Mirroring --> Mirrored Database --> Data Agents --> Published as MCP Server / Teams / Copilot Studio / Foundry | Teams, Copilot Studio, Foundry, MCP clients | - Natural language analytics on mirrored Oracle data<br/>- Data Agent as MCP server for any MCP client<br/>- Publish directly to Teams<br/>- Connect to Copilot Studio or Foundry via native connectors<br/>- Cross-source joins<br/>- Entra ID + private networking |
 | **Pattern 8B** | **GoldenGate as a Service + Fabric** | Oracle Database@Azure --> OCI GoldenGate (CDC) --> Fabric Lakehouse or Fabric Mirror --> Data Agents / Fabric IQ | Fabric, Teams, Copilot Studio, Foundry, MCP clients | - Real-time CDC replication (sub-second latency)<br/>- Supports Fabric Lakehouse AND Fabric Mirror as targets<br/>- Data transformations during replication<br/>- 30+ source/target combinations<br/>- Enterprise-grade with conflict detection |
 | **Pattern 9** | **Fabric Mirroring + Foundry** | Mirrored Database --> Data Agents --> Foundry agents (via native connector) | API, M365 Copilot, Agent Store | - AI agents grounded in curated analytics<br/>- Data Agent feeds Foundry as a tool<br/>- Best of Fabric + Foundry<br/>- Governed data layer<br/>- Publish insights to M365 Copilot |
-| **Pattern 9B** | **Fabric Mirroring + Copilot Studio** | Mirrored Database --> Data Agents --> Copilot Studio custom copilots (via native connector) | Teams, Web, M365 Copilot | - Copilots grounded on mirrored Oracle analytics<br/>- Data Agent feeds Copilot Studio as a connector<br/>- Best of Fabric + Copilot Studio<br/>- No-code copilot builder<br/>- Publish to Teams and M365 Copilot |
+| **Pattern 10: Fabric Mirroring + Data Agents + Copilot Studio** | **Fabric Mirroring + Copilot Studio** | Mirrored Database --> Data Agents --> Copilot Studio custom copilots (via native connector) | Teams, Web, M365 Copilot | - Copilots grounded on mirrored Oracle analytics<br/>- Data Agent feeds Copilot Studio as a connector<br/>- Best of Fabric + Copilot Studio<br/>- No-code copilot builder<br/>- Publish to Teams and M365 Copilot |
 
 --
 
@@ -871,7 +871,7 @@ graph TB
 
 --
 
-### Pattern 9B: Fabric Mirroring + Copilot Studio
+### Pattern 10: Fabric Mirroring + Data Agents + Copilot Studio: Fabric Mirroring + Copilot Studio
 
 ```mermaid
 graph TB
@@ -955,14 +955,14 @@ AI-powered intelligence layers that process, enrich, and surface insights from s
 
 | Pattern | AI Platform | What It Does | Surfaces | Value Proposition |
 |--|--|--|--|--|
-| **Pattern 10** | **Fabric IQ** | AI-powered analytics and insights over data in OneLake (mirrored Oracle + other sources) | Fabric, Data Agents | - Automated insight discovery<br/>- AI finds patterns humans miss<br/>- Multi-source data intelligence<br/>- Scales with Fabric capacity |
-| **Pattern 11** | **Foundry IQ** | Unstructured data processing -- ingests docs from Blob, SharePoint, Fabric Files to ground Foundry agents | Foundry, M365 Copilot | - Unlock PDFs, docs, emails<br/>- Combine unstructured + structured Oracle data<br/>- Single agent, full context<br/>- Enterprise-grade grounding |
-| **Pattern 12** | **Work IQ** | AI-driven productivity insights across M365 work patterns connected to Oracle business data | M365, Copilot | - Bridge work signals + business data<br/>- Meeting, email, doc intelligence<br/>- Organizational productivity insights<br/>- Connected to Oracle context |
-| **Pattern 13** | **Unified IQ** | All IQ layers combined -- Fabric IQ + Foundry IQ + Work IQ feeding a single intelligent agent | Fabric, Foundry, M365 Copilot | - Complete organizational intelligence<br/>- Structured + unstructured + work signals<br/>- One agent, all context<br/>- Maximum AI value from Oracle investment |
+| **Pattern 11** | **Fabric IQ** | AI-powered analytics and insights over data in OneLake (mirrored Oracle + other sources) | Fabric, Data Agents | - Automated insight discovery<br/>- AI finds patterns humans miss<br/>- Multi-source data intelligence<br/>- Scales with Fabric capacity |
+| **Pattern 12** | **Foundry IQ** | Unstructured data processing -- ingests docs from Blob, SharePoint, Fabric Files to ground Foundry agents | Foundry, M365 Copilot | - Unlock PDFs, docs, emails<br/>- Combine unstructured + structured Oracle data<br/>- Single agent, full context<br/>- Enterprise-grade grounding |
+| **Pattern 13** | **Work IQ** | AI-driven productivity insights across M365 work patterns connected to Oracle business data | M365, Copilot | - Bridge work signals + business data<br/>- Meeting, email, doc intelligence<br/>- Organizational productivity insights<br/>- Connected to Oracle context |
+| **Pattern 14** | **Unified IQ** | All IQ layers combined -- Fabric IQ + Foundry IQ + Work IQ feeding a single intelligent agent | Fabric, Foundry, M365 Copilot | - Complete organizational intelligence<br/>- Structured + unstructured + work signals<br/>- One agent, all context<br/>- Maximum AI value from Oracle investment |
 
 --
 
-### Pattern 13: Unified IQ -- All Layers Combined
+### Pattern 14: Unified IQ -- All Layers Combined
 
 ```mermaid
 graph TB

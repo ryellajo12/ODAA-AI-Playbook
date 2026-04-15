@@ -302,9 +302,9 @@ graph TB
 | Question Type | IQ Layer Used | Example |
 |---|---|---|
 | Live Oracle data | MCP/ORDS (Pattern 2/3) | "What were Q1 sales by product category?" |
-| Mirrored analytics + ontology | Fabric IQ (Pattern 10) | "How do Customer segments correlate with Promotion effectiveness?" |
-| Document knowledge | Foundry IQ (Pattern 11) | "What does our compliance policy say about data retention?" |
-| Work signals + business data | Work IQ (Pattern 12) | "Which sales reps have the most customer meetings but lowest close rates?" |
+| Mirrored analytics + ontology | Fabric IQ (Pattern 11) | "How do Customer segments correlate with Promotion effectiveness?" |
+| Document knowledge | Foundry IQ (Pattern 12) | "What does our compliance policy say about data retention?" |
+| Work signals + business data | Work IQ (Pattern 13) | "Which sales reps have the most customer meetings but lowest close rates?" |
 | Cross-layer reasoning | All layers | "Our APAC team's meeting frequency dropped 30% last month -- how did that affect Q1 sales in that region, and does our SOP require escalation when sales dip beyond 20%?" |
 
 ---
