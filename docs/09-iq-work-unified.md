@@ -1,6 +1,6 @@
 # AI Enrichment -- Work IQ, Unified IQ, and A365 Control Plane
 
-## Pattern 12: Work IQ -- M365 Productivity Signals + Oracle Business Data
+##  Work IQ -- M365 Productivity Signals + Oracle Business Data
 
 ### What is Work IQ
 
@@ -137,7 +137,7 @@ Work IQ analyzes M365 Graph signals and correlates them with Oracle business dat
 
 ---
 
-## Pattern 13: Unified IQ -- All Layers Combined
+##  Unified IQ -- All Layers Combined
 
 ### Architecture
 
