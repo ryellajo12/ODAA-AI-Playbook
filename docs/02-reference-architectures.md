@@ -654,6 +654,7 @@ Oracle data is replicated into Microsoft Fabric via Mirrored Database for analyt
 | **Pattern 8** | **Mirrored Database + Data Agents** | Oracle --> Fabric Mirroring --> Mirrored Database --> Data Agents --> Published as MCP Server / Teams / Copilot Studio / Foundry | Teams, Copilot Studio, Foundry, MCP clients | - Natural language analytics on mirrored Oracle data<br/>- Data Agent as MCP server for any MCP client<br/>- Publish directly to Teams<br/>- Connect to Copilot Studio or Foundry via native connectors<br/>- Cross-source joins<br/>- Entra ID + private networking |
 | **Pattern 8B** | **GoldenGate as a Service + Fabric** | Oracle Database@Azure --> OCI GoldenGate (CDC) --> Fabric Lakehouse or Fabric Mirror --> Data Agents / Fabric IQ | Fabric, Teams, Copilot Studio, Foundry, MCP clients | - Real-time CDC replication (sub-second latency)<br/>- Supports Fabric Lakehouse AND Fabric Mirror as targets<br/>- Data transformations during replication<br/>- 30+ source/target combinations<br/>- Enterprise-grade with conflict detection |
 | **Pattern 9** | **Fabric Mirroring + Foundry** | Mirrored Database --> Data Agents --> Foundry agents (via native connector) | API, M365 Copilot, Agent Store | - AI agents grounded in curated analytics<br/>- Data Agent feeds Foundry as a tool<br/>- Best of Fabric + Foundry<br/>- Governed data layer<br/>- Publish insights to M365 Copilot |
+| **Pattern 9B** | **Fabric Mirroring + Copilot Studio** | Mirrored Database --> Data Agents --> Copilot Studio custom copilots (via native connector) | Teams, Web, M365 Copilot | - Copilots grounded on mirrored Oracle analytics<br/>- Data Agent feeds Copilot Studio as a connector<br/>- Best of Fabric + Copilot Studio<br/>- No-code copilot builder<br/>- Publish to Teams and M365 Copilot |
 
 --
 
@@ -867,6 +868,84 @@ graph TB
 | 3 | Data Agent --> Foundry (native connector) | Internal Azure service-to-service connection -- no public exposure |
 | 4 | Other Foundry tools (MCP/ORDS) | VNET-integrated as per Zero Data Movement patterns |
 | 5 | Entra ID everywhere | SSO/MFA for Fabric, Foundry, and published surfaces |
+
+--
+
+### Pattern 9B: Fabric Mirroring + Copilot Studio
+
+```mermaid
+graph TB
+    subgraph EntraID["Microsoft Entra ID"]
+        AUTH["SSO / MFA<br/>Conditional Access"]
+    end
+
+    subgraph VNET["Azure VNET"]
+        subgraph PESub["Private Endpoint Subnet"]
+            PE_ORA["Oracle<br/>Private Endpoint"]
+        end
+    end
+
+    subgraph ODA["Oracle Database@Azure"]
+        DB[("ADBS / Exadata<br/>No Public IP")]
+    end
+
+    subgraph Fabric["Microsoft Fabric"]
+        MIRROR["Fabric<br/>Mirroring"]
+        MDB["Mirrored<br/>Database"]
+        DA["Data Agent<br/>(on Mirrored DB)"]
+    end
+
+    subgraph CS["Microsoft Copilot Studio"]
+        COP["Custom Copilot"]
+        DA_CONN["Data Agent<br/>(native connector<br/>as Knowledge/Tool)"]
+    end
+
+    subgraph GOV["Governance"]
+        A365["Agent 365<br/>Approve / Publish"]
+        PURVIEW["Microsoft Purview"]
+    end
+
+    subgraph Publish["Published To"]
+        TEAMS["Teams"]
+        WEB["Web / Mobile"]
+        M365["M365 Copilot"]
+    end
+
+    EU["End Users"] -->|SSO| AUTH
+    AUTH --> COP
+    DB -->|Private Endpoint| PE_ORA
+    PE_ORA --> MIRROR
+    MIRROR --> MDB
+    MDB --> DA
+    DA --> DA_CONN
+    COP --> DA_CONN
+    COP --> TEAMS
+    COP --> WEB
+    COP --> M365
+    COP -.->|Publish request| A365
+    PURVIEW -.->|Classify| DB
+```
+
+> Copilot Studio connects to Fabric Data Agents via the native connector -- no custom code needed. Business users build no-code copilots grounded on mirrored Oracle analytics data. The Data Agent can be added as a Knowledge source (for grounding) or as a Tool (for action-based queries). Combine with live Oracle data via the Oracle connector (Pattern 1) for hybrid live + mirrored copilots.
+
+#### RBAC Model
+
+| Layer | Role | Who Gets It | What It Controls |
+|--|--|--|--|
+| **Entra ID** | Security Group: `CPS-Analytics-Users` | Business users | Who can use the copilot |
+| **Fabric Workspace** | Viewer / Contributor | Data team | Access to mirrored data and Data Agent |
+| **Copilot Studio** | Maker / User | Citizen devs / End users | Build vs use copilots |
+| **Oracle DB** | Dedicated mirroring user | Fabric mirroring | `SELECT` on mirrored schemas only |
+
+#### Private Networking
+
+| # | Control | Details |
+|--|--|--|
+| 1 | Oracle Private Endpoint | No public IP; Fabric mirroring via managed PE |
+| 2 | Fabric Managed VNET | Mirroring over private path |
+| 3 | Data Agent --> Copilot Studio (native connector) | Internal Azure service-to-service connection -- no public exposure |
+| 4 | Agent365 governance | Agent lifecycle approval before publishing |
+| 5 | Entra ID everywhere | SSO/MFA for Fabric, Copilot Studio, and published surfaces |
 
 --
 
