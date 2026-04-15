@@ -742,12 +742,12 @@ graph TB
 
  subgraph IQLayers["IQ Layers"]
  FIQ["Fabric IQ<br/>Analytics Intelligence"]
- FOIQ["Foundry IQ<br/>Unstructured Processing"]
+ FOIQ["Foundry IQ<br/>Unstructured Data Processing"]
  WIQ["Work IQ<br/>Productivity Signals"]
  end
 
  subgraph Agent["Unified Agent"]
- UA["Foundry Agent<br/>Full Context:<br/>Structured + Unstructured + Work"]
+ UA["Foundry Agent<br/>Full Context:<br/>Structured + Unstructured Data + Work"]
  end
 
  subgraph Publish["Published To"]
