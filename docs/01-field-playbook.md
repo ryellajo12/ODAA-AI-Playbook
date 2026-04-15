@@ -226,7 +226,7 @@ AI-powered intelligence layers that process, enrich, and surface insights from s
 | *"We're worried about security and governance"* | Oracle Database@Azure runs in Azure with full network isolation (Private Endpoints, VNETs). Oracle MCP operates inside Oracle DB security -- it doesn't bypass it. All patterns support Entra ID. See [Security & Governance](10-security-governance.md) for full guardrails. |
 | *"We don't know where to start"* | Start with a single-scenario pilot. Most customers begin with Copilot Studio (Pattern 1 -- 48-hour proof of value) or an MCP demo (Pattern 5 -- 2-hour setup in VS Code). |
 | *"We already have a vector database"* | Oracle 26ai has native vector support -- one fewer service to manage. But Microsoft Foundry agents can also call external vector DBs via tools. Your choice. |
-| *"Is MCP production-ready?"* | MCP is an open standard (Anthropic-initiated, now broadly adopted). Oracle's SQLcl MCP server is GA. For production, host on Azure Functions with Entra ID auth and API Management. See [Path 3 -- Oracle MCP](05-oracle-mcp.md). |
+| *"Is MCP production-ready?"* | MCP is an open standard (Anthropic-initiated, now broadly adopted). For production, host on Azure Container Apps with Entra ID auth and API Management. See [Path 3 -- Oracle MCP](05-oracle-mcp.md). |
 | *"What about cost?"* | Start with free/low-cost paths: MCP local is free; Copilot Studio has per-message pricing; Azure OpenAI is pay-per-token. No upfront platform investment required. |
 | *"We need multi-agent orchestration"* | Microsoft Foundry supports multi-agent patterns natively. Combine with MCP tools for Oracle access and 26ai vectors for RAG. See [Combined Patterns](09-combined-patterns.md). |
 
