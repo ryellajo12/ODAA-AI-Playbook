@@ -13,7 +13,7 @@ Agents query Oracle data directly running on Oracle Database@Azure at runtime. N
 |--|--|--|--|--|
 | **1** | **Copilot Studio** | Gateway / Oracle as Knowledge / Oracle as Tool | Teams, Web, M365 | - Fastest time-to-value (hours)<br/>- No-code builder<br/>- Business users self-serve answers<br/>- Zero data movement |
 | **2** | **MS Foundry** | Agent Framework: Oracle MCP server (hosted on Azure Functions / Azure Container Apps) + ORDS APIs; Knowledge Base (Blob, SharePoint, Fabric Files); Oracle 26ai vectors | API, M365 Copilot, Agent Store | - Full model & tool control<br/>- Multi-agent orchestration<br/>- Production-grade custom AI apps<br/>- Live Oracle data, no migration<br/>- Publish to M365 + Agent Store |
-| **3** | **Oracle MCP** (developer) | SQLcl MCP in VS Code or hosted | VS Code, Foundry, Copilot Studio | - Natural language --' SQL in minutes<br/>- Zero infrastructure to start<br/>- Schema discovery on demand<br/>- DBA task automation |
+| **3** | **Oracle MCP** (developer) | SQLcl MCP in VS Code or hosted | VS Code, Foundry, Copilot Studio | - Natural language --> SQL in minutes<br/>- Zero infrastructure to start<br/>- Schema discovery on demand<br/>- DBA task automation |
 | **4** | **Power Apps** | Gateway / Oracle Connector | Power Platform | - Modernize workflows without rebuilding<br/>- AI Builder for forms & predictions<br/>- Citizen developer friendly<br/>- Incremental AI adoption |
 | **5** | **Logic Apps** | Oracle DB Connector (Gateway) / ORDS REST (via HTTP + APIM) | Workflow orchestration, enterprise integration | - Event-driven automation<br/>- 400+ enterprise connectors<br/>- No custom code needed<br/>- Orchestrate Oracle + SaaS + Azure |
 
@@ -69,6 +69,115 @@ How the Gateway Communicates:
 The gateway VM makes an outbound HTTPS connection (port 443) to Azure Relay when it starts up.
 This creates a persistent, secure tunnel -- no inbound ports need to be opened on the gateway VM.
 When Copilot Studio needs Oracle data, the request flows through this tunnel to the gateway, which then queries Oracle over port 1521 via the Private Endpoint.
+
+--
+
+### Pattern 1B: Copilot Studio + Oracle MCP (via Azure Functions / Container Apps)
+
+```mermaid
+graph TB
+    subgraph Users[End Users]
+        BU[Business Users<br/>Teams / Web / M365]
+    end
+
+    subgraph EntraID[Microsoft Entra ID / OAuth2]
+        AUTH[SSO / MFA<br/>Conditional Access]
+    end
+
+    subgraph CS[Microsoft Copilot Studio]
+        COP[Custom Copilot]
+        CC[Copilot Studio MCP Tool]
+    end
+
+    subgraph GOV[Governance]
+        A365[Agent 365<br/>Approve / Publish / Deploy]
+        PURVIEW[Microsoft Purview<br/>Data Map + Catalog]
+    end
+
+    subgraph AZ[Azure Integration Layer]
+        MCP[Oracle MCP Server<br/>Azure Functions or<br/>Container Apps]
+        TOOLS[Oracle Tools<br/>Search / Lookup / Actions]
+    end
+
+    subgraph VNET[Azure VNET]
+        subgraph PESub[Private Endpoint Subnet]
+            PE[Private Endpoint]
+        end
+    end
+
+    subgraph ODA[Oracle Database@Azure]
+        DB[(Oracle 26ai DB<br/>No Public IP)]
+    end
+
+    BU -->|SSO| AUTH
+    AUTH --> COP
+    COP --> CC
+    CC --> MCP
+    MCP --> TOOLS
+    TOOLS -->|Port 1521<br/>PE| PE
+    PE --> DB
+    COP -.->|Publish request| A365
+    PURVIEW -.->|Classify| DB
+```
+
+> Copilot Studio connects to Oracle via MCP Server hosted on Azure Functions or Container Apps. The MCP tool is added in Copilot Studio --> Tools --> Add new MCP. See [03-copilot-studio.md Pattern 2](03-copilot-studio.md#pattern-2--copilot-studio--oracle-mcp-through-azure-functionscontainer-apps) for setup steps.
+
+--
+
+### Pattern 1C: Copilot Studio + Oracle ORDS + Custom Connector
+
+```mermaid
+graph TB
+    subgraph Users[End Users]
+        EU[Business Users / Analysts<br/>Teams / Web / M365]
+    end
+
+    subgraph EntraID[Microsoft Entra ID / OAuth2]
+        AUTH[SSO / MFA<br/>Conditional Access]
+    end
+
+    subgraph CS[Microsoft Copilot Studio]
+        COP[Custom Copilot]
+        CC1[Custom Connector<br/>ORDS REST APIs<br/>Vector Search + Analytics]
+    end
+
+    subgraph GOV[Governance]
+        A365[Agent 365<br/>Approve / Publish / Deploy]
+        PURVIEW[Microsoft Purview<br/>Data Map + Catalog]
+    end
+
+    subgraph VNET[Azure VNET]
+        APIM[API Management<br/>OAuth2 + Rate Limiting]
+        ORDS[ORDS<br/>VNET-integrated]
+        PE[Private Endpoint]
+    end
+
+    subgraph AOAI[Azure OpenAI]
+        EMB[Embedding API]
+    end
+
+    subgraph ODA[Oracle Database@Azure]
+        ORDS_EP[ORDS REST Endpoints]
+        VEC[26ai Vector Engine]
+        DATA[(Oracle Data<br/>No Public IP)]
+    end
+
+    EU -->|SSO| AUTH
+    AUTH --> COP
+    COP --> CC1
+    CC1 --> APIM
+    APIM -->|OAuth2 validated| ORDS
+    ORDS -->|Port 1521 PE| PE
+    PE --> ORDS_EP
+    PE --> VEC
+    ORDS_EP --> DATA
+    VEC --> DATA
+    VEC -.->|Embeddings| EMB
+    COP -.->|Publish request| A365
+    PURVIEW -.->|Classify| DATA
+```
+
+> Copilot Studio connects to Oracle ORDS endpoints via a Custom Connector (imported OpenAPI spec). APIM validates OAuth2 tokens and rate-limits. Supports Oracle 26ai vector search for RAG. See [03-copilot-studio.md Pattern 3](03-copilot-studio.md#pattern-3--copilot-studio--oracle-ords-api-endpoints--custom-connector) for setup steps.
 
 --
 
@@ -330,7 +439,7 @@ graph TB
  LA --> AM
 ```
 
-> **Key changes**: ORDS runs natively on the Oracle 26ai instance (no separate Azure compute). Hub-spoke VNET with all Private Endpoints. Microsoft Purview scans Oracle, Blob, and SharePoint -- enforces DLP on agent responses and tracks data lineage from Oracle --' Agent --' User. Log Analytics provides centralized observability across MCP, APIM, and Oracle Unified Audit.
+> **Key changes**: ORDS runs natively on the Oracle 26ai instance (no separate Azure compute). Hub-spoke VNET with all Private Endpoints. Microsoft Purview scans Oracle, Blob, and SharePoint -- enforces DLP on agent responses and tracks data lineage from Oracle --> Agent --> User. Log Analytics provides centralized observability across MCP, APIM, and Oracle Unified Audit.
 
 --
 
@@ -542,8 +651,9 @@ Oracle data is replicated into Microsoft Fabric via Mirrored Database for analyt
 
 | Pattern | AI Platform | How It Connects | Surfaces | Value Proposition |
 |--|--|--|--|--|
-| **Pattern 8** | **Mirrored Database + Data Agents** | Oracle --' Fabric Mirroring --' Mirrored Database --' Data Agents --' Published as MCP Server / Teams / Copilot Studio / Foundry | Teams, Copilot Studio, Foundry, MCP clients | - Natural language analytics on mirrored Oracle data<br/>- Data Agent as MCP server for any MCP client<br/>- Publish directly to Teams<br/>- Connect to Copilot Studio or Foundry via native connectors<br/>- Cross-source joins<br/>- Entra ID + private networking |
-| **Pattern 9** | **Fabric Mirroring + Foundry** | Mirrored Database --' Data Agents --' Foundry agents (via native connector) | API, M365 Copilot, Agent Store | - AI agents grounded in curated analytics<br/>- Data Agent feeds Foundry as a tool<br/>- Best of Fabric + Foundry<br/>- Governed data layer<br/>- Publish insights to M365 Copilot |
+| **Pattern 8** | **Mirrored Database + Data Agents** | Oracle --> Fabric Mirroring --> Mirrored Database --> Data Agents --> Published as MCP Server / Teams / Copilot Studio / Foundry | Teams, Copilot Studio, Foundry, MCP clients | - Natural language analytics on mirrored Oracle data<br/>- Data Agent as MCP server for any MCP client<br/>- Publish directly to Teams<br/>- Connect to Copilot Studio or Foundry via native connectors<br/>- Cross-source joins<br/>- Entra ID + private networking |
+| **Pattern 8B** | **GoldenGate as a Service + Fabric** | Oracle Database@Azure --> OCI GoldenGate (CDC) --> Fabric Lakehouse or Fabric Mirror --> Data Agents / Fabric IQ | Fabric, Teams, Copilot Studio, Foundry, MCP clients | - Real-time CDC replication (sub-second latency)<br/>- Supports Fabric Lakehouse AND Fabric Mirror as targets<br/>- Data transformations during replication<br/>- 30+ source/target combinations<br/>- Enterprise-grade with conflict detection |
+| **Pattern 9** | **Fabric Mirroring + Foundry** | Mirrored Database --> Data Agents --> Foundry agents (via native connector) | API, M365 Copilot, Agent Store | - AI agents grounded in curated analytics<br/>- Data Agent feeds Foundry as a tool<br/>- Best of Fabric + Foundry<br/>- Governed data layer<br/>- Publish insights to M365 Copilot |
 
 --
 
@@ -640,6 +750,50 @@ graph TB
 
 --
 
+### Pattern 8B: GoldenGate as a Service + Fabric
+
+```mermaid
+graph TB
+    subgraph ODA["Oracle Database@Azure"]
+        DB[("Oracle 26ai DB<br/>Source Tables")]
+        REDO["Redo Logs (CDC)"]
+    end
+
+    subgraph GG["OCI GoldenGate as a Service"]
+        EXT["Extract<br/>Captures CDC"]
+        TRAIL["Trail Files"]
+        REP["Replicat<br/>Apply + Transform"]
+    end
+
+    subgraph FabricTargets["Microsoft Fabric Targets"]
+        LH["Fabric Lakehouse<br/>(Delta via ADLS)"]
+        FM["Fabric Mirror<br/>(direct target)"]
+    end
+
+    subgraph Downstream["Downstream AI"]
+        SC["OneLake Shortcut"]
+        ONT["Fabric IQ Ontology"]
+        DA["Data Agent"]
+        FA["Foundry Agent"]
+    end
+
+    DB --> REDO
+    REDO --> EXT
+    EXT --> TRAIL
+    TRAIL --> REP
+    REP --> LH
+    REP --> FM
+    LH --> SC
+    SC --> ONT
+    ONT --> DA
+    FM --> DA
+    DA --> FA
+```
+
+> OCI GoldenGate captures changes from Oracle redo logs (CDC) and delivers them to Fabric Lakehouse (Delta format via ADLS) or Fabric Mirror with sub-second latency. Supports data transformations (filtering, masking, column mapping) during replication. See [06-fabric-data-agents.md Pattern 8B](06-fabric-data-agents.md#pattern-8b-goldengate-as-a-service----real-time-cdc-to-fabric) for detailed setup, GoldenGate Extract/Replicat configuration, and transformation examples.
+
+--
+
 ### Pattern 9: Fabric Mirroring + Data Agents + Foundry
 
 ```mermaid
@@ -710,7 +864,7 @@ graph TB
 |--|--|--|
 | 1 | Oracle Private Endpoint | No public IP; Fabric mirroring via managed PE |
 | 2 | Fabric Managed VNET | Mirroring over private path |
-| 3 | Data Agent --' Foundry (native connector) | Internal Azure service-to-service connection -- no public exposure |
+| 3 | Data Agent --> Foundry (native connector) | Internal Azure service-to-service connection -- no public exposure |
 | 4 | Other Foundry tools (MCP/ORDS) | VNET-integrated as per Zero Data Movement patterns |
 | 5 | Entra ID everywhere | SSO/MFA for Fabric, Foundry, and published surfaces |
 
