@@ -729,6 +729,5 @@ Enterprise customers operating under SOX, HIPAA, or PCI‑regulated workloads sh
 - Configure Purview before production rollout  
 - Require Agent365 approval workflows  
 - Restrict Teams channel exposure  
-
 to ensure that Oracle production environments are not exposed through agent runtime without appropriate governance controls.
 
