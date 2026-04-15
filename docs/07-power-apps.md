@@ -2,7 +2,7 @@
 
 ## Architecture
 
-Power Apps and Power Automate connect to Oracle Database@Azure via the Oracle Database connector and the On-Premises Data Gateway, enabling business workflows with incremental AI capabilities.
+Power Apps (Equivalent to Oracle's APEX) and Power Automate connect to Oracle Database@Azure via the Oracle Database connector and the On-Premises Data Gateway, enabling business workflows with incremental AI capabilities.
 
 ## Setup Steps
 
