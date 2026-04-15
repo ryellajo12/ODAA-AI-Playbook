@@ -40,8 +40,6 @@ This playbook has three layers:
 |--|--|--|
 | **Field** | 1 -- 7 | Customer meetings, executive briefings, partner enablement |
 | **Architecture** | 8 -- 16 | Solution architects are in the room; designing credible solutions |
-| **Implementation** | 17 -- 20 | Hands-on build phase; developer and partner workshops |
-
 
 **Quick-start for common scenarios:**
 
