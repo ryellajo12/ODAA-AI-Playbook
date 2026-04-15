@@ -8,9 +8,9 @@
 | 2 | [Customer Discovery Framework](#2-customer-discovery-framework) | Discovery questions, signal interpretation |
 | 3 | [Core Positioning Message](#3-core-positioning-message) | Key selling points, elevator pitch |
 | 4 | [AI Patterns Overview](#4-ai-patterns-on-oracle-databaseazure----overview) | All 13 patterns across 3 categories |
-| 4a | [-- Zero Data Movement (Patterns 1-7)](#zero-data-movement----live-oracle-data) | Live Oracle data, no migration |
-| 4b | [-- Managed Replication (Patterns 8-9)](#managed-replication----mirrored-analytics-data) | Fabric mirroring + GoldenGate CDC |
-| 4c | [-- AI Enrichment (Patterns 10-13)](#ai-enrichment-iq----intelligent-data-processing) | Fabric IQ, Foundry IQ, Work IQ, Unified IQ |
+|  | [-- Zero Data Movement (Patterns 1-7)](#zero-data-movement----live-oracle-data) | Live Oracle data, no migration |
+|  | [-- Managed Replication (Patterns 8-9)](#managed-replication----mirrored-analytics-data) | Fabric mirroring + GoldenGate CDC |
+|  | [-- AI Enrichment (Patterns 10-13)](#ai-enrichment-iq----intelligent-data-processing) | Fabric IQ, Foundry IQ, Work IQ, Unified IQ |
 | 5 | [Decision Matrix](#5-decision-matrix) | Quick decision guide, detailed comparison, combination patterns |
 | 6 | [Objection Handling](#6-objection-handling) | Common objections and responses |
 | 7 | [Field Motion & Engagement Model](#7-field-motion--engagement-model) | Engagement lifecycle, pilot playbook |
